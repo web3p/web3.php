@@ -7,6 +7,7 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
+use Web3\Validators\HexValidator;
 
 class Web3
 {
@@ -23,6 +24,20 @@ class Web3
      * @var \Web3\Eth
      */
     protected $eth;
+
+    /**
+     * methods
+     * 
+     * @var array
+     */
+    private $methods = [
+        'web3_clientVersion' => [],
+        'web3_sha3' => [
+            'params' => [
+                HexValidator::class
+            ]
+        ]
+    ];
 
     /**
      * construct
@@ -62,6 +77,19 @@ class Web3
         if (strtolower($class[0]) === 'web3' && preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
             $method = strtolower($class[1]) . '_' . $name;
 
+            if (!array_key_exists($method, $this->methods)) {
+                throw new \RuntimeException('Unallowed rpc method: ' . $method);
+            }
+            $allowedMethod = $this->methods[$method];
+
+            if (isset($allowedMethod['params'])) {
+                // validate params
+                foreach ($allowedMethod['params'] as $key => $rule) {
+                    if (call_user_func([$rule, 'validate'], $arguments[$key]) === false) {
+                        throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
+                    }
+                }
+            }
             if ($this->provider->isBatch) {
                 $this->provider->send($method, $arguments, null);
             } else {

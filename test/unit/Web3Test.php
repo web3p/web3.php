@@ -2,6 +2,7 @@
 
 namespace Test\Unit;
 
+use RuntimeException;
 use Test\TestCase;
 use Web3\Web3;
 use Web3\Eth;
@@ -109,6 +110,52 @@ class Web3Test extends TestCase
             }
             $this->assertTrue(is_string($data[0]->result));
             $this->assertEquals($data[1]->result, $this->testHash);
+        });
+    }
+
+    /**
+     * testUnallowedMethod
+     * 
+     * @return void
+     */
+    public function testUnallowedMethod()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $web3 = $this->web3;
+
+        $web3->hello(function ($err, $hello) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($hello->result)) {
+                $this->assertTrue(true);
+            } else {
+                $this->fail($hello->error->message);
+            }
+        });
+    }
+
+    /**
+     * testWrongParam
+     * 
+     * @return void
+     */
+    public function testWrongParam()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $web3 = $this->web3;
+
+        $web3->sha3('hello world', function ($err, $hash) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($hash->result)) {
+                $this->assertTrue(true);
+            } else {
+                $this->fail($hash->error->message);
+            }
         });
     }
 }
