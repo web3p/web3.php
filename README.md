@@ -4,7 +4,10 @@ A php interface for interacting with the Ethereum blockchain and ecosystem.
 
 # Install
 
+```
 composer sc0vu/web3.php
+```
+
 
 # Usage
 
