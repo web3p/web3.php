@@ -68,7 +68,7 @@ class Web3
                 $callback = array_pop($arguments);
 
                 if (is_callable($callback) !== true) {
-                    throw new \RuntimeException('The last param must be callback function.');
+                    throw new \InvalidArgumentException('The last param must be callback function.');
                 }
                 $this->provider->send($method, $arguments, $callback);
             }

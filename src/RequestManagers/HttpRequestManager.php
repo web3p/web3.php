@@ -39,7 +39,7 @@ class HttpRequestManager extends RequestManager implements IRequestManager
     public function sendPayload($payload, $callback)
     {
         if (!is_string($payload)) {
-            throw new \RuntimeException('Payload must be string.');
+            throw new \InvalidArgumentException('Payload must be string.');
         }
         // $promise = $this->client->postAsync($this->host, [
         //     'headers' => [
@@ -67,8 +67,7 @@ class HttpRequestManager extends RequestManager implements IRequestManager
             $json = json_decode($res->getBody());
 
             if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new \InvalidArgumentException(
-                    'json_decode error: ' . json_last_error_msg());
+                throw new \InvalidArgumentException('json_decode error: ' . json_last_error_msg());
             }
 
             call_user_func($callback, null, $json);
