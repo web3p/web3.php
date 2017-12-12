@@ -69,16 +69,24 @@ class Web3Test extends TestCase
 
         $web3->clientVersion(function ($err, $version) {
             if ($err !== null) {
-                return $this->markTestIncomplete($err->getMessage());
+                return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($version->result));
+            if (isset($version->result)) {
+                $this->assertTrue(is_string($version->result));
+            } else {
+                $this->fail($version->error->message);
+            }
         });
 
         $web3->sha3($this->testHex, function ($err, $hash) {
             if ($err !== null) {
                 return $this->markTestIncomplete($err->getMessage());
             }
-            $this->assertEquals($hash->result, $this->testHash);
+            if (isset($hash->result)) {
+                $this->assertEquals($hash->result, $this->testHash);
+            } else {
+                $this->fail($hash->error->message);
+            }
         });
     }
 
