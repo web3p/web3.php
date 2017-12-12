@@ -74,7 +74,7 @@ class Web3
 
         $class = explode('\\', get_class());
 
-        if (strtolower($class[0]) === 'web3' && preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
+        if (strtolower($class[1]) === 'web3' && preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
             $method = strtolower($class[1]) . '_' . $name;
 
             if (!array_key_exists($method, $this->methods)) {
