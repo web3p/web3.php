@@ -80,7 +80,7 @@ class Web3Test extends TestCase
 
         $web3->sha3($this->testHex, function ($err, $hash) {
             if ($err !== null) {
-                return $this->markTestIncomplete($err->getMessage());
+                return $this->fail($err->getMessage());
             }
             if (isset($hash->result)) {
                 $this->assertEquals($hash->result, $this->testHash);
@@ -105,7 +105,7 @@ class Web3Test extends TestCase
 
         $web3->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->markTestIncomplete($err->getMessage());
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_string($data[0]->result));
             $this->assertEquals($data[1]->result, $this->testHash);
