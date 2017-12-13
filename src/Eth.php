@@ -27,6 +27,7 @@ class Eth
         'eth_coinbase' => [],
         'eth_mining' => [],
         'eth_hashrate' => [],
+        'eth_gasPrice' => [],
     ];
 
     /**

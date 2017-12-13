@@ -137,6 +137,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGasPrice
+     * 
+     * @return void
+     */    
+    public function testGasPrice()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->gasPrice(function ($err, $gasPrice) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($gasPrice->result)) {
+                $this->assertTrue(is_string($gasPrice->result));
+            } else {
+                $this->fail($gasPrice->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
