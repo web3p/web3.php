@@ -25,6 +25,7 @@ class Eth
         'eth_protocolVersion' => [],
         'eth_syncing' => [],
         'eth_coinbase' => [],
+        'eth_mining' => [],
     ];
 
     /**

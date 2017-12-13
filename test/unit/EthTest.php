@@ -95,6 +95,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testMining
+     * 
+     * @return void
+     */    
+    public function testMining()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->mining(function ($err, $mining) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($mining->result)) {
+                $this->assertTrue($mining->result !== null);
+            } else {
+                $this->fail($mining->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
