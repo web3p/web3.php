@@ -363,6 +363,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetCode
+     * 
+     * @return void
+     */    
+    public function testGetCode()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getCode('0x407d73d8a49eeb85d32cf465507dd71d507100c1', function ($err, $code) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($code->result)) {
+                $this->assertTrue(is_string($code->result));
+            } else {
+                $this->fail($code->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

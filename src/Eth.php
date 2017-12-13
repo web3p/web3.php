@@ -106,6 +106,18 @@ class Eth
                 ]
             ]
         ],
+        'eth_getCode' => [
+            'params'=> [
+                [
+                    'validators' => AddressValidator::class,
+                ], [
+                    'default' => 'latest',
+                    'validators' => [
+                        TagValidator::class, QuantityValidator::class,
+                    ]
+                ],
+            ]
+        ],
     ];
 
     /**
