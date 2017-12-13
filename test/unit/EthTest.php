@@ -73,6 +73,28 @@ class EthTest extends TestCase
     }
 
     /**
+     * testCoinbase
+     * 
+     * @return void
+     */    
+    public function testCoinbase()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->coinbase(function ($err, $coinbase) {
+            if ($err !== null) {
+                // infura banned us to use coinbase
+                return $this->assertTrue($err->getCode() === 405);
+            }
+            if (isset($coinbase->result)) {
+                $this->assertTrue(is_string($coinbasse->result));
+            } else {
+                $this->fail($coinbase->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
