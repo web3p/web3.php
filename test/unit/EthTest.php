@@ -200,6 +200,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetBalance
+     * 
+     * @return void
+     */    
+    public function testGetBalance()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getBalance('0x407d73d8a49eeb85d32cf465507dd71d507100c1', 'latest', function ($err, $balance) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($balance->result)) {
+                $this->assertTrue(is_string($balance->result));
+            } else {
+                $this->fail($balance->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

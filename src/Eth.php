@@ -6,6 +6,8 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
+use Web3\Validators\AddressValidator;
+use Web3\Validators\TagValidator;
 
 class Eth
 {
@@ -30,6 +32,12 @@ class Eth
         'eth_gasPrice' => [],
         'eth_accounts' => [],
         'eth_blockNumber' => [],
+        'eth_getBalance' => [
+            'params'=> [
+                AddressValidator::class,
+                TagValidator::class
+            ]
+        ],
     ];
 
     /**

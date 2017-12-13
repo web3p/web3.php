@@ -1,0 +1,22 @@
+<?php
+
+namespace Web3\Validators;
+
+use Web3\Validators\IValidator;
+
+class AddressValidator
+{
+    /**
+     * validate
+     *
+     * @param string $value
+     * @return bool
+     */
+    public static function validate($value)
+    {
+        if (!is_string($value)) {
+            return false;
+        }
+        return (preg_match('/^0x[a-fA-F0-9]{40}$/', $value) >= 1);
+    }
+}
