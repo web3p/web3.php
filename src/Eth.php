@@ -9,6 +9,7 @@ use Web3\RequestManagers\HttpRequestManager;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\TagValidator;
 use Web3\Validators\QuantityValidator;
+use Web3\Validators\BlockHashValidator;
 
 class Eth
 {
@@ -69,6 +70,13 @@ class Eth
                         TagValidator::class, QuantityValidator::class,
                     ]
                 ],
+            ]
+        ],
+        'eth_getBlockTransactionCountByHash' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ]
             ]
         ],
     ];

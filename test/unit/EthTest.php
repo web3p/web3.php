@@ -242,11 +242,11 @@ class EthTest extends TestCase
     }
 
     /**
-     * testTransactionCount
+     * testGetTransactionCount
      * 
      * @return void
      */    
-    public function testTransactionCount()
+    public function testGetTransactionCount()
     {
         $eth = $this->web3->eth;
 
@@ -258,6 +258,31 @@ class EthTest extends TestCase
                 $this->assertTrue(is_string($transactionCount->result));
             } else {
                 $this->fail($transactionCount->error->message);
+            }
+        });
+    }
+
+    /**
+     * testGetBlockTransactionCountByHash
+     * 
+     * @return void
+     */    
+    public function testGetBlockTransactionCountByHash()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getBlockTransactionCountByHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', function ($err, $transactionCount) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($transactionCount->result)) {
+                $this->assertTrue(is_string($transactionCount->result));
+            } else {
+                if (isset($transactionCount->error)) {
+                    $this->fail($transactionCount->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
             }
         });
     }
