@@ -242,6 +242,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testTransactionCount
+     * 
+     * @return void
+     */    
+    public function testTransactionCount()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getTransactionCount('0x407d73d8a49eeb85d32cf465507dd71d507100c1', function ($err, $transactionCount) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($transactionCount->result)) {
+                $this->assertTrue(is_string($transactionCount->result));
+            } else {
+                $this->fail($transactionCount->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

@@ -59,6 +59,18 @@ class Eth
                 ],
             ]
         ],
+        'eth_getTransactionCount' => [
+            'params'=> [
+                [
+                    'validators' => AddressValidator::class,
+                ], [
+                    'default' => 'latest',
+                    'validators' => [
+                        TagValidator::class, QuantityValidator::class,
+                    ]
+                ],
+            ]
+        ],
     ];
 
     /**
