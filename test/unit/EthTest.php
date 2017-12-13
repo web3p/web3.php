@@ -406,6 +406,32 @@ class EthTest extends TestCase
     }
 
     /**
+     * testSendRawTransaction
+     * 
+     * @return void
+     */    
+    public function testSendRawTransaction()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->sendRawTransaction('0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675', function ($err, $transaction) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($transaction->result)) {
+                $this->assertTrue(is_string($transaction->result));
+            } else {
+                if (isset($transaction->error)) {
+                    // it's just test hex.
+                    $this->assertTrue(is_string($transaction->error->message));
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

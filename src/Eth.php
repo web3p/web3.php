@@ -128,6 +128,13 @@ class Eth
                 ],
             ]
         ],
+        'eth_sendRawTransaction' => [
+            'params' => [
+                [
+                    'validators' => HexValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
