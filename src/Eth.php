@@ -89,6 +89,13 @@ class Eth
                 ]
             ]
         ],
+        'eth_getUncleCountByBlockHash' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**

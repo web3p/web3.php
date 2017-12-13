@@ -313,6 +313,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetUncleCountByBlockHash
+     * 
+     * @return void
+     */    
+    public function testGetUncleCountByBlockHash()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getUncleCountByBlockHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', function ($err, $uncleCount) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($uncleCount->result)) {
+                $this->assertTrue(is_string($uncleCount->result));
+            } else {
+                if (isset($uncleCount->error)) {
+                    $this->fail($uncleCount->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
