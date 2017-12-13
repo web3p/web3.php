@@ -221,6 +221,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetStorageAt
+     * 
+     * @return void
+     */    
+    public function testGetStorageAt()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getStorageAt('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x0', 'latest', function ($err, $storage) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($storage->result)) {
+                $this->assertTrue(is_string($storage->result));
+            } else {
+                $this->fail($storage->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

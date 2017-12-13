@@ -8,6 +8,7 @@ use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\TagValidator;
+use Web3\Validators\QuantityValidator;
 
 class Eth
 {
@@ -35,6 +36,13 @@ class Eth
         'eth_getBalance' => [
             'params'=> [
                 AddressValidator::class,
+                TagValidator::class
+            ]
+        ],
+        'eth_getStorageAt' => [
+            'params'=> [
+                AddressValidator::class,
+                QuantityValidator::class,
                 TagValidator::class
             ]
         ],
