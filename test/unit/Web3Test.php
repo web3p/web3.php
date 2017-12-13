@@ -60,11 +60,11 @@ class Web3Test extends TestCase
     }
 
     /**
-     * testSend
+     * testClientVersion
      * 
      * @return void
      */    
-    public function testSend()
+    public function testClientVersion()
     {
         $web3 = $this->web3;
 
@@ -78,6 +78,16 @@ class Web3Test extends TestCase
                 $this->fail($version->error->message);
             }
         });
+    }
+
+    /**
+     * testSha3
+     * 
+     * @return void
+     */    
+    public function testSha3()
+    {
+        $web3 = $this->web3;
 
         $web3->sha3($this->testHex, function ($err, $hash) {
             if ($err !== null) {

@@ -30,11 +30,11 @@ class EthTest extends TestCase
     }
 
     /**
-     * testSend
+     * testProtocolVersion
      * 
      * @return void
      */    
-    public function testSend()
+    public function testProtocolVersion()
     {
         $eth = $this->web3->eth;
 
