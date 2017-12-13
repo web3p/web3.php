@@ -28,6 +28,7 @@ class Eth
         'eth_mining' => [],
         'eth_hashrate' => [],
         'eth_gasPrice' => [],
+        'eth_accounts' => [],
     ];
 
     /**

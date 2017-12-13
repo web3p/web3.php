@@ -158,6 +158,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testAccounts
+     * 
+     * @return void
+     */    
+    public function testAccounts()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->accounts(function ($err, $accounts) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($accounts->result)) {
+                $this->assertTrue(is_array($accounts->result));
+            } else {
+                $this->fail($accounts->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
