@@ -208,7 +208,7 @@ class EthTest extends TestCase
     {
         $eth = $this->web3->eth;
 
-        $eth->getBalance('0x407d73d8a49eeb85d32cf465507dd71d507100c1', 'latest', function ($err, $balance) {
+        $eth->getBalance('0x407d73d8a49eeb85d32cf465507dd71d507100c1', function ($err, $balance) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
@@ -229,7 +229,7 @@ class EthTest extends TestCase
     {
         $eth = $this->web3->eth;
 
-        $eth->getStorageAt('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x0', 'latest', function ($err, $storage) {
+        $eth->getStorageAt('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x0', function ($err, $storage) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }

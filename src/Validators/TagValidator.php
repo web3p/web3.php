@@ -18,7 +18,6 @@ class TagValidator
             'latest', 'earliest', 'pending'
         ];
 
-        // maybe change in_int and preg_match future
-        return (is_int($value) || preg_match('/^0x[a-fA-f0-9]+/', $value) >= 1 || in_array($value, $tags));
+        return in_array($value, $tags);
     }
 }

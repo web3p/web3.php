@@ -35,15 +35,28 @@ class Eth
         'eth_blockNumber' => [],
         'eth_getBalance' => [
             'params'=> [
-                AddressValidator::class,
-                TagValidator::class
+                [
+                    'validators' => AddressValidator::class,
+                ], [
+                    'default' => 'latest',
+                    'validators' => [
+                        TagValidator::class, QuantityValidator::class,
+                    ]
+                ]
             ]
         ],
         'eth_getStorageAt' => [
             'params'=> [
-                AddressValidator::class,
-                QuantityValidator::class,
-                TagValidator::class
+                [
+                    'validators' => AddressValidator::class,
+                ], [
+                    'validators' => QuantityValidator::class,
+                ], [
+                    'default' => 'latest',
+                    'validators' => [
+                        TagValidator::class, QuantityValidator::class,
+                    ]
+                ],
             ]
         ],
     ];
@@ -91,24 +104,43 @@ class Eth
             }
             $allowedMethod = $this->methods[$method];
 
-            if (isset($allowedMethod['params'])) {
-                // validate params
-                foreach ($allowedMethod['params'] as $key => $rule) {
-                    if (call_user_func([$rule, 'validate'], $arguments[$key]) === false) {
-                        throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
-                    }
-                }
-            }
             if ($this->provider->isBatch) {
-                $this->provider->send($method, $arguments, null);
+                $callback = null;
             } else {
                 $callback = array_pop($arguments);
 
                 if (is_callable($callback) !== true) {
                     throw new \InvalidArgumentException('The last param must be callback function.');
                 }
-                $this->provider->send($method, $arguments, $callback);
             }
+            if (isset($allowedMethod['params']) && is_array($allowedMethod['params'])) {
+                // validate params
+                foreach ($allowedMethod['params'] as $key => $param) {
+                    if (isset($param['validators'])) {
+                        if (is_array($param['validators'])) {
+                            foreach ($param['validators'] as $rule) {
+                                if (!isset($arguments[$key]) || call_user_func([$rule, 'validate'], $arguments[$key]) === false) {
+                                    if (isset($param['default']) && !isset($arguments[$key])) {
+                                        $arguments[$key] = $param['default'];
+                                        break;
+                                    } else {
+                                        throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
+                                    }
+                                }
+                            }
+                        } else {
+                            if (!isset($arguments[$key]) || call_user_func([$param['validators'], 'validate'], $arguments[$key]) === false) {
+                                if (isset($param['default']) && !isset($arguments[$key])) {
+                                    $arguments[$key] = $param['default'];
+                                } else {
+                                    throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $this->provider->send($method, $arguments, $callback);
         }
     }
 
