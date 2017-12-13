@@ -96,6 +96,16 @@ class Eth
                 ]
             ]
         ],
+        'eth_getUncleCountByBlockNumber' => [
+            'params' => [
+                [
+                    'default' => 'latest',
+                    'validators' => [
+                        TagValidator::class, QuantityValidator::class,
+                    ]
+                ]
+            ]
+        ],
     ];
 
     /**

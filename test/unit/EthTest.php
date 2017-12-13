@@ -338,6 +338,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetUncleCountByBlockNumber
+     * 
+     * @return void
+     */    
+    public function testGetUncleCountByBlockNumber()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getUncleCountByBlockNumber('0x0', function ($err, $uncleCount) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($uncleCount->result)) {
+                $this->assertTrue(is_string($uncleCount->result));
+            } else {
+                if (isset($uncleCount->error)) {
+                    $this->fail($uncleCount->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
