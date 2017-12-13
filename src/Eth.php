@@ -10,6 +10,7 @@ use Web3\Validators\AddressValidator;
 use Web3\Validators\TagValidator;
 use Web3\Validators\QuantityValidator;
 use Web3\Validators\BlockHashValidator;
+use Web3\Validators\HexValidator;
 
 class Eth
 {
@@ -115,6 +116,15 @@ class Eth
                     'validators' => [
                         TagValidator::class, QuantityValidator::class,
                     ]
+                ],
+            ]
+        ],
+        'eth_sign' => [
+            'params'=> [
+                [
+                    'validators' => AddressValidator::class,
+                ], [
+                    'validators' => HexValidator::class
                 ],
             ]
         ],

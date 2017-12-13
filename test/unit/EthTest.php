@@ -384,6 +384,28 @@ class EthTest extends TestCase
     }
 
     /**
+     * testSign
+     * 
+     * @return void
+     */    
+    public function testSign()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->sign('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0xdeadbeaf', function ($err, $sign) {
+            if ($err !== null) {
+                // infura banned us to sign message
+                return $this->assertTrue($err->getCode() === 405);
+            }
+            if (isset($sign->result)) {
+                $this->assertTrue(is_string($sign->result));
+            } else {
+                $this->fail($sign->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
