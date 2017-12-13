@@ -148,15 +148,24 @@ class Eth
                 foreach ($allowedMethod['params'] as $key => $param) {
                     if (isset($param['validators'])) {
                         if (is_array($param['validators'])) {
+                            $isError = true;
+
                             foreach ($param['validators'] as $rule) {
-                                if (!isset($arguments[$key]) || call_user_func([$rule, 'validate'], $arguments[$key]) === false) {
-                                    if (isset($param['default']) && !isset($arguments[$key])) {
-                                        $arguments[$key] = $param['default'];
+                                if (isset($arguments[$key])) {
+                                    if (call_user_func([$rule, 'validate'], $arguments[$key]) === true) {
+                                        $isError = false;
                                         break;
-                                    } else {
-                                        throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
+                                    }
+                                } else {
+                                    if (isset($param['default'])) {
+                                        $arguments[$key] = $param['default'];
+                                        $isError = false;
+                                        break;
                                     }
                                 }
+                            }
+                            if ($isError === true) {
+                                throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
                             }
                         } else {
                             if (!isset($arguments[$key]) || call_user_func([$param['validators'], 'validate'], $arguments[$key]) === false) {

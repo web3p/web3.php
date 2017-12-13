@@ -301,7 +301,6 @@ class EthTest extends TestCase
                 return $this->fail($err->getMessage());
             }
             if (isset($transactionCount->result)) {
-                var_dump($transactionCount->result);
                 $this->assertTrue(is_string($transactionCount->result));
             } else {
                 if (isset($transactionCount->error)) {
