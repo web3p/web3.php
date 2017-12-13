@@ -288,6 +288,32 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetBlockTransactionCountByNumber
+     * 
+     * @return void
+     */    
+    public function testGetBlockTransactionCountByNumber()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getBlockTransactionCountByNumber('0x0', function ($err, $transactionCount) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($transactionCount->result)) {
+                var_dump($transactionCount->result);
+                $this->assertTrue(is_string($transactionCount->result));
+            } else {
+                if (isset($transactionCount->error)) {
+                    $this->fail($transactionCount->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

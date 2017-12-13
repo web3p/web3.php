@@ -79,6 +79,16 @@ class Eth
                 ]
             ]
         ],
+        'eth_getBlockTransactionCountByNumber' => [
+            'params' => [
+                [
+                    'default' => 'latest',
+                    'validators' => [
+                        TagValidator::class, QuantityValidator::class,
+                    ]
+                ]
+            ]
+        ],
     ];
 
     /**
