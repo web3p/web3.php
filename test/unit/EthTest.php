@@ -51,6 +51,28 @@ class EthTest extends TestCase
     }
 
     /**
+     * testSyncing
+     * 
+     * @return void
+     */    
+    public function testSyncing()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->syncing(function ($err, $syncing) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($syncing->result)) {
+                // due to the result might be object or bool, only test is null
+                $this->assertTrue($syncing->result !== null);
+            } else {
+                $this->fail($syncing->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

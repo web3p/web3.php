@@ -23,6 +23,7 @@ class Eth
      */
     private $methods = [
         'eth_protocolVersion' => [],
+        'eth_syncing' => [],
     ];
 
     /**
