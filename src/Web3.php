@@ -34,7 +34,9 @@ class Web3
         'web3_clientVersion' => [],
         'web3_sha3' => [
             'params' => [
-                HexValidator::class
+                [
+                    'validators' => HexValidator::class
+                ]
             ]
         ]
     ];
@@ -82,11 +84,29 @@ class Web3
             }
             $allowedMethod = $this->methods[$method];
 
-            if (isset($allowedMethod['params'])) {
+            if (isset($allowedMethod['params']) && is_array($allowedMethod['params'])) {
                 // validate params
-                foreach ($allowedMethod['params'] as $key => $rule) {
-                    if (call_user_func([$rule, 'validate'], $arguments[$key]) === false) {
-                        throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
+                foreach ($allowedMethod['params'] as $key => $param) {
+                    if (isset($param['validators'])) {
+                        if (is_array($param['validators'])) {
+                            foreach ($param['validators'] as $rule) {
+                                if (call_user_func([$rule, 'validate'], $arguments[$key]) === false) {
+                                    if (isset($param['default']) && !isset($arguments[$key])) {
+                                        $arguments[$key] = $param['default'];
+                                    } else {
+                                        throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
+                                    }
+                                }
+                            }
+                        } else {
+                            if (call_user_func([$param['validators'], 'validate'], $arguments[$key]) === false) {
+                                if (!isset($param['default']) && !isset($arguments[$key])) {
+                                    $arguments[$key] = $param['default'];
+                                } else {
+                                    throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
+                                }
+                            }
+                        }
                     }
                 }
             }
