@@ -29,6 +29,7 @@ class Eth
         'eth_hashrate' => [],
         'eth_gasPrice' => [],
         'eth_accounts' => [],
+        'eth_blockNumber' => [],
     ];
 
     /**

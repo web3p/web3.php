@@ -179,6 +179,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testBlockNumber
+     * 
+     * @return void
+     */    
+    public function testBlockNumber()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->blockNumber(function ($err, $blockNumber) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($blockNumber->result)) {
+                $this->assertTrue(is_string($blockNumber->result));
+            } else {
+                $this->fail($blockNumber->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
