@@ -26,6 +26,7 @@ class Eth
         'eth_syncing' => [],
         'eth_coinbase' => [],
         'eth_mining' => [],
+        'eth_hashrate' => [],
     ];
 
     /**

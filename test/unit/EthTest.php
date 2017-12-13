@@ -116,6 +116,27 @@ class EthTest extends TestCase
     }
 
     /**
+     * testHashrate
+     * 
+     * @return void
+     */    
+    public function testHashrate()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->hashrate(function ($err, $hashrate) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($hashrate->result)) {
+                $this->assertTrue(is_string($hashrate->result));
+            } else {
+                $this->fail($hashrate->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
