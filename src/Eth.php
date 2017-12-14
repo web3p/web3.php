@@ -11,6 +11,7 @@ use Web3\Validators\TagValidator;
 use Web3\Validators\QuantityValidator;
 use Web3\Validators\BlockHashValidator;
 use Web3\Validators\HexValidator;
+use Web3\Validators\TransactionValidator;
 
 class Eth
 {
@@ -126,6 +127,13 @@ class Eth
                 ], [
                     'validators' => HexValidator::class
                 ],
+            ]
+        ],
+        'eth_sendTransaction' => [
+            'params' => [
+                [
+                    'validators' => TransactionValidator::class
+                ]
             ]
         ],
         'eth_sendRawTransaction' => [
