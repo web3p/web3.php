@@ -12,6 +12,7 @@ use Web3\Validators\QuantityValidator;
 use Web3\Validators\BlockHashValidator;
 use Web3\Validators\HexValidator;
 use Web3\Validators\TransactionValidator;
+use Web3\Validators\BooleanValidator;
 
 class Eth
 {
@@ -159,6 +160,15 @@ class Eth
             'params' => [
                 [
                     'validators' => TransactionValidator::class
+                ]
+            ]
+        ],
+        'eth_getBlockByHash' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ], [
+                    'validators' => BooleanValidator::class
                 ]
             ]
         ]

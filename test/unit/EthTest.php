@@ -532,6 +532,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetBlockByHash
+     * 
+     * @return void
+     */    
+    public function testGetBlockByHash()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->getBlockByHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', false, function ($err, $block) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($block->result)) {
+                $this->assertTrue(is_string($block->result));
+            } else {
+                if (isset($block->error)) {
+                    $this->fail($block->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
