@@ -274,7 +274,8 @@ class Eth
                     'validators' => QuantityValidator::class
                 ]
             ]
-        ]
+        ],
+        'eth_newPendingTransactionFilter' => []
     ];
 
     /**

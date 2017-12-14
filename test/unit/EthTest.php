@@ -876,7 +876,33 @@ class EthTest extends TestCase
 
         $eth->newBlockFilter('0x01', function ($err, $filter) {
             if ($err !== null) {
-                // infura banned us to new filter
+                // infura banned us to new block filter
+                return $this->assertTrue($err->getCode() === 405);
+            }
+            if (isset($filter->result)) {
+                $this->assertTrue(is_string($filter->result));
+            } else {
+                if (isset($filter->error)) {
+                    $this->assertTrue(is_string($filter->error->message));
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
+     * testNewPendingTransactionFilter
+     * 
+     * @return void
+     */    
+    public function testNewPendingTransactionFilter()
+    {
+        $eth = $this->eth;
+
+        $eth->newPendingTransactionFilter(function ($err, $filter) {
+            if ($err !== null) {
+                // infura banned us to new pending transaction filter
                 return $this->assertTrue($err->getCode() === 405);
             }
             if (isset($filter->result)) {
