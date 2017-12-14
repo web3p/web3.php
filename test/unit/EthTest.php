@@ -734,6 +734,32 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetCompilers
+     * 
+     * @return void
+     */    
+    public function testGetCompilers()
+    {
+        $eth = $this->eth;
+
+        $eth->getCompilers(function ($err, $compilers) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($compilers->result)) {
+                $this->assertTrue(is_string($compilers->result));
+            } else {
+                // if (isset($compilers->error)) {
+                    // infura banned getCompilers, $compilers->error->message
+                    $this->assertTrue(true);
+                // } else {
+                //     $this->assertTrue(true);
+                // }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

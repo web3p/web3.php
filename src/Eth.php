@@ -237,6 +237,7 @@ class Eth
                 ]
             ]
         ],
+        'eth_getCompilers' => []
     ];
 
     /**
