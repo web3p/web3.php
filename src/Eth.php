@@ -190,6 +190,15 @@ class Eth
                 ]
             ]
         ],
+        'eth_getTransactionByBlockHashAndIndex' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ], [
+                    'validators' => QuantityValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
