@@ -12,11 +12,11 @@ use Web3\RequestManagers\RequestManager;
 class EthTest extends TestCase
 {
     /**
-     * web3
+     * eth
      * 
-     * @var \Web3\Web3
+     * @var \Web3\Eth
      */
-    protected $web3;
+    protected $eth;
 
     /**
      * setUp
@@ -25,8 +25,9 @@ class EthTest extends TestCase
      */
     public function setUp()
     {
-        $web3 = new Web3('https://rinkeby.infura.io/vuethexplore');
-        $this->web3 = $web3;
+        parent::setUp();
+
+        $this->eth = $this->web3->eth;
     }
 
     /**
@@ -36,7 +37,7 @@ class EthTest extends TestCase
      */    
     public function testProtocolVersion()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->protocolVersion(function ($err, $version) {
             if ($err !== null) {
@@ -57,7 +58,7 @@ class EthTest extends TestCase
      */    
     public function testSyncing()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->syncing(function ($err, $syncing) {
             if ($err !== null) {
@@ -79,7 +80,7 @@ class EthTest extends TestCase
      */    
     public function testCoinbase()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->coinbase(function ($err, $coinbase) {
             if ($err !== null) {
@@ -101,7 +102,7 @@ class EthTest extends TestCase
      */    
     public function testMining()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->mining(function ($err, $mining) {
             if ($err !== null) {
@@ -122,7 +123,7 @@ class EthTest extends TestCase
      */    
     public function testHashrate()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->hashrate(function ($err, $hashrate) {
             if ($err !== null) {
@@ -143,7 +144,7 @@ class EthTest extends TestCase
      */    
     public function testGasPrice()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->gasPrice(function ($err, $gasPrice) {
             if ($err !== null) {
@@ -164,7 +165,7 @@ class EthTest extends TestCase
      */    
     public function testAccounts()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->accounts(function ($err, $accounts) {
             if ($err !== null) {
@@ -185,7 +186,7 @@ class EthTest extends TestCase
      */    
     public function testBlockNumber()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->blockNumber(function ($err, $blockNumber) {
             if ($err !== null) {
@@ -206,7 +207,7 @@ class EthTest extends TestCase
      */    
     public function testGetBalance()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getBalance('0x407d73d8a49eeb85d32cf465507dd71d507100c1', function ($err, $balance) {
             if ($err !== null) {
@@ -227,7 +228,7 @@ class EthTest extends TestCase
      */    
     public function testGetStorageAt()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getStorageAt('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x0', function ($err, $storage) {
             if ($err !== null) {
@@ -248,7 +249,7 @@ class EthTest extends TestCase
      */    
     public function testGetTransactionCount()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getTransactionCount('0x407d73d8a49eeb85d32cf465507dd71d507100c1', function ($err, $transactionCount) {
             if ($err !== null) {
@@ -269,7 +270,7 @@ class EthTest extends TestCase
      */    
     public function testGetBlockTransactionCountByHash()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getBlockTransactionCountByHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', function ($err, $transactionCount) {
             if ($err !== null) {
@@ -294,7 +295,7 @@ class EthTest extends TestCase
      */    
     public function testGetBlockTransactionCountByNumber()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getBlockTransactionCountByNumber('0x0', function ($err, $transactionCount) {
             if ($err !== null) {
@@ -319,7 +320,7 @@ class EthTest extends TestCase
      */    
     public function testGetUncleCountByBlockHash()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getUncleCountByBlockHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', function ($err, $uncleCount) {
             if ($err !== null) {
@@ -344,7 +345,7 @@ class EthTest extends TestCase
      */    
     public function testGetUncleCountByBlockNumber()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getUncleCountByBlockNumber('0x0', function ($err, $uncleCount) {
             if ($err !== null) {
@@ -369,7 +370,7 @@ class EthTest extends TestCase
      */    
     public function testGetCode()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getCode('0x407d73d8a49eeb85d32cf465507dd71d507100c1', function ($err, $code) {
             if ($err !== null) {
@@ -390,7 +391,7 @@ class EthTest extends TestCase
      */    
     public function testSign()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->sign('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0xdeadbeaf', function ($err, $sign) {
             if ($err !== null) {
@@ -412,7 +413,7 @@ class EthTest extends TestCase
      */    
     public function testSendTransaction()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->sendTransaction([
             'from' => "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
@@ -446,7 +447,7 @@ class EthTest extends TestCase
      */    
     public function testSendRawTransaction()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->sendRawTransaction('0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675', function ($err, $transaction) {
             if ($err !== null) {
@@ -472,7 +473,7 @@ class EthTest extends TestCase
      */    
     public function testCall()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->call([
             'from' => "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
@@ -505,7 +506,7 @@ class EthTest extends TestCase
      */    
     public function testEstimateGas()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->estimateGas([
             'from' => "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
@@ -538,7 +539,7 @@ class EthTest extends TestCase
      */    
     public function testGetBlockByHash()
     {
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->getBlockByHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', false, function ($err, $block) {
             if ($err !== null) {
@@ -565,7 +566,7 @@ class EthTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $eth = $this->web3->eth;
+        $eth = $this->eth;
 
         $eth->hello(function ($err, $hello) {
             if ($err !== null) {

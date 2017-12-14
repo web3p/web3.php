@@ -12,13 +12,6 @@ use Web3\RequestManagers\RequestManager;
 class Web3Test extends TestCase
 {
     /**
-     * web3
-     * 
-     * @var \Web3\Web3
-     */
-    protected $web3;
-
-    /**
      * testHex
      * 'hello world'
      * you can check by call pack('H*', $hex)
@@ -41,8 +34,7 @@ class Web3Test extends TestCase
      */
     public function setUp()
     {
-        $web3 = new Web3('https://rinkeby.infura.io/vuethexplore');
-        $this->web3 = $web3;
+        parent::setUp();
     }
 
     /**
