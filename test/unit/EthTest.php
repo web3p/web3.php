@@ -944,6 +944,32 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetFilterChanges
+     * 
+     * @return void
+     */    
+    public function testGetFilterChanges()
+    {
+        $eth = $this->eth;
+
+        $eth->getFilterChanges('0x01', function ($err, $filter) {
+            if ($err !== null) {
+                // infura banned us to get filter changes
+                return $this->assertTrue($err->getCode() === 405);
+            }
+            if (isset($filter->result)) {
+                $this->assertTrue(is_string($filter->result));
+            } else {
+                if (isset($filter->error)) {
+                    $this->assertTrue(is_string($filter->error->message));
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

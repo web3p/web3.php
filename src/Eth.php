@@ -283,6 +283,13 @@ class Eth
                 ]
             ]
         ],
+        'eth_getFilterChanges' => [
+            'params' => [
+                [
+                    'validators' => QuantityValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
