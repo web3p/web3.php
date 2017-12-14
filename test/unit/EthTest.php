@@ -810,6 +810,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testCompileSerpent
+     * 
+     * @return void
+     */    
+    public function testCompileSerpent()
+    {
+        $eth = $this->eth;
+
+        $eth->compileSerpent('\/* some serpent *\/', function ($err, $compiled) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($compiled->result)) {
+                $this->assertTrue(is_string($compiled->result));
+            } else {
+                // if (isset($compilers->error)) {
+                    $this->assertTrue(true);
+                // } else {
+                //     $this->assertTrue(true);
+                // }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
