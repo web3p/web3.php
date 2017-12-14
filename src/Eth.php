@@ -210,6 +210,13 @@ class Eth
                 ]
             ]
         ],
+        'eth_getTransactionReceipt' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
