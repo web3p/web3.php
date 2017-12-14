@@ -15,6 +15,7 @@ use Web3\Validators\TransactionValidator;
 use Web3\Validators\BooleanValidator;
 use Web3\Validators\StringValidator;
 use Web3\Validators\FilterValidator;
+use Web3\Validators\NonceValidator;
 
 class Eth
 {
@@ -304,7 +305,18 @@ class Eth
                 ]
             ]
         ],
-        'eth_getWork' => []
+        'eth_getWork' => [],
+        'eth_submitWork' => [
+            'params' => [
+                [
+                    'validators' => NonceValidator::class
+                ], [
+                    'validators' => BlockHashValidator::class
+                ], [
+                    'validators' => BlockHashValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
