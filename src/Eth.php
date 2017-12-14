@@ -297,6 +297,13 @@ class Eth
                 ]
             ]
         ],
+        'eth_getLogs' => [
+            'params' => [
+                [
+                    'validators' => FilterValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**

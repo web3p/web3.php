@@ -996,6 +996,36 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetLogs
+     * 
+     * @return void
+     */    
+    public function testGetLogs()
+    {
+        $eth = $this->eth;
+
+        $eth->getLogs([
+            'fromBlock' => '0x1',
+            'toBlock' => '0x2',
+            'address' => '0x8888f1f195afa192cfee860698584c030f4c9db1',
+            'topics' => ['0x000000000000000000000000a94f5374fce5edbc8e2a8697c15331677e6ebf0b', null, ['0x000000000000000000000000a94f5374fce5edbc8e2a8697c15331677e6ebf0b', '0x0000000000000000000000000aff3454fce5edbc8cca8697c15331677e6ebccc']]
+        ], function ($err, $logs) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($logs->result)) {
+                $this->assertTrue(is_array($logs->result));
+            } else {
+                if (isset($logs->error)) {
+                    $this->assertTrue(is_string($logs->error->message));
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
