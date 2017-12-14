@@ -155,6 +155,13 @@ class Eth
                 ]
             ]
         ],
+        'eth_estimateGas' => [
+            'params' => [
+                [
+                    'validators' => TransactionValidator::class
+                ]
+            ]
+        ]
     ];
 
     /**
