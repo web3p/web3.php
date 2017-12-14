@@ -245,6 +245,13 @@ class Eth
                     'validators' => StringValidator::class
                 ]
             ]
+        ],
+        'eth_compileLLL' => [
+            'params' => [
+                [
+                    'validators' => StringValidator::class
+                ]
+            ]
         ]
     ];
 

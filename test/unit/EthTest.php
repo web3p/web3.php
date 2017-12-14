@@ -785,6 +785,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testCompileLLL
+     * 
+     * @return void
+     */    
+    public function testCompileLLL()
+    {
+        $eth = $this->eth;
+
+        $eth->compileLLL('(returnlll (suicide (caller)))', function ($err, $compiled) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($compiled->result)) {
+                $this->assertTrue(is_string($compiled->result));
+            } else {
+                // if (isset($compilers->error)) {
+                    $this->assertTrue(true);
+                // } else {
+                //     $this->assertTrue(true);
+                // }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
