@@ -1081,6 +1081,34 @@ class EthTest extends TestCase
     }
 
     /**
+     * testSubmitHashrate
+     * 
+     * @return void
+     */    
+    public function testSubmitHashrate()
+    {
+        $eth = $this->eth;
+
+        $eth->submitHashrate(
+            '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+            '0xD1FE5700000000000000000000000000D1FE5700000000000000000000000000'
+        , function ($err, $work) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($work->result)) {
+                $this->assertTrue(is_bool($work->result));
+            } else {
+                if (isset($work->error)) {
+                    $this->assertTrue(is_string($work->error->message));
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

@@ -317,6 +317,15 @@ class Eth
                 ]
             ]
         ],
+        'eth_submitHashrate' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ], [
+                    'validators' => BlockHashValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
