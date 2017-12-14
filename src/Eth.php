@@ -226,6 +226,17 @@ class Eth
                 ]
             ]
         ],
+        'eth_getUncleByBlockNumberAndIndex' => [
+            'params' => [
+                [
+                    'validators' => [
+                        QuantityValidator::class, TagValidator::class
+                    ]
+                ], [
+                    'validators' => QuantityValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**

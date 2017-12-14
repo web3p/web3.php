@@ -709,6 +709,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetUncleByBlockNumberAndIndex
+     * 
+     * @return void
+     */    
+    public function testGetUncleByBlockNumberAndIndex()
+    {
+        $eth = $this->eth;
+
+        $eth->getUncleByBlockNumberAndIndex('0xe8', '0x0', function ($err, $uncle) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($uncle->result)) {
+                $this->assertTrue(is_string($uncle->result));
+            } else {
+                if (isset($uncle->error)) {
+                    $this->fail($uncle->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
