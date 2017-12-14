@@ -1026,6 +1026,32 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetWork
+     * 
+     * @return void
+     */    
+    public function testGetWork()
+    {
+        $eth = $this->eth;
+
+        $eth->getWork(function ($err, $work) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($work->result)) {
+                $this->assertTrue(is_array($work->result));
+            } else {
+                if (isset($work->error)) {
+                    // we cannot get work if coinbase isnot set.
+                    $this->assertTrue(is_string($work->error->message));
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

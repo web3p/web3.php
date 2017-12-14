@@ -304,6 +304,7 @@ class Eth
                 ]
             ]
         ],
+        'eth_getWork' => []
     ];
 
     /**
