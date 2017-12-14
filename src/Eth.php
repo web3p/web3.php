@@ -217,6 +217,15 @@ class Eth
                 ]
             ]
         ],
+        'eth_getUncleByBlockHashAndIndex' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ], [
+                    'validators' => QuantityValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**

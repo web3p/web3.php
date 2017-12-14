@@ -684,6 +684,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetUncleByBlockHashAndIndex
+     * 
+     * @return void
+     */    
+    public function testGetUncleByBlockHashAndIndex()
+    {
+        $eth = $this->eth;
+
+        $eth->getUncleByBlockHashAndIndex('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', '0x0', function ($err, $uncle) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($uncle->result)) {
+                $this->assertTrue(is_string($uncle->result));
+            } else {
+                if (isset($uncle->error)) {
+                    $this->fail($uncle->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
