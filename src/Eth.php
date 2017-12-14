@@ -13,6 +13,7 @@ use Web3\Validators\BlockHashValidator;
 use Web3\Validators\HexValidator;
 use Web3\Validators\TransactionValidator;
 use Web3\Validators\BooleanValidator;
+use Web3\Validators\StringValidator;
 
 class Eth
 {
@@ -237,7 +238,14 @@ class Eth
                 ]
             ]
         ],
-        'eth_getCompilers' => []
+        'eth_getCompilers' => [],
+        'eth_compileSolidity' => [
+            'params' => [
+                [
+                    'validators' => StringValidator::class
+                ]
+            ]
+        ]
     ];
 
     /**

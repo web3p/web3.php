@@ -760,6 +760,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testCompileSolidity
+     * 
+     * @return void
+     */    
+    public function testCompileSolidity()
+    {
+        $eth = $this->eth;
+
+        $eth->compileSolidity('contract test { function multiply(uint a) returns(uint d) {   return a * 7;   } }', function ($err, $compiled) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($compiled->result)) {
+                $this->assertTrue(is_string($compiled->result));
+            } else {
+                // if (isset($compilers->error)) {
+                    $this->assertTrue(true);
+                // } else {
+                //     $this->assertTrue(true);
+                // }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
