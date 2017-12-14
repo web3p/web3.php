@@ -143,6 +143,18 @@ class Eth
                 ]
             ]
         ],
+        'eth_call' => [
+            'params' => [
+                [
+                    'validators' => TransactionValidator::class
+                ], [
+                    'default' => 'latest',
+                    'validators' => [
+                        QuantityValidator::class, TagValidator::class
+                    ]
+                ]
+            ]
+        ],
     ];
 
     /**

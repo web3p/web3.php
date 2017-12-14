@@ -466,6 +466,40 @@ class EthTest extends TestCase
     }
 
     /**
+     * testCall
+     * 
+     * @return void
+     */    
+    public function testCall()
+    {
+        $eth = $this->web3->eth;
+
+        $eth->call([
+            'from' => "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
+            'to' => "0xd46e8dd67c5d32be8058bb8eb970870f07244567",
+            'gas' => "0x76c0",
+            'gasPrice' => "0x9184e72a000",
+            'value' => "0x9184e72a",
+            'data' => "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675"
+        ], function ($err, $transaction) {
+            if ($err !== null) {
+                // infura banned us to send transaction
+                return $this->assertTrue($err->getCode() === 405);
+            }
+            if (isset($transaction->result)) {
+                $this->assertTrue(is_string($transaction->result));
+            } else {
+                if (isset($transaction->error)) {
+                    // it's just test hex.
+                    $this->assertTrue(is_string($transaction->error->message));
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
