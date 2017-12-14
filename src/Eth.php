@@ -267,6 +267,13 @@ class Eth
                     'validators' => FilterValidator::class
                 ]
             ]
+        ],
+        'eth_newBlockFilter' => [
+            'params' => [
+                [
+                    'validators' => QuantityValidator::class
+                ]
+            ]
         ]
     ];
 
