@@ -275,7 +275,14 @@ class Eth
                 ]
             ]
         ],
-        'eth_newPendingTransactionFilter' => []
+        'eth_newPendingTransactionFilter' => [],
+        'eth_uninstallFilter' => [
+            'params' => [
+                [
+                    'validators' => QuantityValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
