@@ -199,6 +199,17 @@ class Eth
                 ]
             ]
         ],
+        'eth_getTransactionByBlockNumberAndIndex' => [
+            'params' => [
+                [
+                    'validators' => [
+                        QuantityValidator::class, TagValidator::class
+                    ]
+                ], [
+                    'validators' => QuantityValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**

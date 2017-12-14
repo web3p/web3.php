@@ -634,6 +634,31 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetTransactionByBlockNumberAndIndex
+     * 
+     * @return void
+     */    
+    public function testGetTransactionByBlockNumberAndIndex()
+    {
+        $eth = $this->eth;
+
+        $eth->getTransactionByBlockNumberAndIndex('0xe8', '0x0', function ($err, $transaction) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($transaction->result)) {
+                $this->assertTrue(is_string($transaction->result));
+            } else {
+                if (isset($transaction->error)) {
+                    $this->fail($transaction->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
