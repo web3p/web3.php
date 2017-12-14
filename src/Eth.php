@@ -14,6 +14,7 @@ use Web3\Validators\HexValidator;
 use Web3\Validators\TransactionValidator;
 use Web3\Validators\BooleanValidator;
 use Web3\Validators\StringValidator;
+use Web3\Validators\FilterValidator;
 
 class Eth
 {
@@ -257,6 +258,13 @@ class Eth
             'params' => [
                 [
                     'validators' => StringValidator::class
+                ]
+            ]
+        ],
+        'eth_newFilter' => [
+            'params' => [
+                [
+                    'validators' => FilterValidator::class
                 ]
             ]
         ]
