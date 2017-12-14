@@ -182,7 +182,14 @@ class Eth
                     'validators' => BooleanValidator::class
                 ]
             ]
-        ]
+        ],
+        'eth_getTransactionByHash' => [
+            'params' => [
+                [
+                    'validators' => BlockHashValidator::class
+                ]
+            ]
+        ],
     ];
 
     /**
