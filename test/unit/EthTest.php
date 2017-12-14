@@ -558,6 +558,32 @@ class EthTest extends TestCase
     }
 
     /**
+     * testGetBlockByNumber
+     * 
+     * @return void
+     */    
+    public function testGetBlockByNumber()
+    {
+        $eth = $this->eth;
+
+        $eth->getBlockByNumber('latest', false, function ($err, $block) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($block->result)) {
+                // weired behavior, see https://github.com/sc0Vu/web3.php/issues/16
+                $this->assertTrue($block->result !== null);
+            } else {
+                if (isset($block->error)) {
+                    $this->fail($block->error->message);
+                } else {
+                    $this->assertTrue(true);
+                }
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

@@ -171,6 +171,17 @@ class Eth
                     'validators' => BooleanValidator::class
                 ]
             ]
+        ],
+        'eth_getBlockByNumber' => [
+            'params' => [
+                [
+                    'validators' => [
+                        QuantityValidator::class, TagValidator::class
+                    ]
+                ], [
+                    'validators' => BooleanValidator::class
+                ]
+            ]
         ]
     ];
 
