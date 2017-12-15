@@ -67,7 +67,7 @@ class HttpRequestManager extends RequestManager implements IRequestManager
             $json = json_decode($res->getBody());
 
             if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new \InvalidArgumentException('json_decode error: ' . json_last_error_msg());
+                return call_user_func($callback, new \InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
             }
 
             call_user_func($callback, null, $json);
