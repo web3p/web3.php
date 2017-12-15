@@ -21,14 +21,14 @@ Or you can add this line in composer.json
 
 ### New instance
 ```
-use Web3/Web3;
+use Web3\Web3;
 
 $web3 = new Web3('http://localhost:8545');
 ```
 
 ### Using provider
 ```
-use Web3/Web3;
+use Web3\Web3;
 use Web3\Providers\HttpProvider;
 
 $web3 = new Web3(new HttpProvider('http://localhost:8545'));
@@ -65,7 +65,7 @@ $web3->execute(function ($err, $data) {
 
 ### Eth
 ```
-use Web3/Web3;
+use Web3\Web3;
 
 $web3 = new Web3('http://localhost:8545');
 $eth = $web3->eth;
@@ -74,7 +74,7 @@ $eth = $web3->eth;
 Or
 
 ```
-use Web3/Eth;
+use Web3\Eth;
 
 $eth = new Eth('http://localhost:8545');
 ```
