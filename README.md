@@ -6,21 +6,36 @@
 A php interface for interacting with the Ethereum blockchain and ecosystem.
 
 # Install
+```
+composer require sc0vu/web3.php dev-master
+```
+
+Or you can add this line in composer.json
 
 ```
-composer sc0vu/web3.php
+"sc0vu/web3.php: "dev-master"
 ```
 
 
 # Usage
 
-### Web3
-
-###### simple
+### New instance
 ```
 use Web3/Web3;
 
 $web3 = new Web3('http://localhost:8545');
+```
+
+### Using provider
+```
+use Web3/Web3;
+use Web3\Providers\HttpProvider;
+
+$web3 = new Web3(new HttpProvider('http://localhost:8545'));
+```
+
+### You can use callback to each rpc call:
+```
 $web3->clientVersion(function ($err, $version) {
     if ($err !== null) {
         // do something
@@ -34,11 +49,8 @@ $web3->clientVersion(function ($err, $version) {
 });
 ```
 
-###### batch
+### batch
 ```
-use Web3/Web3;
-
-$web3 = new Web3('http://localhost:8545');
 $web3->batch(true);
 $web3->clientVersion();
 $web3->hash('0x1234');
@@ -52,8 +64,24 @@ $web3->execute(function ($err, $data) {
 ```
 
 ### Eth
+```
+use Web3/Web3;
 
-Todo
+$web3 = new Web3('http://localhost:8545');
+$eth = $web3->eth;
+```
+
+Or
+
+```
+use Web3/Eth;
+
+$eth = new Eth('http://localhost:8545');
+```
+
+# API
+
+Todo.
 
 # License
 MIT
