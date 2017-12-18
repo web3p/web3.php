@@ -48,6 +48,27 @@ class NetTest extends TestCase
     }
 
     /**
+     * testPeerCount
+     * 
+     * @return void
+     */    
+    public function testPeerCount()
+    {
+        $net = $this->net;
+
+        $net->peerCount(function ($err, $count) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($count->result)) {
+                $this->assertTrue(is_string($count->result));
+            } else {
+                $this->fail($count->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

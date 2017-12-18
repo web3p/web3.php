@@ -30,6 +30,7 @@ class Net
      */
     private $methods = [
         'net_version' => [],
+        'net_peerCount' => [],
     ];
 
     /**
