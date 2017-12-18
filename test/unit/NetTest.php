@@ -69,6 +69,27 @@ class NetTest extends TestCase
     }
 
     /**
+     * testListening
+     * 
+     * @return void
+     */    
+    public function testListening()
+    {
+        $net = $this->net;
+
+        $net->listening(function ($err, $net) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($net->result)) {
+                $this->assertTrue(is_bool($net->result));
+            } else {
+                $this->fail($net->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
