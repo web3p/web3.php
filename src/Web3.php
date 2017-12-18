@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * This file is part of web3.php package.
+ * 
+ * @author Peter Lai <alk03073135@gmail.com>
+ * @license MIT
+ */
+
 namespace Web3;
 
 use Web3\Eth;
