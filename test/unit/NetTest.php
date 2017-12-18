@@ -90,6 +90,28 @@ class NetTest extends TestCase
     }
 
     /**
+     * testBatch
+     * 
+     * @return void
+     */
+    public function testBatch()
+    {
+        $net = $this->net;
+
+        $net->batch(true);
+        $net->version();
+        $net->listening();
+
+        $net->provider->execute(function ($err, $data) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue(is_string($data[0]->result));
+            $this->assertTrue(is_bool($data[1]->result));
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
