@@ -483,4 +483,17 @@ class Eth
         }
         return false;
     }
+
+    /**
+     * batch
+     * 
+     * @param bool $status
+     * @return void
+     */
+    public function batch($status)
+    {
+        $status = is_bool($status);
+
+        $this->provider->batch($status);
+    }
 }
