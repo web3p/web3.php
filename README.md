@@ -49,20 +49,6 @@ $web3->clientVersion(function ($err, $version) {
 });
 ```
 
-### batch
-```
-$web3->batch(true);
-$web3->clientVersion();
-$web3->hash('0x1234');
-$web3->execute(function ($err, $data) {
-    if ($err !== null) {
-        // do something
-        return;
-    }
-    // do something
-})
-```
-
 ### Eth
 ```
 use Web3\Web3;
@@ -77,6 +63,71 @@ Or
 use Web3\Eth;
 
 $eth = new Eth('http://localhost:8545');
+```
+
+### Net
+```
+use Web3\Web3;
+
+$web3 = new Web3('http://localhost:8545');
+$net = $web3->net;
+```
+
+Or
+
+```
+use Web3\Net;
+
+$net = new Net('http://localhost:8545');
+```
+
+### Batch
+
+web3
+
+```
+$web3->batch(true);
+$web3->clientVersion();
+$web3->hash('0x1234');
+$web3->execute(function ($err, $data) {
+    if ($err !== null) {
+        // do something
+        return;
+    }
+    // do something
+});
+```
+
+eth
+
+```
+$eth->batch(true);
+$eth->protocolVersion();
+$eth->syncing();
+
+$eth->provider->execute(function ($err, $data) {
+    if ($err !== null) {
+        // do something
+        return;
+    }
+    // do something
+});
+```
+
+net
+
+```
+$net->batch(true);
+$net->version();
+$net->listening();
+
+$net->provider->execute(function ($err, $data) {
+    if ($err !== null) {
+        // do something
+        return;
+    }
+    // do something
+});
 ```
 
 # API
