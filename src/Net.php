@@ -9,15 +9,12 @@
 
 namespace Web3;
 
-use Web3\Eth;
-use Web3\Net;
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
-use Web3\Validators\HexValidator;
 
-class Web3
+class Net
 {
     /**
      * provider
@@ -27,33 +24,12 @@ class Web3
     protected $provider;
 
     /**
-     * eth
-     * 
-     * @var \Web3\Eth
-     */
-    protected $eth;
-
-    /**
-     * net
-     * 
-     * @var \Web3\Net
-     */
-    protected $net;
-
-    /**
      * methods
      * 
      * @var array
      */
     private $methods = [
-        'web3_clientVersion' => [],
-        'web3_sha3' => [
-            'params' => [
-                [
-                    'validators' => HexValidator::class
-                ]
-            ]
-        ]
+        'net_version' => [],
     ];
 
     /**
@@ -91,7 +67,7 @@ class Web3
 
         $class = explode('\\', get_class());
 
-        if (strtolower($class[1]) === 'web3' && preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
+        if (strtolower($class[1]) === 'net' && preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
             $method = strtolower($class[1]) . '_' . $name;
 
             if (!array_key_exists($method, $this->methods)) {
@@ -203,34 +179,6 @@ class Web3
             return true;
         }
         return false;
-    }
-
-    /**
-     * getEth
-     * 
-     * @return void
-     */
-    public function getEth()
-    {
-        if (!isset($this->eth)) {
-            $eth = new Eth($this->provider);
-            $this->eth = $eth;
-        }
-        return $this->eth;
-    }
-
-    /**
-     * getNet
-     * 
-     * @return void
-     */
-    public function getNet()
-    {
-        if (!isset($this->net)) {
-            $net = new Net($this->provider);
-            $this->net = $net;
-        }
-        return $this->net;
     }
 
     /**

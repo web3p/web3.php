@@ -6,6 +6,7 @@ use RuntimeException;
 use Test\TestCase;
 use Web3\Web3;
 use Web3\Eth;
+use Web3\Net;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 
@@ -49,6 +50,7 @@ class Web3Test extends TestCase
         $this->assertTrue($web3->provider instanceof HttpProvider);
         $this->assertTrue($web3->provider->requestManager instanceof RequestManager);
         $this->assertTrue($web3->eth instanceof Eth);
+        $this->assertTrue($web3->net instanceof Net);
     }
 
     /**
