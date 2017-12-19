@@ -30,8 +30,9 @@ $web3 = new Web3('http://localhost:8545');
 ```
 use Web3\Web3;
 use Web3\Providers\HttpProvider;
+use Web3\RequestManagers\HttpRequestManager;
 
-$web3 = new Web3(new HttpProvider('http://localhost:8545'));
+$web3 = new Web3(new HttpProvider(new HttpRequestManager('http://localhost:8545')));
 ```
 
 ### You can use callback to each rpc call:
