@@ -85,7 +85,7 @@ class PersonalApiTest extends TestCase
                 return $this->assertTrue($err->getCode() === 405);
             }
             if (isset($account->result)) {
-                $this->assertTrue(is_array($account->result));
+                $this->assertTrue(is_bool($account->result));
             } else {
                 $this->fail($account->error->message);
             }
