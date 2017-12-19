@@ -63,7 +63,7 @@ class PersonalApiTest extends TestCase
                 return $this->assertTrue($err->getCode() === 405);
             }
             if (isset($account->result)) {
-                $this->assertTrue(is_array($account->result));
+                $this->assertTrue(is_string($account->result));
             } else {
                 $this->fail($account->error->message);
             }
@@ -145,6 +145,29 @@ class PersonalApiTest extends TestCase
                 $this->assertTrue(true);
             } else {
                 $this->fail($hello->error->message);
+            }
+        });
+    }
+
+    /**
+     * testWrongParam
+     * 
+     * @return void
+     */
+    public function testWrongParam()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $personal = $this->personal;
+
+        $personal->newAccount(123456, function ($err, $account) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($account->result)) {
+                $this->assertTrue(is_string($account->result));
+            } else {
+                $this->fail($account->error->message);
             }
         });
     }
