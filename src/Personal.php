@@ -18,6 +18,7 @@ use Web3\RequestManagers\HttpRequestManager;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\StringValidator;
 use Web3\Validators\QuantityValidator;
+use Web3\Validators\TransactionValidator;
 
 class Personal
 {
@@ -54,6 +55,15 @@ class Personal
                 ]
             ]
         ],
+        'personal_sendTransaction' => [
+            'params' => [
+                [
+                    'validators' => TransactionValidator::class
+                ], [
+                    'validators' => StringValidator::class
+                ]
+            ]
+        ]
     ];
 
     /**
