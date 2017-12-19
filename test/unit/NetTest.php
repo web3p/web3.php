@@ -4,6 +4,8 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
+use Web3\Providers\HttpProvider;
+use Web3\RequestManagers\RequestManager;
 
 class NetTest extends TestCase
 {
@@ -27,110 +29,15 @@ class NetTest extends TestCase
     }
 
     /**
-     * testVersion
-     * 
-     * @return void
-     */    
-    public function testVersion()
-    {
-        $net = $this->net;
-
-        $net->version(function ($err, $version) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            if (isset($version->result)) {
-                $this->assertTrue(is_string($version->result));
-            } else {
-                $this->fail($version->error->message);
-            }
-        });
-    }
-
-    /**
-     * testPeerCount
-     * 
-     * @return void
-     */    
-    public function testPeerCount()
-    {
-        $net = $this->net;
-
-        $net->peerCount(function ($err, $count) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            if (isset($count->result)) {
-                $this->assertTrue(is_string($count->result));
-            } else {
-                $this->fail($count->error->message);
-            }
-        });
-    }
-
-    /**
-     * testListening
-     * 
-     * @return void
-     */    
-    public function testListening()
-    {
-        $net = $this->net;
-
-        $net->listening(function ($err, $net) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            if (isset($net->result)) {
-                $this->assertTrue(is_bool($net->result));
-            } else {
-                $this->fail($net->error->message);
-            }
-        });
-    }
-
-    /**
-     * testBatch
+     * testInstance
      * 
      * @return void
      */
-    public function testBatch()
+    public function testInstance()
     {
         $net = $this->net;
 
-        $net->batch(true);
-        $net->version();
-        $net->listening();
-
-        $net->provider->execute(function ($err, $data) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_string($data[0]->result));
-            $this->assertTrue(is_bool($data[1]->result));
-        });
-    }
-
-    /**
-     * testUnallowedMethod
-     * 
-     * @return void
-     */
-    public function testUnallowedMethod()
-    {
-        $this->expectException(RuntimeException::class);
-
-        $net = $this->net;
-
-        $net->hello(function ($err, $hello) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            if (isset($hello->result)) {
-                $this->assertTrue(true);
-            } else {
-                $this->fail($hello->error->message);
-            }
-        });
+        $this->assertTrue($net->provider instanceof HttpProvider);
+        $this->assertTrue($net->provider->requestManager instanceof RequestManager);
     }
 }
