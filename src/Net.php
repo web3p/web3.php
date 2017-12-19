@@ -64,7 +64,7 @@ class Net
     public function __call($name, $arguments)
     {
         if (empty($this->provider)) {
-            return;
+            throw new \RuntimeException('Please set provider first.');
         }
 
         $class = explode('\\', get_class());
