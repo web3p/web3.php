@@ -10,7 +10,7 @@ use Web3\Net;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 
-class Web3Test extends TestCase
+class Web3BatchTest extends TestCase
 {
     /**
      * testHex
@@ -39,40 +39,24 @@ class Web3Test extends TestCase
     }
 
     /**
-     * testInstance
+     * testBatch
      * 
      * @return void
      */
-    public function testInstance()
+    public function testBatch()
     {
         $web3 = $this->web3;
 
-        $this->assertTrue($web3->provider instanceof HttpProvider);
-        $this->assertTrue($web3->provider->requestManager instanceof RequestManager);
-        $this->assertTrue($web3->eth instanceof Eth);
-        $this->assertTrue($web3->net instanceof Net);
-    }
+        $web3->batch(true);
+        $web3->clientVersion();
+        $web3->sha3($this->testHex);
 
-    /**
-     * testUnallowedMethod
-     * 
-     * @return void
-     */
-    public function testUnallowedMethod()
-    {
-        $this->expectException(RuntimeException::class);
-
-        $web3 = $this->web3;
-
-        $web3->hello(function ($err, $hello) {
+        $web3->provider->execute(function ($err, $data) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($hello->result)) {
-                $this->assertTrue(true);
-            } else {
-                $this->fail($hello->error->message);
-            }
+            $this->assertTrue(is_string($data[0]->result));
+            $this->assertEquals($data[1]->result, $this->testHash);
         });
     }
 }
