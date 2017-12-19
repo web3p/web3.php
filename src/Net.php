@@ -45,9 +45,9 @@ class Net
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
             if (preg_match('/^https?:\/\//', $provider) === 1) {
-                $requestManeger = new HttpRequestManager($provider);
+                $requestManager = new HttpRequestManager($provider);
 
-                $this->provider = new HttpProvider($requestManeger);
+                $this->provider = new HttpProvider($requestManager);
             }
         } else if ($provider instanceof Provider) {
             $this->provider = $provider;
