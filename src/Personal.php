@@ -15,7 +15,9 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
+use Web3\Validators\AddressValidator;
 use Web3\Validators\StringValidator;
+use Web3\Validators\QuantityValidator;
 
 class Personal
 {
@@ -37,6 +39,18 @@ class Personal
             'params' => [
                 [
                     'validators' => StringValidator::class
+                ]
+            ]
+        ],
+        'personal_unlockAccount' => [
+            'params' => [
+                [
+                    'validators' => AddressValidator::class
+                ], [
+                    'validators' => StringValidator::class
+                ], [
+                    'default' => 300,
+                    'validators' => QuantityValidator::class
                 ]
             ]
         ],

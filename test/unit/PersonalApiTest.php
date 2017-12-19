@@ -71,6 +71,28 @@ class PersonalApiTest extends TestCase
     }
 
     /**
+     * testUnlockAccount
+     * 
+     * @return void
+     */
+    public function testUnlockAccount()
+    {
+        $personal = $this->personal;
+
+        $personal->unlockAccount('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '123456', function ($err, $account) {
+            if ($err !== null) {
+                // infura banned us to use unlock account
+                return $this->assertTrue($err->getCode() === 405);
+            }
+            if (isset($account->result)) {
+                $this->assertTrue(is_array($account->result));
+            } else {
+                $this->fail($account->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
