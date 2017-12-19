@@ -49,6 +49,28 @@ class PersonalApiTest extends TestCase
     }
 
     /**
+     * testNewAccount
+     * 
+     * @return void
+     */
+    public function testNewAccount()
+    {
+        $personal = $this->personal;
+
+        $personal->newAccount('123456', function ($err, $account) {
+            if ($err !== null) {
+                // infura banned us to use new account
+                return $this->assertTrue($err->getCode() === 405);
+            }
+            if (isset($account->result)) {
+                $this->assertTrue(is_array($account->result));
+            } else {
+                $this->fail($account->error->message);
+            }
+        });
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
