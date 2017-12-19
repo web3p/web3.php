@@ -6,6 +6,7 @@ use RuntimeException;
 use Test\TestCase;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
+use Web3\RequestManagers\HttpRequestManager;
 
 class EthTest extends TestCase
 {
@@ -39,5 +40,19 @@ class EthTest extends TestCase
 
         $this->assertTrue($eth->provider instanceof HttpProvider);
         $this->assertTrue($eth->provider->requestManager instanceof RequestManager);
+    }
+
+    /**
+     * testSetProvider
+     * 
+     * @return void
+     */
+    public function testSetProvider()
+    {
+        $eth = $this->eth;
+        $requestManager = new HttpRequestManager('http://localhost:8545');
+        $eth->provider = new HttpProvider($requestManager);
+
+        $this->assertEquals($eth->provider->requestManager->host, 'http://localhost:8545');
     }
 }
