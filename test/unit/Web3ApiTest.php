@@ -76,6 +76,29 @@ class Web3ApiTest extends TestCase
     }
 
     /**
+     * testUnallowedMethod
+     * 
+     * @return void
+     */
+    public function testUnallowedMethod()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $web3 = $this->web3;
+
+        $web3->hello(function ($err, $hello) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($hello->result)) {
+                $this->assertTrue(true);
+            } else {
+                $this->fail($hello->error->message);
+            }
+        });
+    }
+
+    /**
      * testWrongParam
      * 
      * @return void
