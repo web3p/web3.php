@@ -62,9 +62,11 @@ class Utils
         if (!is_string($value)) {
             throw new InvalidArgumentException('The value to toHex function must be string.');
         }
-        $hexString = str_replace('0x', '', $value);
-
-        return pack('H*', $hexString);
+        if (strpos($value, '0x') === 0) {
+            $count = 1;
+            $value = str_replace('0x', '', $value, $count);
+        }
+        return pack('H*', $value);
     }
 
     /**
@@ -74,12 +76,12 @@ class Utils
      * @param string $value
      * @return string
      */
-    public function sha3($value)
+    public static function sha3($value)
     {
         if (!is_string($value)) {
             throw new InvalidArgumentException('The value to sha3 function must be string.');
         }
-        if (preg_match('/^0x/', $value) > 0) {
+        if (strpos($value, '0x') === 0) {
             $value = self::hexToBin($value);
         }
         $hash = Keccak::hash($value, 256);
