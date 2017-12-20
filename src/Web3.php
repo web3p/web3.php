@@ -14,6 +14,7 @@ namespace Web3;
 use Web3\Eth;
 use Web3\Net;
 use Web3\Personal;
+use Web3\Utils;
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
@@ -49,6 +50,13 @@ class Web3
      * @var \Web3\Personal
      */
     protected $personal;
+
+    /**
+     * utils
+     * 
+     * @var \Web3\Utils
+     */
+    protected $utils;
 
     /**
      * methods
@@ -255,6 +263,20 @@ class Web3
             $this->personal = $personal;
         }
         return $this->personal;
+    }
+
+    /**
+     * getUtils
+     * 
+     * @return \Web3\Utils
+     */
+    public function getUtils()
+    {
+        if (!isset($this->utils)) {
+            $utils = new Utils;
+            $this->utils = $utils;
+        }
+        return $this->utils;
     }
 
     /**

@@ -8,6 +8,7 @@ use Web3\Web3;
 use Web3\Eth;
 use Web3\Net;
 use Web3\Personal;
+use Web3\Utils;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
@@ -54,6 +55,7 @@ class Web3Test extends TestCase
         $this->assertTrue($web3->eth instanceof Eth);
         $this->assertTrue($web3->net instanceof Net);
         $this->assertTrue($web3->personal instanceof Personal);
+        $this->assertTrue($web3->utils instanceof Utils);
     }
 
     /**
