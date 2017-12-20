@@ -62,4 +62,20 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($str, '七彩神仙鱼');
     }
+
+    /**
+     * testSha3
+     * 
+     * @return void
+     */
+    public function testSha3()
+    {
+        $str = Utils::sha3('');
+
+        $this->assertNull($str);
+
+        $str = Utils::sha3('baz(uint32,bool)');
+
+        $this->assertEquals(mb_substr($str, 0, 10), '0xcdcd77c0');
+    }
 }

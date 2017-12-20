@@ -11,7 +11,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "PHP": "^7.1",
+        "kornrunner/keccak": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0"
