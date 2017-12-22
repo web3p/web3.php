@@ -70,6 +70,20 @@ class Utils
     }
 
     /**
+     * isZeroPrefixed
+     * 
+     * @param string
+     * @return bool
+     */
+    public static function isZeroPrefixed($value)
+    {
+        if (!is_string($value)) {
+            throw new InvalidArgumentException('The value to zeroPrefixed function must be string.');
+        }
+        return (strpos($value, '0x') === 0);
+    }
+
+    /**
      * sha3
      * keccak256
      * 
@@ -90,5 +104,5 @@ class Utils
             return null;
         }
         return '0x' . $hash;
-    }
+    }    
 }

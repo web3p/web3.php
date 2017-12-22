@@ -64,6 +64,22 @@ class UtilsTest extends TestCase
     }
 
     /**
+     * testIsZeroPrefixed
+     * 
+     * @return void
+     */
+    public function testIsZeroPrefixed()
+    {
+        $isPrefixed = Utils::isZeroPrefixed($this->testHex);
+
+        $this->assertEquals($isPrefixed, false);
+
+        $isPrefixed = Utils::isZeroPrefixed('0x' . $this->testHex);
+
+        $this->assertEquals($isPrefixed, true);
+    }
+
+    /**
      * testSha3
      * 
      * @return void
