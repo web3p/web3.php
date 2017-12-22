@@ -84,6 +84,21 @@ class Utils
     }
 
     /**
+     * stripZero
+     * 
+     * @param string $value
+     * @return string
+     */
+    public static function stripZero($value)
+    {
+        if (self::isZeroPrefixed($value)) {
+            $count = 1;
+            return str_replace('0x', '', $value, $count);
+        }
+        return $value;
+    }
+
+    /**
      * sha3
      * keccak256
      * 
