@@ -163,7 +163,7 @@ class Utils
      * 
      * @param BigNumber|string|int $number
      * @param string $unit
-     * @return string
+     * @return \phpseclib\Math\BigInteger
      */
     public static function toWei($number, $unit)
     {
@@ -186,5 +186,23 @@ class Utils
         $bnt = new BigNumber(self::UNITS[$unit]);
 
         return $bn->multiply($bnt);
+    }
+
+    /**
+     * toEther
+     * 
+     * @param BigNumber|string|int $number
+     * @param string $unit
+     * @return array
+     */
+    public static function toEther($number, $unit)
+    {
+        if ($unit === 'ether') {
+            throw new InvalidArgumentException('Please use another unit.');
+        }
+        $wei = self::toWei($number, $unit);
+        $bnt = new BigNumber(self::UNITS['ether']);
+
+        return $wei->divide($bnt);
     }
 }

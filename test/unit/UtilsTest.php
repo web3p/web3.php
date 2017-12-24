@@ -138,4 +138,37 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($bn->toString(), '21016');
     }
+
+    /**
+     * testToEther
+     * 
+     * @return void
+     */
+    public function testToEther()
+    {
+        list($bnq, $bnr) = Utils::toEther('0x1', 'wei');
+
+        $this->assertEquals($bnq->toString(), '0');
+        $this->assertEquals($bnr->toString(), '1');
+
+        list($bnq, $bnr) = Utils::toEther('1', 'wei');
+
+        $this->assertEquals($bnq->toString(), '0');
+        $this->assertEquals($bnr->toString(), '1');
+
+        list($bnq, $bnr) = Utils::toEther(1, 'wei');
+
+        $this->assertEquals($bnq->toString(), '0');
+        $this->assertEquals($bnr->toString(), '1');
+
+        list($bnq, $bnr) = Utils::toEther('1', 'kether');
+
+        $this->assertEquals($bnq->toString(), '1000');
+        $this->assertEquals($bnr->toString(), '0');
+
+        list($bnq, $bnr) = Utils::toEther('0x5218', 'wei');
+
+        $this->assertEquals($bnq->toString(), '0');
+        $this->assertEquals($bnr->toString(), '21016');
+    }
 }
