@@ -110,4 +110,32 @@ class UtilsTest extends TestCase
 
         $this->assertEquals(mb_substr($str, 0, 10), '0xcdcd77c0');
     }
+
+    /**
+     * testToWei
+     * 
+     * @return void
+     */
+    public function testToWei()
+    {
+        $bn = Utils::toWei('0x1', 'wei');
+
+        $this->assertEquals($bn->toString(), '1');
+
+        $bn = Utils::toWei('1', 'wei');
+
+        $this->assertEquals($bn->toString(), '1');
+
+        $bn = Utils::toWei(1, 'wei');
+
+        $this->assertEquals($bn->toString(), '1');
+
+        $bn = Utils::toWei('1', 'ether');
+
+        $this->assertEquals($bn->toString(), '1000000000000000000');
+
+        $bn = Utils::toWei('0x5218', 'wei');
+
+        $this->assertEquals($bn->toString(), '21016');
+    }
 }

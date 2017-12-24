@@ -13,6 +13,7 @@ namespace Web3;
 
 use InvalidArgumentException;
 use kornrunner\Keccak;
+use phpseclib\Math\BigInteger as BigNumber;
 
 class Utils
 {
@@ -22,6 +23,42 @@ class Utils
      * @const string
      */
     const SHA3_NULL_HASH = 'c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470';
+
+    /**
+     * UNITS
+     * from web3.js
+     * 
+     * @const array
+     */
+    const UNITS = [
+        'noether' => '0',
+        'wei' => '1',
+        'kwei' => '1000',
+        'Kwei' => '1000',
+        'babbage' => '1000',
+        'femtoether' => '1000',
+        'mwei' => '1000000',
+        'Mwei' => '1000000',
+        'lovelace' => '1000000',
+        'picoether' => '1000000',
+        'gwei' => '1000000000',
+        'Gwei' => '1000000000',
+        'shannon' => '1000000000',
+        'nanoether' => '1000000000',
+        'nano' => '1000000000',
+        'szabo' => '1000000000000',
+        'microether' => '1000000000000',
+        'micro' => '1000000000000',
+        'finney' => '1000000000000000',
+        'milliether' => '1000000000000000',
+        'milli' => '1000000000000000',
+        'ether' => '1000000000000000000',
+        'kether' => '1000000000000000000000',
+        'grand' => '1000000000000000000000',
+        'mether' => '1000000000000000000000000',
+        'gether' => '1000000000000000000000000000',
+        'tether' => '1000000000000000000000000000000'
+    ];
 
     /**
      * construct
@@ -119,5 +156,35 @@ class Utils
             return null;
         }
         return '0x' . $hash;
-    }    
+    }
+
+    /**
+     * toWei
+     * 
+     * @param BigNumber|string|int $number
+     * @param string $unit
+     * @return string
+     */
+    public static function toWei($number, $unit)
+    {
+        if (is_int($number)) {
+            $bn = new BigNumber($number);
+        } elseif (is_string($number)) {
+            if (self::isZeroPrefixed($number)) {
+                $number = self::stripZero($number);
+            }
+            $bn = new BigNumber($number, 16);
+        } elseif (!$number instanceof BigNumber){
+            throw new InvalidArgumentException('toWei number must be BigNumber, string or int.');
+        }
+        if (!is_string($unit)) {
+            throw new InvalidArgumentException('toWei unit must be string.');
+        }
+        if (!isset(self::UNITS[$unit])) {
+            throw new InvalidArgumentException('toWei doesn\'t support ' . $unit . ' unit.');
+        }
+        $bnt = new BigNumber(self::UNITS[$unit]);
+
+        return $bn->multiply($bnt);
+    }
 }
