@@ -74,6 +74,14 @@ class EthabiTest extends TestCase
         $str = $abi->encodeFunctionSignature($methodString);
 
         $this->assertEquals($str, '0x095ea7b3');
+
+        $str = $abi->encodeFunctionSignature('bar(bytes3[2])');
+
+        $this->assertEquals($str, '0xfce353f6');
+
+        $str = $abi->encodeFunctionSignature('sam(bytes,bool,uint256[])');
+
+        $this->assertEquals($str, '0xa5643bf2');
     }
 
     /**
