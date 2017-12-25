@@ -122,13 +122,17 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($bn->toString(), '1');
 
-        $bn = Utils::toWei('1', 'wei');
+        $bn = Utils::toWei('18', 'wei');
 
-        $this->assertEquals($bn->toString(), '1');
+        $this->assertEquals($bn->toString(), '18');
 
         $bn = Utils::toWei(1, 'wei');
 
         $this->assertEquals($bn->toString(), '1');
+
+        $bn = Utils::toWei(0x11, 'wei');
+
+        $this->assertEquals($bn->toString(), '17');
 
         $bn = Utils::toWei('1', 'ether');
 
@@ -151,15 +155,20 @@ class UtilsTest extends TestCase
         $this->assertEquals($bnq->toString(), '0');
         $this->assertEquals($bnr->toString(), '1');
 
-        list($bnq, $bnr) = Utils::toEther('1', 'wei');
+        list($bnq, $bnr) = Utils::toEther('18', 'wei');
 
         $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '1');
+        $this->assertEquals($bnr->toString(), '18');
 
         list($bnq, $bnr) = Utils::toEther(1, 'wei');
 
         $this->assertEquals($bnq->toString(), '0');
         $this->assertEquals($bnr->toString(), '1');
+
+        list($bnq, $bnr) = Utils::toEther(0x11, 'wei');
+
+        $this->assertEquals($bnq->toString(), '0');
+        $this->assertEquals($bnr->toString(), '17');
 
         list($bnq, $bnr) = Utils::toEther('1', 'kether');
 

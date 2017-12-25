@@ -172,8 +172,10 @@ class Utils
         } elseif (is_string($number)) {
             if (self::isZeroPrefixed($number)) {
                 $number = self::stripZero($number);
+                $bn = new BigNumber($number, 16);
+            } else {
+                $bn = new BigNumber($number);
             }
-            $bn = new BigNumber($number, 16);
         } elseif (!$number instanceof BigNumber){
             throw new InvalidArgumentException('toWei number must be BigNumber, string or int.');
         }
