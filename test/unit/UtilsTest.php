@@ -180,4 +180,37 @@ class UtilsTest extends TestCase
         $this->assertEquals($bnq->toString(), '0');
         $this->assertEquals($bnr->toString(), '21016');
     }
+
+    /**
+     * testFromWei
+     * 
+     * @return void
+     */
+    public function testFromWei()
+    {
+        list($bnq, $bnr) = Utils::fromWei('1000000000000000000', 'ether');
+
+        $this->assertEquals($bnq->toString(), '1');
+        $this->assertEquals($bnr->toString(), '0');
+
+        list($bnq, $bnr) = Utils::fromWei('18', 'wei');
+
+        $this->assertEquals($bnq->toString(), '18');
+        $this->assertEquals($bnr->toString(), '0');
+
+        list($bnq, $bnr) = Utils::fromWei(1, 'femtoether');
+
+        $this->assertEquals($bnq->toString(), '0');
+        $this->assertEquals($bnr->toString(), '1');
+
+        list($bnq, $bnr) = Utils::fromWei(0x11, 'nano');
+
+        $this->assertEquals($bnq->toString(), '0');
+        $this->assertEquals($bnr->toString(), '17');
+
+        list($bnq, $bnr) = Utils::fromWei('0x5218', 'kwei');
+
+        $this->assertEquals($bnq->toString(), '21');
+        $this->assertEquals($bnr->toString(), '16');
+    }
 }

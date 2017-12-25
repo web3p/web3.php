@@ -160,6 +160,10 @@ class Utils
 
     /**
      * toWei
+     * Change number from unit to wei.
+     * For example:
+     * $wei = Utils::toWei('1', 'kwei'); 
+     * $wei->toString(); // 1000
      * 
      * @param BigNumber|string|int $number
      * @param string $unit
@@ -192,6 +196,10 @@ class Utils
 
     /**
      * toEther
+     * Change number from unit to ether.
+     * For example:
+     * list($bnq, $bnr) = Utils::toEther('1', 'kether'); 
+     * $bnq->toString(); // 1000
      * 
      * @param BigNumber|string|int $number
      * @param string $unit
@@ -206,5 +214,41 @@ class Utils
         $bnt = new BigNumber(self::UNITS['ether']);
 
         return $wei->divide($bnt);
+    }
+
+    /**
+     * fromWei
+     * Change number from wei to unit.
+     * For example:
+     * list($bnq, $bnr) = Utils::fromWei('1000', 'kwei'); 
+     * $bnq->toString(); // 1
+     * 
+     * @param BigNumber|string|int $number
+     * @param string $unit
+     * @return \phpseclib\Math\BigInteger
+     */
+    public static function fromWei($number, $unit)
+    {
+        if (is_int($number)) {
+            $bn = new BigNumber($number);
+        } elseif (is_string($number)) {
+            if (self::isZeroPrefixed($number)) {
+                $number = self::stripZero($number);
+                $bn = new BigNumber($number, 16);
+            } else {
+                $bn = new BigNumber($number);
+            }
+        } elseif (!$number instanceof BigNumber){
+            throw new InvalidArgumentException('fromWei number must be BigNumber, string or int.');
+        }
+        if (!is_string($unit)) {
+            throw new InvalidArgumentException('fromWei unit must be string.');
+        }
+        if (!isset(self::UNITS[$unit])) {
+            throw new InvalidArgumentException('fromWei doesn\'t support ' . $unit . ' unit.');
+        }
+        $bnt = new BigNumber(self::UNITS[$unit]);
+
+        return $bn->divide($bnt);
     }
 }
