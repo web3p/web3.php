@@ -26,7 +26,7 @@ class Utils
 
     /**
      * UNITS
-     * from web3.js
+     * from ethjs-unit
      * 
      * @const array
      */
