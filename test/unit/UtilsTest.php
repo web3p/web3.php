@@ -18,6 +18,36 @@ class UtilsTest extends TestCase
     protected $testHex = '68656c6c6f20776f726c64';
 
     /**
+     * testJsonMethodString
+     * from GameToken approve function
+     * 
+     * @var string
+     */
+    protected $testJsonMethodString = '{
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_spender",
+          "type": "address"
+        },
+        {
+          "name": "_value",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }';
+
+    /**
      * setUp
      * 
      * @return void
@@ -212,5 +242,23 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($bnq->toString(), '21');
         $this->assertEquals($bnr->toString(), '16');
+    }
+
+    /**
+     * testJsonMethodToString
+     * 
+     * @return void
+     */
+    public function testJsonMethodToString()
+    {
+        $json = json_decode($this->testJsonMethodString);
+        $methodString = Utils::jsonMethodToString($json);
+
+        $this->assertEquals($methodString, 'approve(address,uint256)');
+
+        $json = json_decode($this->testJsonMethodString, true);
+        $methodString = Utils::jsonMethodToString($json);
+
+        $this->assertEquals($methodString, 'approve(address,uint256)');
     }
 }
