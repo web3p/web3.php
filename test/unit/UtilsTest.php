@@ -261,4 +261,22 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($methodString, 'approve(address,uint256)');
     }
+
+    /**
+     * testJsonToArray
+     * 
+     * @return void
+     */
+    public function testJsonToArray()
+    {
+        $json = json_decode($this->testJsonMethodString);
+        $jsonArray = Utils::jsonToArray($json);
+
+        $this->assertEquals($jsonArray, (array) $json);
+
+        $jsonAssoc = json_decode($this->testJsonMethodString, true);
+        $jsonArray = Utils::jsonToArray($json, 2);
+
+        $this->assertEquals($jsonArray, $jsonAssoc);
+    }
 }

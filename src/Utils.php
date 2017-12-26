@@ -295,4 +295,37 @@ class Utils
         }
         return $json['name'] . '(' . implode(',', $typeName) . ')';
     }
+
+    /**
+     * jsonToArray
+     * 
+     * @param stdClass|array $json
+     * @param int $depth
+     * @return array
+     */
+    public static function jsonToArray($json, $depth=1)
+    {
+        if (!is_int($depth)) {
+            throw new InvalidArgumentException('jsonToArray depth must be int.');
+        }
+        if ($depth <= 0) {
+            return [];
+        }
+        if ($json instanceof stdClass) {
+            $json = (array) $json;
+            $typeName = [];
+
+            foreach ($json as $key => $param) {
+                if (is_array($param) && $depth > 1) {
+                    foreach ($param as $subKey => $subParam) {
+                        $json[$key][$subKey] = self::jsonToArray($subParam, $depth-1);
+                    }
+                }
+            }
+            return $json;
+        } elseif (!is_array($json)) {
+            throw new InvalidArgumentException('jsonToArray json must be array or stdClass.');
+        }
+        return $json;
+    }
 }
