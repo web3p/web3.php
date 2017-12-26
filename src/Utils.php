@@ -305,11 +305,8 @@ class Utils
      */
     public static function jsonToArray($json, $depth=1)
     {
-        if (!is_int($depth)) {
-            throw new InvalidArgumentException('jsonToArray depth must be int.');
-        }
-        if ($depth <= 0) {
-            return [];
+        if (!is_int($depth) || $depth <= 0) {
+            throw new InvalidArgumentException('jsonToArray depth must be int and depth must bigger than 0.');
         }
         if ($json instanceof stdClass) {
             $json = (array) $json;
