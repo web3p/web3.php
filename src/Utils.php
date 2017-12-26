@@ -315,15 +315,31 @@ class Utils
             $json = (array) $json;
             $typeName = [];
 
-            foreach ($json as $key => $param) {
-                if (is_array($param) && $depth > 1) {
-                    foreach ($param as $subKey => $subParam) {
-                        $json[$key][$subKey] = self::jsonToArray($subParam, $depth-1);
+            if ($depth > 1) {
+                foreach ($json as $key => $param) {
+                    if (is_array($param)) {
+                        foreach ($param as $subKey => $subParam) {
+                            $json[$key][$subKey] = self::jsonToArray($subParam, $depth-1);
+                        }
+                    } elseif ($param instanceof stdClass) {
+                        $json[$key] = self::jsonToArray($param, $depth-1);
                     }
                 }
             }
             return $json;
-        } elseif (!is_array($json)) {
+        } elseif (is_array($json)) {
+            if ($depth > 1) {
+                foreach ($json as $key => $param) {
+                    if (is_array($param)) {
+                        foreach ($param as $subKey => $subParam) {
+                            $json[$key][$subKey] = self::jsonToArray($subParam, $depth-1);
+                        }
+                    } elseif ($param instanceof stdClass) {
+                        $json[$key] = self::jsonToArray($param, $depth-1);
+                    }
+                }
+            }
+        } else {
             throw new InvalidArgumentException('jsonToArray json must be array or stdClass.');
         }
         return $json;

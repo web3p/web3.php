@@ -44,7 +44,10 @@ class UtilsTest extends TestCase
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "function",
+      "test": {
+        "name": "testObject"
+      }
     }';
 
     /**
@@ -270,13 +273,17 @@ class UtilsTest extends TestCase
     public function testJsonToArray()
     {
         $json = json_decode($this->testJsonMethodString);
-        $jsonArray = Utils::jsonToArray($json);
+        $jsonArrayDepth1 = Utils::jsonToArray($json);
 
-        $this->assertEquals($jsonArray, (array) $json);
+        $this->assertEquals($jsonArrayDepth1, (array) $json);
 
         $jsonAssoc = json_decode($this->testJsonMethodString, true);
-        $jsonArray = Utils::jsonToArray($json, 2);
+        $jsonArrayDepth2 = Utils::jsonToArray($json, 2);
 
-        $this->assertEquals($jsonArray, $jsonAssoc);
+        $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
+
+        $jsonArrayDepth2 = Utils::jsonToArray($jsonArrayDepth1, 2);
+
+        $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
     }
 }
