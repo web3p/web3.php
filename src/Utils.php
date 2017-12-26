@@ -270,6 +270,9 @@ class Utils
             // }
             // $json = json_decode($jsonString, true);
 
+            // another way to change whole json to array type but need the depth
+            // $json = self::jsonToArray($json, $depth)
+
             // another way to change json to array type but not whole json stdClass
             $json = (array) $json;
             $typeName = [];
