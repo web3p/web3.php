@@ -4,9 +4,9 @@ namespace Test\Unit;
 
 use InvalidArgumentException;
 use Test\TestCase;
-use Web3\Contracts\Types\Boolean;
+use Web3\Contracts\Types\Bytes;
 
-class BoolTypeTest extends TestCase
+class BytesTypeTest extends TestCase
 {
     /**
      * testTypes
@@ -15,22 +15,28 @@ class BoolTypeTest extends TestCase
      */
     protected $testTypes = [
         [
-            'value' => 'bool',
+            'value' => 'bytes',
             'result' => true
         ], [
-            'value' => 'bool[]',
+            'value' => 'bytes[]',
             'result' => true
         ], [
-            'value' => 'bool[4]',
+            'value' => 'bytes[4]',
             'result' => true
         ], [
-            'value' => 'bool[][]',
+            'value' => 'bytes[][]',
             'result' => true
         ], [
-            'value' => 'bool[3][]',
+            'value' => 'bytes[3][]',
             'result' => true
         ], [
-            'value' => 'bool[][6][]',
+            'value' => 'bytes[][6][]',
+            'result' => true
+        ], [
+            'value' => 'bytes32',
+            'result' => true
+        ], [
+            'value' => 'bytes8[4]',
             'result' => true
         ],
     ];
@@ -50,7 +56,7 @@ class BoolTypeTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->solidityType = new Boolean;
+        $this->solidityType = new Bytes;
     }
 
     /**
