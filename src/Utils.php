@@ -138,7 +138,6 @@ class Utils
 
     /**
      * isAddress
-     * To do: check address checksum
      * 
      * @param string
      * @return bool
@@ -148,12 +147,35 @@ class Utils
         if (!is_string($value)) {
             throw new InvalidArgumentException('The value to isAddress function must be string.');
         }
-        if (preg_match('/^(0x|0X)?[a-fA-F0-9]{40}$/', $value) == 1) {
+        if (preg_match('/^(0x|0X)?[a-f0-9]{40}$/', $value) === 1 || preg_match('/^(0x|0X)?[A-F0-9]{40}$/', $value) === 1) {
             return true;
-        } else {
-            // validate address checksum
         }
-        return false;
+        return self::isAddressChecksum($value);
+    }
+
+    /**
+     * isAddressChecksum
+     * 
+     * @param string
+     * @return bool
+     */
+    public static function isAddressChecksum($value)
+    {
+        if (!is_string($value)) {
+            throw new InvalidArgumentException('The value to isAddressChecksum function must be string.');
+        }
+        $value = self::stripZero($value);
+        $hash = self::stripZero(self::sha3(mb_strtolower($value)));
+
+        for ($i = 0; $i < 40; $i++) {
+            if (
+                (intval($hash[$i], 16) > 7 && mb_strtoupper($value[$i]) !== $value[$i]) ||
+                (intval($hash[$i], 16) <= 7 && mb_strtolower($value[$i]) !== $value[$i])
+            ) {
+            return false;
+        }
+        }
+        return true;
     }
 
     /**
