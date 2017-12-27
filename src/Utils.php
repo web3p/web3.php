@@ -137,6 +137,26 @@ class Utils
     }
 
     /**
+     * isAddress
+     * To do: check address checksum
+     * 
+     * @param string
+     * @return bool
+     */
+    public static function isAddress($value)
+    {
+        if (!is_string($value)) {
+            throw new InvalidArgumentException('The value to isAddress function must be string.');
+        }
+        if (preg_match('/^(0x|0X)?[a-fA-F0-9]{40}$/', $value) == 1) {
+            return true;
+        } else {
+            // validate address checksum
+        }
+        return false;
+    }
+
+    /**
      * sha3
      * keccak256
      * 

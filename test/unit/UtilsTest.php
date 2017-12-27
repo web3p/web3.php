@@ -113,6 +113,34 @@ class UtilsTest extends TestCase
     }
 
     /**
+     * testIsAddress
+     * 
+     * @return void
+     */
+    public function testIsAddress()
+    {
+        $isAddress = Utils::isAddress('ca35b7d915458ef540ade6068dfe2f44e8fa733c');
+
+        $this->assertEquals($isAddress, true);
+
+        $isAddress = Utils::isAddress('0xca35b7d915458ef540ade6068dfe2f44e8fa733c');
+
+        $this->assertEquals($isAddress, true);
+
+        $isAddress = Utils::isAddress('0Xca35b7d915458ef540ade6068dfe2f44e8fa733c');
+
+        $this->assertEquals($isAddress, true);
+
+        $isAddress = Utils::isAddress('0XCA35B7D915458EF540ADE6068DFE2F44E8FA733C');
+
+        $this->assertEquals($isAddress, true);
+
+        $isAddress = Utils::isAddress('0xCA35B7D915458EF540ADE6068DFE2F44E8FA733C');
+
+        $this->assertEquals($isAddress, true);
+    }
+
+    /**
      * testStripZero
      * 
      * @return void
