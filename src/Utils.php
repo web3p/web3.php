@@ -118,7 +118,7 @@ class Utils
         if (!is_string($value)) {
             throw new InvalidArgumentException('The value to zeroPrefixed function must be string.');
         }
-        return (strpos($value, '0x') === 0) ;
+        return (strpos($value, '0x') === 0);
     }
 
     /**
@@ -392,7 +392,7 @@ class Utils
         } elseif (is_string($number)) {
             $number = mb_strtolower($number);
 
-            if (self::isZeroPrefixed($number)) {
+            if (self::isZeroPrefixed($number) || preg_match('/[a-f]+/', $number) === 1) {
                 $number = self::stripZero($number);
                 $bn = new BigNumber($number, 16);
             } else {

@@ -406,5 +406,9 @@ class UtilsTest extends TestCase
         $bn = Utils::toBn(0x12);
 
         $this->assertEquals($bn->toString(), '18');
+
+        $bn = Utils::toBn('ae');
+
+        $this->assertEquals($bn->toString(), '174');
     }
 }
