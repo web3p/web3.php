@@ -397,4 +397,30 @@ class Utils
         }
         return $json;
     }
+
+    /**
+     * toBn
+     * Change number or number string to bignumber.
+     * 
+     * @param BigNumber|string|int $number
+     * @return \phpseclib\Math\BigInteger
+     */
+    public static function toBn($number)
+    {
+        if (is_int($number)) {
+            $bn = new BigNumber($number);
+        } elseif (is_string($number)) {
+            $number = mb_strtolower($number);
+
+            if (self::isZeroPrefixed($number)) {
+                $number = self::stripZero($number);
+                $bn = new BigNumber($number, 16);
+            } else {
+                $bn = new BigNumber($number);
+            }
+        } elseif (!$number instanceof BigNumber){
+            throw new InvalidArgumentException('toBn number must be BigNumber, string or int.');
+        }
+        return $bn;
+    }
 }

@@ -4,6 +4,7 @@ namespace Test\Unit;
 
 use InvalidArgumentException;
 use Test\TestCase;
+use phpseclib\Math\BigInteger;
 use Web3\Utils;
 
 class UtilsTest extends TestCase
@@ -385,5 +386,25 @@ class UtilsTest extends TestCase
         $isHex = Utils::isHex('hello world');
 
         $this->assertFalse($isHex);
+    }
+
+    /**
+     * testToBn
+     * 
+     * @return void
+     */
+    public function testToBn()
+    {
+        $bn = Utils::toBn(11);
+
+        $this->assertEquals($bn->toString(), '11');
+
+        $bn = Utils::toBn('0x12');
+
+        $this->assertEquals($bn->toString(), '18');
+
+        $bn = Utils::toBn(0x12);
+
+        $this->assertEquals($bn->toString(), '18');
     }
 }
