@@ -283,18 +283,8 @@ class Utils
      */
     public static function fromWei($number, $unit)
     {
-        if (is_int($number)) {
-            $bn = new BigNumber($number);
-        } elseif (is_string($number)) {
-            if (self::isZeroPrefixed($number)) {
-                $number = self::stripZero($number);
-                $bn = new BigNumber($number, 16);
-            } else {
-                $bn = new BigNumber($number);
-            }
-        } elseif (!$number instanceof BigNumber){
-            throw new InvalidArgumentException('fromWei number must be BigNumber, string or int.');
-        }
+        $bn = self::toBn($number);
+
         if (!is_string($unit)) {
             throw new InvalidArgumentException('fromWei unit must be string.');
         }
