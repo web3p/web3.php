@@ -118,7 +118,7 @@ class Utils
         if (!is_string($value)) {
             throw new InvalidArgumentException('The value to zeroPrefixed function must be string.');
         }
-        return (strpos($value, '0x') === 0);
+        return (strpos($value, '0x') === 0) ;
     }
 
     /**
@@ -176,6 +176,17 @@ class Utils
         }
         }
         return true;
+    }
+
+    /**
+     * isHex
+     * 
+     * @param string
+     * @return bool
+     */
+    public static function isHex($value)
+    {
+        return (is_string($value) && preg_match('/^(0x)?[a-f0-9]*$/', $value) === 1);
     }
 
     /**

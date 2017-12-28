@@ -366,4 +366,24 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
     }
+
+    /**
+     * testIsHex
+     * 
+     * @return void
+     */
+    public function testIsHex()
+    {
+        $isHex = Utils::isHex($this->testHex);
+
+        $this->assertTrue($isHex);
+
+        $isHex = Utils::isHex('0x' . $this->testHex);
+
+        $this->assertTrue($isHex);
+
+        $isHex = Utils::isHex('hello world');
+
+        $this->assertFalse($isHex);
+    }
 }
