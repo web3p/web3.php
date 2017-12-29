@@ -11,6 +11,7 @@
 
 namespace Web3\Contracts\Types;
 
+use InvalidArgumentException;
 use Web3\Contracts\SolidityType;
 use Web3\Contracts\Types\IType;
 
@@ -45,5 +46,22 @@ class Boolean extends SolidityType implements IType
     public function isDynamicType()
     {
         return false;
+    }
+
+    /**
+     * inputFormat
+     * 
+     * @param mixed $value
+     * @param string $name
+     * @return string
+     */
+    public function inputFormat($value, $name)
+    {
+        if (!is_bool($value)) {
+            throw new InvalidArgumentException('The value to inputFormat function must be boolean.');
+        }
+        $value = (int) $value;
+
+        return '000000000000000000000000000000000000000000000000000000000000000' . $value;
     }
 }

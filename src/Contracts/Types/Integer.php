@@ -11,8 +11,10 @@
 
 namespace Web3\Contracts\Types;
 
+use Web3\Utils;
 use Web3\Contracts\SolidityType;
 use Web3\Contracts\Types\IType;
+use Web3\Formatters\Integer as IntegerFormatter;
 
 class Integer extends SolidityType implements IType
 {
@@ -45,5 +47,17 @@ class Integer extends SolidityType implements IType
     public function isDynamicType()
     {
         return false;
+    }
+
+    /**
+     * inputFormat
+     * 
+     * @param mixed $value
+     * @param string $name
+     * @return string
+     */
+    public function inputFormat($value, $name)
+    {
+        return IntegerFormatter::format($value);
     }
 }

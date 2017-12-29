@@ -11,8 +11,11 @@
 
 namespace Web3\Contracts\Types;
 
+use InvalidArgumentException;
 use Web3\Contracts\SolidityType;
 use Web3\Contracts\Types\IType;
+use Web3\Utils;
+use Web3\Formatters\Integer as IntegerFormatter;
 
 class Address extends SolidityType implements IType
 {
@@ -45,5 +48,32 @@ class Address extends SolidityType implements IType
     public function isDynamicType()
     {
         return false;
+    }
+
+    /**
+     * inputFormat
+     * to do: iban
+     * 
+     * @param mixed $value
+     * @param string $name
+     * @return string
+     */
+    public function inputFormat($value, $name)
+    {
+        $value = (string) $value;
+
+        if (Utils::isAddress($value)) {
+            $value = mb_strtolower($value);
+
+            if (Utils::isZeroPrefixed($value)) {
+                // return '000000000000000000000000' . Utils::stripZero($value);
+                $value = Utils::stripZero($value);
+            }
+            // return '000000000000000000000000' . $value;
+        }
+        $value = IntegerFormatter::format($value);
+
+        return $value;
+        // throw new InvalidArgumentException('The value to inputFormat must be string.');
     }
 }
