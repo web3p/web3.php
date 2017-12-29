@@ -147,7 +147,9 @@ class Utils
         if (!is_string($value)) {
             throw new InvalidArgumentException('The value to isAddress function must be string.');
         }
-        if (preg_match('/^(0x|0X)?[a-f0-9]{40}$/', $value) === 1 || preg_match('/^(0x|0X)?[A-F0-9]{40}$/', $value) === 1) {
+        if (preg_match('/^(0x|0X)?[a-f0-9A-F]{40}$/', $value) !== 1) {
+            return false;
+        } elseif (preg_match('/^(0x|0X)?[a-f0-9]{40}$/', $value) === 1 || preg_match('/^(0x|0X)?[A-F0-9]{40}$/', $value) === 1) {
             return true;
         }
         return self::isAddressChecksum($value);
@@ -387,7 +389,7 @@ class Utils
      */
     public static function toBn($number)
     {
-        if (is_int($number)) {
+        if (is_numeric($number)) {
             $bn = new BigNumber($number);
         } elseif (is_string($number)) {
             $number = mb_strtolower($number);
