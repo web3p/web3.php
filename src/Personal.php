@@ -193,7 +193,7 @@ class Personal
     /**
      * getProvider
      * 
-     * @return void
+     * @return \Web3\Providers\Provider
      */
     public function getProvider()
     {
