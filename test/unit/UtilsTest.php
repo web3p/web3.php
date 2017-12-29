@@ -366,6 +366,10 @@ class UtilsTest extends TestCase
         $jsonArrayDepth2 = Utils::jsonToArray($jsonArrayDepth1, 2);
 
         $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
+
+        $jsonArray = Utils::jsonToArray($this->testJsonMethodString);
+
+        $this->assertEquals($jsonArray, $jsonAssoc);
     }
 
     /**

@@ -337,7 +337,7 @@ class Utils
     /**
      * jsonToArray
      * 
-     * @param stdClass|array $json
+     * @param stdClass|array|string $json
      * @param int $depth
      * @return array
      */
@@ -374,8 +374,15 @@ class Utils
                     }
                 }
             }
+        } elseif (is_string($json)) {
+            $json = json_decode($json, true);
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new InvalidArgumentException('json_decode error: ' . json_last_error_msg());
+            }
+            return $json;
         } else {
-            throw new InvalidArgumentException('jsonToArray json must be array or stdClass.');
+            throw new InvalidArgumentException('The json param to jsonToArray must be array or stdClass or string.');
         }
         return $json;
     }
