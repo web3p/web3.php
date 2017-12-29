@@ -35,7 +35,7 @@ class TransactionValidator
         if (AddressValidator::validate($value['from']) === false) {
              return false;
         }
-        if (isset($value['to']) && AddressValidator::validate($value['to']) === false) {
+        if (isset($value['to']) && AddressValidator::validate($value['to']) === false && $value['to'] !== '') {
              return false;
         }
         if (isset($value['gas']) && QuantityValidator::validate($value['gas']) === false) {
