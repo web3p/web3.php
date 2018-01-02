@@ -66,14 +66,11 @@ class Address extends SolidityType implements IType
             $value = mb_strtolower($value);
 
             if (Utils::isZeroPrefixed($value)) {
-                // return '000000000000000000000000' . Utils::stripZero($value);
                 $value = Utils::stripZero($value);
             }
-            // return '000000000000000000000000' . $value;
         }
         $value = IntegerFormatter::format($value);
 
         return $value;
-        // throw new InvalidArgumentException('The value to inputFormat must be string.');
     }
 }
