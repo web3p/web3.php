@@ -135,9 +135,6 @@ class Ethabi
      */
     public function encodeParameters($types, $params)
     {
-        if (count($types) !== count($params)) {
-            throw new InvalidArgumentException('encodeParameters number of types must equal to number of params.');
-        }
         // change json to array
         if ($types instanceof stdClass && isset($types->inputs)) {
             $types = Utils::jsonToArray($types, 2);
@@ -151,6 +148,9 @@ class Ethabi
                     $types[] = $input['type'];
                 }
             }
+        }
+        if (count($types) !== count($params)) {
+            throw new InvalidArgumentException('encodeParameters number of types must equal to number of params.');
         }
         $typesLength = count($types);
         $solidityTypes = array_fill(0, $typesLength, 0);

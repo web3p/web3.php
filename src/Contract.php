@@ -25,6 +25,8 @@ use Web3\Contracts\Types\Bytes;
 use Web3\Contracts\Types\Integer;
 use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
+use Web3\Validators\AddressValidator;
+use Web3\Formatters\Address as AddressFormatter;
 
 class Contract
 {
@@ -145,9 +147,7 @@ class Contract
     //     if (empty($this->provider)) {
     //         throw new \RuntimeException('Please set provider first.');
     //     }
-
     //     $class = explode('\\', get_class());
-
     //     if (preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
     //     }
     // }
@@ -260,6 +260,23 @@ class Contract
     }
 
     /**
+     * at
+     * 
+     * @param string $address
+     * @return $this
+     */
+    public function at($address)
+    {
+        if (AddressValidator::validate($address) === false) {
+            var_dump($address);
+            throw new InvalidArgumentException('Please make sure address is valid.');
+        }
+        $this->toAddress = AddressFormatter::format($address);
+
+        return $this;
+    }
+
+    /**
      * new
      * Deploy a contruct with params.
      * 
@@ -288,6 +305,51 @@ class Contract
             }
             $transaction['to'] = '';
             $transaction['data'] = $data;
+
+            $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
+                if ($err !== null) {
+                    return call_user_func($callback, $err, null);
+                }
+                return call_user_func($callback, null, $transaction);
+            });
+        }
+    }
+
+    /**
+     * send
+     * Send function method.
+     * 
+     * @param mixed
+     * @return void
+     */
+    public function send()
+    {
+        if (isset($this->functions)) {
+            $arguments = func_get_args();
+            $method = array_splice($arguments, 0, 1)[0];
+            $callback = array_pop($arguments);
+
+            if (!is_string($method) && !isset($this->functions[$method])) {
+                throw new InvalidArgumentException('Please make sure the method is existed.');
+            }
+            $function = $this->functions[$method];
+
+            if (count($arguments) < count($function['inputs'])) {
+                throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+            }
+            if (is_callable($callback) !== true) {
+                throw new \InvalidArgumentException('The last param must be callback function.');
+            }
+            $params = array_splice($arguments, 0, count($function['inputs']));
+            $data = $this->ethabi->encodeParameters($function, $params);
+            $functionSignature = $this->ethabi->encodeFunctionSignature($function['name']);
+            $transaction = [];
+
+            if (count($arguments) > 0) {
+                $transaction = $arguments[0];
+            }
+            $transaction['to'] = $this->toAddress;
+            $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
             $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
                 if ($err !== null) {
