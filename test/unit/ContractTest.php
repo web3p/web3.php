@@ -5,6 +5,8 @@ namespace Test\Unit;
 use Test\TestCase;
 use Web3\Contract;
 use Web3\Utils;
+use Web3\Contracts\Ethabi;
+use Web3\Formatters\Integer as IntegerFormatter;
 
 class ContractTest extends TestCase
 {
@@ -328,7 +330,7 @@ class ContractTest extends TestCase
         } else {
             $account = $this->accounts[0];
         }
-        $contract->bytecode($this->testBytecode)->new(10000, 'Game Token', 1, 'GT', [
+        $contract->bytecode($this->testBytecode)->new(1000000, 'Game Token', 1, 'GT', [
             'from' => $account,
             'gas' => '0x200b20'
         ], function ($err, $result) use ($contract) {
@@ -373,7 +375,7 @@ class ContractTest extends TestCase
         } else {
             $toAccount = $this->accounts[1];
         }
-        $contract->bytecode($this->testBytecode)->new(10000, 'Game Token', 1, 'GT', [
+        $contract->bytecode($this->testBytecode)->new(1000000, 'Game Token', 1, 'GT', [
             'from' => $fromAccount,
             'gas' => '0x200b20'
         ], function ($err, $result) use ($contract) {
@@ -397,9 +399,10 @@ class ContractTest extends TestCase
                 }
             });
         });
-        $contract->at($this->contractAddress)->send('transfer', $toAccount, 100, [
-            'from' => $fromAccount
-        ], function ($err, $result) use ($contract) {
+        $contract->at($this->contractAddress)->send('transfer', $toAccount, 16, [
+            'from' => $fromAccount,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract, $fromAccount, $toAccount) {
             if ($err !== null) {
                 // infura api gg
                 return $this->assertTrue($err !== null);
@@ -410,12 +413,18 @@ class ContractTest extends TestCase
             $transactionId = $result->result;
             $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
 
-            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use ($fromAccount, $toAccount) {
                 if ($err !== null) {
                     return $this->fail($err);
                 }
                 if ($transaction->result) {
+                    $topics = $transaction->result->logs[0]->topics;
                     echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\n";
+
+                    // validate topics
+                    $this->assertEquals(Ethabi::encodeEventSignature($this->contract->events['Transfer']), $topics[0]);
+                    $this->assertEquals('0x' . IntegerFormatter::format($fromAccount), $topics[1]);
+                    $this->assertEquals('0x' . IntegerFormatter::format($toAccount), $topics[2]);
                 }
             });
         });
