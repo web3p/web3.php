@@ -26,6 +26,7 @@ use Web3\Contracts\Types\Integer;
 use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
 use Web3\Validators\AddressValidator;
+use Web3\Validators\HexValidator;
 use Web3\Formatters\Address as AddressFormatter;
 
 class Contract
@@ -71,6 +72,13 @@ class Contract
      * @var string
      */
     protected $toAddress;
+
+    /**
+     * bytecode
+     * 
+     * @var string
+     */
+    protected $bytecode;
 
     /**
      * eth
@@ -268,10 +276,25 @@ class Contract
     public function at($address)
     {
         if (AddressValidator::validate($address) === false) {
-            var_dump($address);
             throw new InvalidArgumentException('Please make sure address is valid.');
         }
         $this->toAddress = AddressFormatter::format($address);
+
+        return $this;
+    }
+
+    /**
+     * bytecode
+     * 
+     * @param string $bytecode
+     * @return $this
+     */
+    public function bytecode($bytecode)
+    {
+        if (HexValidator::validate($bytecode) === false) {
+            throw new InvalidArgumentException('Please make sure bytecode is valid.');
+        }
+        $this->bytecode = Utils::stripZero($bytecode);
 
         return $this;
     }
@@ -296,6 +319,9 @@ class Contract
             if (is_callable($callback) !== true) {
                 throw new \InvalidArgumentException('The last param must be callback function.');
             }
+            if (!isset($this->bytecode)) {
+                throw new \InvalidArgumentException('Please call bytecode($bytecode) before new().');
+            }
             $params = array_splice($arguments, 0, count($constructor['inputs']));
             $data = $this->ethabi->encodeParameters($constructor, $params);
             $transaction = [];
@@ -304,7 +330,7 @@ class Contract
                 $transaction = $arguments[0];
             }
             $transaction['to'] = '';
-            $transaction['data'] = $data;
+            $transaction['data'] = '0x' . $this->bytecode . Utils::stripZero($data);
 
             $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
                 if ($err !== null) {
@@ -352,6 +378,51 @@ class Contract
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
             $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
+                if ($err !== null) {
+                    return call_user_func($callback, $err, null);
+                }
+                return call_user_func($callback, null, $transaction);
+            });
+        }
+    }
+
+    /**
+     * call
+     * Call function method.
+     * 
+     * @param mixed
+     * @return void
+     */
+    public function call()
+    {
+        if (isset($this->functions)) {
+            $arguments = func_get_args();
+            $method = array_splice($arguments, 0, 1)[0];
+            $callback = array_pop($arguments);
+
+            if (!is_string($method) && !isset($this->functions[$method])) {
+                throw new InvalidArgumentException('Please make sure the method is existed.');
+            }
+            $function = $this->functions[$method];
+
+            if (count($arguments) < count($function['inputs'])) {
+                throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+            }
+            if (is_callable($callback) !== true) {
+                throw new \InvalidArgumentException('The last param must be callback function.');
+            }
+            $params = array_splice($arguments, 0, count($function['inputs']));
+            $data = $this->ethabi->encodeParameters($function, $params);
+            $functionSignature = $this->ethabi->encodeFunctionSignature($function['name']);
+            $transaction = [];
+
+            if (count($arguments) > 0) {
+                $transaction = $arguments[0];
+            }
+            $transaction['to'] = $this->toAddress;
+            $transaction['data'] = $functionSignature . Utils::stripZero($data);
+
+            $this->eth->call($transaction, function ($err, $transaction) use ($callback){
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }

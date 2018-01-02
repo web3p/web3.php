@@ -33,25 +33,25 @@ class TransactionValidator
             return false;
         }
         if (AddressValidator::validate($value['from']) === false) {
-             return false;
+            return false;
         }
         if (isset($value['to']) && AddressValidator::validate($value['to']) === false && $value['to'] !== '') {
-             return false;
+            return false;
         }
         if (isset($value['gas']) && QuantityValidator::validate($value['gas']) === false) {
-             return false;
+            return false;
         }
         if (isset($value['gasPrice']) && QuantityValidator::validate($value['gasPrice']) === false) {
-             return false;
+            return false;
         }
         if (isset($value['value']) && QuantityValidator::validate($value['value']) === false) {
-             return false;
+            return false;
         }
         if (isset($value['data']) && HexValidator::validate($value['data']) === false) {
-             return false;
+            return false;
         }
         if (isset($value['nonce']) && QuantityValidator::validate($value['nonce']) === false) {
-             return false;
+            return false;
         }
         return true;
     }
