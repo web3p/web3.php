@@ -131,6 +131,23 @@ $net->provider->execute(function ($err, $data) {
 });
 ```
 
+### Contract
+
+```
+use Web3\Contract;
+
+$contract = new Contract('http://localhost:8545', $abi);
+
+// deploy contract
+$contract->bytecode($bytecode)->new($params, $callback);
+
+// call contract function
+$contract->at($contractAddress)->call($functionName, $params, $callback);
+
+// change function state
+$contract->at($contractAddress)->send($functionName, $params, $callback);
+```
+
 # Examples
 
 To run examples, you need to run ethereum blockchain local (testrpc).
