@@ -386,4 +386,50 @@ class Contract
             });
         }
     }
+
+    /**
+     * call
+     * Call function method.
+     * 
+     * @param mixed
+     * @return void
+     */
+    public function call()
+    {
+        if (isset($this->functions)) {
+            $arguments = func_get_args();
+            $method = array_splice($arguments, 0, 1)[0];
+            $callback = array_pop($arguments);
+
+            if (!is_string($method) && !isset($this->functions[$method])) {
+                throw new InvalidArgumentException('Please make sure the method is existed.');
+            }
+            $function = $this->functions[$method];
+
+            if (count($arguments) < count($function['inputs'])) {
+                throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+            }
+            if (is_callable($callback) !== true) {
+                throw new \InvalidArgumentException('The last param must be callback function.');
+            }
+            $params = array_splice($arguments, 0, count($function['inputs']));
+            $data = $this->ethabi->encodeParameters($function, $params);
+            $functionName = Utils::jsonMethodToString($function);
+            $functionSignature = $this->ethabi->encodeFunctionSignature($functionName);
+            $transaction = [];
+
+            if (count($arguments) > 0) {
+                $transaction = $arguments[0];
+            }
+            $transaction['to'] = $this->toAddress;
+            $transaction['data'] = $functionSignature . Utils::stripZero($data);
+
+            $this->eth->call($transaction, function ($err, $transaction) use ($callback){
+                if ($err !== null) {
+                    return call_user_func($callback, $err, null);
+                }
+                return call_user_func($callback, null, $transaction);
+            });
+        }
+    }
 }

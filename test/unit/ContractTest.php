@@ -304,8 +304,8 @@ class ContractTest extends TestCase
     {
         parent::setUp();
 
-        $this->contract = new Contract('http://localhost:8545', $this->testAbi);
-        // $this->contract = new Contract($this->web3->provider, $this->testAbi);
+        // $this->contract = new Contract('http://localhost:8545', $this->testAbi);
+        $this->contract = new Contract($this->web3->provider, $this->testAbi);
         $this->contract->eth->accounts(function ($err, $accounts) {
             if ($err === null) {
                 if (isset($accounts->result)) {
@@ -399,6 +399,10 @@ class ContractTest extends TestCase
                 }
             });
         });
+
+        if (!isset($this->contractAddress)) {
+            $this->contractAddress = '0x407d73d8a49eeb85d32cf465507dd71d507100c2';
+        }
         $contract->at($this->contractAddress)->send('transfer', $toAccount, 16, [
             'from' => $fromAccount,
             'gas' => '0x200b20'
@@ -427,6 +431,68 @@ class ContractTest extends TestCase
                     $this->assertEquals('0x' . IntegerFormatter::format($toAccount), $topics[2]);
                 }
             });
+        });
+    }
+
+    /**
+     * testCall
+     * 
+     * @return void
+     */
+    public function testCall()
+    {
+        $contract = $this->contract;
+
+        if (!isset($this->accounts[0])) {
+            $fromAccount = '0x407d73d8a49eeb85d32cf465507dd71d507100c1';
+        } else {
+            $fromAccount = $this->accounts[0];
+        }
+        if (!isset($this->accounts[1])) {
+            $toAccount = '0x407d73d8a49eeb85d32cf465507dd71d507100c2';
+        } else {
+            $toAccount = $this->accounts[1];
+        }
+        $contract->bytecode($this->testBytecode)->new(10000, 'Game Token', 1, 'GT', [
+            'from' => $fromAccount,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                // infura api gg
+                return $this->assertTrue($err !== null);
+            }
+            if ($result->result) {
+                echo "\nTransaction has made:) id: " . $result->result . "\n";
+            }
+            $transactionId = $result->result;
+            $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
+
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
+                if ($err !== null) {
+                    return $this->fail($err);
+                }
+                if ($transaction->result) {
+                    $this->contractAddress = $transaction->result->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\n";
+                }
+            });
+        });
+
+        if (!isset($this->contractAddress)) {
+            $this->contractAddress = '0x407d73d8a49eeb85d32cf465507dd71d507100c2';
+        }
+        $contract->at($this->contractAddress)->call('balanceOf', $fromAccount, [
+            'from' => $fromAccount
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                // infura api gg
+                return $this->assertTrue($err !== null);
+            }
+            if (isset($result->result)) {
+                // $bn = Utils::toBn($result->result);
+                // $this->assertEquals($bn->toString(), '10000', 'Balance should be 10000.');
+                $this->assertTrue($result->result !== null);
+            }
         });
     }
 }
