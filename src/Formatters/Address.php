@@ -14,6 +14,7 @@ namespace Web3\Formatters;
 use InvalidArgumentException;
 use Web3\Utils;
 use Web3\Formatters\IFormatter;
+use Web3\Formatters\Integer as IntegerFormatter;
 
 class Address implements IFormatter
 {
@@ -26,6 +27,8 @@ class Address implements IFormatter
      */
     public static function format($value)
     {
+        $value = (string) $value;
+
         if (Utils::isAddress($value)) {
             $value = mb_strtolower($value);
 
@@ -34,6 +37,8 @@ class Address implements IFormatter
             }
             return '0x' . $value;
         }
-        throw new InvalidArgumentException('The address to inputFormat is invalid.');
+        $value = IntegerFormatter::format($value);
+
+        return $value;
     }
 }
