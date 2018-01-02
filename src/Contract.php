@@ -99,10 +99,9 @@ class Contract
      *
      * @param mixed string | Web3\Providers\Provider $provider
      * @param mixed string | stdClass | array $abi
-     * @param string $toAddress
      * @return void
      */
-    public function __construct($provider, $abi, $toAddress='')
+    public function __construct($provider, $abi)
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
@@ -128,10 +127,6 @@ class Contract
             }
         }
         $this->abi = $abi;
-
-        if (is_string($toAddress)) {
-            $this->toAddress = $toAddress;
-        }
         $this->eth = new Eth($this->provider);
         $this->ethabi = new Ethabi([
             'address' => new Address,
