@@ -25,6 +25,7 @@ use Web3\Validators\BooleanValidator;
 use Web3\Validators\StringValidator;
 use Web3\Validators\FilterValidator;
 use Web3\Validators\NonceValidator;
+use Web3\Validators\CallValidator;
 
 class Eth
 {
@@ -159,7 +160,7 @@ class Eth
         'eth_call' => [
             'params' => [
                 [
-                    'validators' => TransactionValidator::class
+                    'validators' => CallValidator::class
                 ], [
                     'default' => 'latest',
                     'validators' => [
