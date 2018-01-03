@@ -29,7 +29,7 @@ class CallValidator
         if (!is_array($value)) {
             return false;
         }
-        if (isset($value['from']) && AddressValidator::validate($value['from']) === false) {
+        if (isset($value['from']) && AddressValidator::validate($value['from']) === false && $value['from'] !== '') {
             return false;
         }
         if (!isset($value['to'])) {
