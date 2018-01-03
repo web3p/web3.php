@@ -29,10 +29,13 @@ class CallValidator
         if (!is_array($value)) {
             return false;
         }
-        if (isset($value['from']) && AddressValidator::validate($value['from']) === false && $value['from'] !== '') {
+        if (isset($value['from']) && AddressValidator::validate($value['from']) === false) {
             return false;
         }
-        if (isset($value['to']) && AddressValidator::validate($value['to']) === false && $value['to'] !== '') {
+        if (!isset($value['to'])) {
+            return false;
+        }
+        if (AddressValidator::validate($value['to']) === false) {
             return false;
         }
         if (isset($value['gas']) && QuantityValidator::validate($value['gas']) === false) {
