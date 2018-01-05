@@ -50,8 +50,8 @@ class Web3BatchTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($data[0]->result));
-            $this->assertEquals($data[1]->result, $this->testHash);
+            $this->assertTrue(is_string($data[0]));
+            $this->assertEquals($data[1], $this->testHash);
         });
     }
 }

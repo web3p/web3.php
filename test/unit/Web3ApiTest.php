@@ -46,11 +46,7 @@ class Web3ApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($version->result)) {
-                $this->assertTrue(is_string($version->result));
-            } else {
-                $this->fail($version->error->message);
-            }
+            $this->assertTrue(is_string($version));
         });
     }
 
@@ -67,11 +63,7 @@ class Web3ApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($hash->result)) {
-                $this->assertEquals($hash->result, $this->testHash);
-            } else {
-                $this->fail($hash->error->message);
-            }
+            $this->assertEquals($hash, $this->testHash);
         });
     }
 
@@ -90,11 +82,7 @@ class Web3ApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($hello->result)) {
-                $this->assertTrue(true);
-            } else {
-                $this->fail($hello->error->message);
-            }
+            $this->assertTrue(true);
         });
     }
 
@@ -113,11 +101,7 @@ class Web3ApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($hash->result)) {
-                $this->assertTrue(true);
-            } else {
-                $this->fail($hash->error->message);
-            }
+            $this->assertTrue(true);
         });
     }
 }
