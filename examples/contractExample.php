@@ -271,8 +271,8 @@ $testBytecode = '0x60606040526040805190810160405280600581526020017f4552433230000
 $contract = new Contract($web3->provider, $testAbi);
 $web3->eth->accounts(function ($err, $accounts) use ($contract, $testBytecode) {
     if ($err === null) {
-        if (isset($accounts->result)) {
-            $accounts = $accounts->result;
+        if (isset($accounts)) {
+            $accounts = $accounts;
         } else {
             throw new RuntimeException('Please ensure you have access to web3 json rpc provider.');
         }
@@ -285,18 +285,18 @@ $web3->eth->accounts(function ($err, $accounts) use ($contract, $testBytecode) {
             if ($err !== null) {
                 throw $err;
             }
-            if ($result->result) {
-                echo "\nTransaction has made:) id: " . $result->result . "\n";
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
             }
-            $transactionId = $result->result;
+            $transactionId = $result;
 
             $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use ($contract, $fromAccount, $toAccount) {
                 if ($err !== null) {
                     throw $err;
                 }
-                if ($transaction->result) {
-                    $contractAddress = $transaction->result->contractAddress;
-                    echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\n";
+                if ($transaction) {
+                    $contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
 
                     $contract->at($contractAddress)->send('transfer', $toAccount, 16, [
                         'from' => $fromAccount,
@@ -305,18 +305,18 @@ $web3->eth->accounts(function ($err, $accounts) use ($contract, $testBytecode) {
                         if ($err !== null) {
                             throw $err;
                         }
-                        if ($result->result) {
-                            echo "\nTransaction has made:) id: " . $result->result . "\n";
+                        if ($result) {
+                            echo "\nTransaction has made:) id: " . $result . "\n";
                         }
-                        $transactionId = $result->result;
+                        $transactionId = $result;
 
                         $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use ($fromAccount, $toAccount) {
                             if ($err !== null) {
                                 throw $err;
                             }
-                            if ($transaction->result) {
-                                echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\nTransaction dump:\n";
-                                var_dump($transaction->result);
+                            if ($transaction) {
+                                echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\nTransaction dump:\n";
+                                var_dump($transaction);
                             }
                         });
                     });
