@@ -11,6 +11,8 @@
 
 namespace Web3\RequestManagers;
 
+use InvalidArgumentException;
+use RuntimeException as RPCException;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
@@ -76,10 +78,17 @@ class HttpRequestManager extends RequestManager implements IRequestManager
             $json = json_decode($res->getBody());
 
             if (JSON_ERROR_NONE !== json_last_error()) {
-                return call_user_func($callback, new \InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
+                return call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
             }
+            if (isset($json->result)) {
+                call_user_func($callback, null, $json->result);
+            } else {
+                if (isset($json->error)) {
+                    $error = $json->error;
 
-            call_user_func($callback, null, $json);
+                    call_user_func($callback, new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code), null);
+                }
+            }
         } catch (RequestException $err) {
             call_user_func($callback, $err, null);
         }
