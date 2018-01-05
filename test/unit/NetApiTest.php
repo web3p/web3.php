@@ -39,11 +39,7 @@ class NetApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($version->result)) {
-                $this->assertTrue(is_string($version->result));
-            } else {
-                $this->fail($version->error->message);
-            }
+            $this->assertTrue(is_string($version));
         });
     }
 
@@ -60,11 +56,7 @@ class NetApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($count->result)) {
-                $this->assertTrue(is_string($count->result));
-            } else {
-                $this->fail($count->error->message);
-            }
+            $this->assertTrue(is_string($count));
         });
     }
 
@@ -81,11 +73,7 @@ class NetApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($net->result)) {
-                $this->assertTrue(is_bool($net->result));
-            } else {
-                $this->fail($net->error->message);
-            }
+            $this->assertTrue(is_bool($net));
         });
     }
 
@@ -104,11 +92,7 @@ class NetApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($hello->result)) {
-                $this->assertTrue(true);
-            } else {
-                $this->fail($hello->error->message);
-            }
+            $this->assertTrue(true);
         });
     }
 }
