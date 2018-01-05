@@ -78,18 +78,41 @@ class HttpRequestManager extends RequestManager implements IRequestManager
             $json = json_decode($res->getBody());
 
             if (JSON_ERROR_NONE !== json_last_error()) {
-                return call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
+                call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
             }
-            if (isset($json->result)) {
-                return call_user_func($callback, null, $json->result);
+            if (is_array($json)) {
+                // batch results
+                $results = [];
+                $errors = [];
+
+                foreach ($json as $result) {
+                    if (isset($result->result)) {
+                        $results[] = $result->result;
+                    } else {
+                        if (isset($json->error)) {
+                            $error = $json->error;
+                            $errors[] = new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code);
+                        } else {
+                            $results[] = null;
+                        }
+                    }
+                }
+                if (count($errors) > 0) {
+                    call_user_func($callback, $errors, $results);
+                } else {
+                    call_user_func($callback, null, $results);
+                }
+            } elseif (isset($json->result)) {
+                call_user_func($callback, null, $json->result);
             } else {
                 if (isset($json->error)) {
                     $error = $json->error;
 
-                    return call_user_func($callback, new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code), null);
+                    call_user_func($callback, new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code), null);
+                } else {
+                    call_user_func($callback, new RPCException('Something wrong happened.'), null);
                 }
             }
-            return call_user_func($callback, new RPCException('Something wrong happened.'), null);
         } catch (RequestException $err) {
             call_user_func($callback, $err, null);
         }
