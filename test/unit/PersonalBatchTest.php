@@ -43,8 +43,8 @@ class PersonalBatchTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err->getCode() === 405);
             }
-            $this->assertTrue(is_array($data[0]->result));
-            $this->assertTrue(is_string($data[1]->result));
+            $this->assertTrue(is_array($data[0]));
+            $this->assertTrue(is_string($data[1]));
         });
     }
 }

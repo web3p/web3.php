@@ -40,11 +40,7 @@ class PersonalApiTest extends TestCase
                 // infura banned us to use list accounts
                 return $this->assertTrue($err->getCode() === 405);
             }
-            if (isset($accounts->result)) {
-                $this->assertTrue(is_array($accounts->result));
-            } else {
-                $this->fail($accounts->error->message);
-            }
+            $this->assertTrue(is_array($accounts));
         });
     }
 
@@ -62,11 +58,7 @@ class PersonalApiTest extends TestCase
                 // infura banned us to use new account
                 return $this->assertTrue($err->getCode() === 405);
             }
-            if (isset($account->result)) {
-                $this->assertTrue(is_string($account->result));
-            } else {
-                $this->fail($account->error->message);
-            }
+            $this->assertTrue(is_string($account));
         });
     }
 
@@ -84,11 +76,7 @@ class PersonalApiTest extends TestCase
                 // infura banned us to use unlock account
                 return $this->assertTrue($err->getCode() === 405);
             }
-            if (isset($account->result)) {
-                $this->assertTrue(is_bool($account->result));
-            } else {
-                $this->fail($account->error->message);
-            }
+            $this->assertTrue(is_bool($account));
         });
     }
 
@@ -113,16 +101,7 @@ class PersonalApiTest extends TestCase
                 // infura banned us to use send transaction
                 return $this->assertTrue($err->getCode() === 405);
             }
-            if (isset($transaction->result)) {
-                $this->assertTrue(is_string($transaction->result));
-            } else {
-                if (isset($transaction->error)) {
-                    // it's just test hex.
-                    $this->assertTrue(is_string($transaction->error->message));
-                } else {
-                    $this->assertTrue(true);
-                }
-            }
+            $this->assertTrue(is_string($transaction));
         });
     }
 
@@ -141,11 +120,7 @@ class PersonalApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($hello->result)) {
-                $this->assertTrue(true);
-            } else {
-                $this->fail($hello->error->message);
-            }
+            $this->assertTrue(true);
         });
     }
 
@@ -164,11 +139,7 @@ class PersonalApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            if (isset($account->result)) {
-                $this->assertTrue(is_string($account->result));
-            } else {
-                $this->fail($account->error->message);
-            }
+            $this->assertTrue(is_string($account));
         });
     }
 }
