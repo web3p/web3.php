@@ -41,10 +41,10 @@ class EthBatchTest extends TestCase
 
         $eth->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->fail($err->getMessage());
+                return $this->fail('Got error!');
             }
-            $this->assertTrue(is_string($data[0]->result));
-            $this->assertTrue($data[1]->result !== null);
+            $this->assertTrue(is_string($data[0]));
+            $this->assertTrue($data[1] !== null);
         });
     }
 }
