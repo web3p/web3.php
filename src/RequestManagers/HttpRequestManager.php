@@ -81,14 +81,15 @@ class HttpRequestManager extends RequestManager implements IRequestManager
                 return call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
             }
             if (isset($json->result)) {
-                call_user_func($callback, null, $json->result);
+                return call_user_func($callback, null, $json->result);
             } else {
                 if (isset($json->error)) {
                     $error = $json->error;
 
-                    call_user_func($callback, new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code), null);
+                    return call_user_func($callback, new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code), null);
                 }
             }
+            return call_user_func($callback, new RPCException('Something wrong happened.'), null);
         } catch (RequestException $err) {
             call_user_func($callback, $err, null);
         }
