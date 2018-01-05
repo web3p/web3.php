@@ -49,10 +49,8 @@ $web3->clientVersion(function ($err, $version) {
         // do something
         return;
     }
-    if (isset($client->result)) {
-        echo 'Client version: ' . $version->result;
-    } else {
-        // do something rpc error
+    if (isset($client)) {
+        echo 'Client version: ' . $version;
     }
 });
 ```
@@ -92,7 +90,6 @@ $net = new Net('http://localhost:8545');
 ### Batch
 
 web3
-
 ```
 $web3->batch(true);
 $web3->clientVersion();
@@ -100,6 +97,9 @@ $web3->hash('0x1234');
 $web3->execute(function ($err, $data) {
     if ($err !== null) {
         // do something
+        // it may throw exception or array of exception depends on error type
+        // connection error: throw exception
+        // json rpc error: array of exception
         return;
     }
     // do something
@@ -123,13 +123,27 @@ $eth->provider->execute(function ($err, $data) {
 ```
 
 net
-
 ```
 $net->batch(true);
 $net->version();
 $net->listening();
 
 $net->provider->execute(function ($err, $data) {
+    if ($err !== null) {
+        // do something
+        return;
+    }
+    // do something
+});
+```
+
+personal
+```
+$personal->batch(true);
+$personal->listAccounts();
+$personal->newAccount('123456');
+
+$personal->provider->execute(function ($err, $data) {
     if ($err !== null) {
         // do something
         return;
