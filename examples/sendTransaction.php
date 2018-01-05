@@ -10,8 +10,8 @@ $eth->accounts(function ($err, $accounts) use ($eth) {
         echo 'Error: ' . $err->getMessage();
         return;
     }
-    $fromAccount = $accounts->result[0];
-    $toAccount = $accounts->result[1];
+    $fromAccount = $accounts[0];
+    $toAccount = $accounts[1];
 
     // get balance
     $eth->getBalance($fromAccount, function ($err, $balance) use($fromAccount) {
@@ -19,14 +19,14 @@ $eth->accounts(function ($err, $accounts) use ($eth) {
             echo 'Error: ' . $err->getMessage();
             return;
         }
-        echo $fromAccount . ' Balance: ' . $balance->result . PHP_EOL;
+        echo $fromAccount . ' Balance: ' . $balance . PHP_EOL;
     });
     $eth->getBalance($toAccount, function ($err, $balance) use($toAccount) {
         if ($err !== null) {
             echo 'Error: ' . $err->getMessage();
             return;
         }
-        echo $toAccount . ' Balance: ' . $balance->result . PHP_EOL;
+        echo $toAccount . ' Balance: ' . $balance . PHP_EOL;
     });
 
     // send transaction
@@ -39,7 +39,7 @@ $eth->accounts(function ($err, $accounts) use ($eth) {
             echo 'Error: ' . $err->getMessage();
             return;
         }
-        echo 'Tx hash: ' . $transaction->result . PHP_EOL;
+        echo 'Tx hash: ' . $transaction . PHP_EOL;
 
         // get balance
         $eth->getBalance($fromAccount, function ($err, $balance) use($fromAccount) {
@@ -47,14 +47,14 @@ $eth->accounts(function ($err, $accounts) use ($eth) {
                 echo 'Error: ' . $err->getMessage();
                 return;
             }
-            echo $fromAccount . ' Balance: ' . $balance->result . PHP_EOL;
+            echo $fromAccount . ' Balance: ' . $balance . PHP_EOL;
         });
         $eth->getBalance($toAccount, function ($err, $balance) use($toAccount) {
             if ($err !== null) {
                 echo 'Error: ' . $err->getMessage();
                 return;
             }
-            echo $toAccount . ' Balance: ' . $balance->result . PHP_EOL;
+            echo $toAccount . ' Balance: ' . $balance . PHP_EOL;
         });
     });
 });
