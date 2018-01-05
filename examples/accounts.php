@@ -10,7 +10,7 @@ $eth->accounts(function ($err, $accounts) use ($eth) {
         echo 'Error: ' . $err->getMessage();
         return;
     }
-    foreach ($accounts->result as $account) {
+    foreach ($accounts as $account) {
         echo 'Account: ' . $account . PHP_EOL;
 
         $eth->getBalance($account, function ($err, $balance) {
@@ -18,7 +18,7 @@ $eth->accounts(function ($err, $accounts) use ($eth) {
                 echo 'Error: ' . $err->getMessage();
                 return;
             }
-            echo 'Balance: ' . $balance->result . PHP_EOL;
+            echo 'Balance: ' . $balance . PHP_EOL;
         });
     }
 });
