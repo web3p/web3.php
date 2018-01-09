@@ -22,8 +22,7 @@ class ClientVersion extends JSONRPC implements IMethod
      * 
      * @var array
      */
-    protected $inputFormatters = [
-    ];
+    protected $inputFormatters = [];
 
     /**
      * outputFormatters
