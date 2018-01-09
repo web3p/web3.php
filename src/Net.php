@@ -95,6 +95,9 @@ class Net
                 // new the method
                 $methodClass = sprintf("\Web3\Methods\%s\%s", ucfirst($class[1]), ucfirst($name));
                 $methodObject = new $methodClass($method, $arguments);
+                $this->methods[$method] = $methodObject;
+            } else {
+                $methodObject = $this->methods[$method];
             }
             $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
             $methodObject->arguments = $inputs;
