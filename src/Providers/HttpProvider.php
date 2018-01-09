@@ -31,19 +31,18 @@ class HttpProvider extends Provider implements IProvider
     /**
      * send
      * 
-     * @param string $method
-     * @param array $arguments
+     * @param \Web3\Methods\Method $method
      * @param callable $callback
      * @return void
      */
-    public function send($method, $arguments, $callback)
+    public function send($method, $callback)
     {
-        $rpc = $this->createRpc($method, $arguments);
+        $payload = $method->toPayloadString();
 
-        if (!$this->isBatch) {            
-            $this->requestManager->sendPayload(json_encode($rpc), $callback);
+        if (!$this->isBatch) {          
+            $this->requestManager->sendPayload($payload, $callback);
         } else {
-            $this->batch[] = json_encode($rpc);
+            $this->batch[] = $payload;
         }
     }
 

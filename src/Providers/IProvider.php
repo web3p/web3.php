@@ -16,12 +16,11 @@ interface IProvider
     /**
      * send
      * 
-     * @param string $method
-     * @param array $arguments
+     * @param \Web3\Methods\Method $method
      * @param callable $callback
      * @return void
      */
-    public function send($method, $arguments, $callback);    
+    public function send($method, $callback);  
 
     /**
      * batch
