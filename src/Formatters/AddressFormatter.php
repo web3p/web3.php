@@ -16,7 +16,7 @@ use Web3\Utils;
 use Web3\Formatters\IFormatter;
 use Web3\Formatters\Integer as IntegerFormatter;
 
-class Address implements IFormatter
+class AddressFormatter implements IFormatter
 {
     /**
      * format
