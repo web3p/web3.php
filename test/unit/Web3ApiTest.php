@@ -65,6 +65,13 @@ class Web3ApiTest extends TestCase
             }
             $this->assertEquals($hash, $this->testHash);
         });
+
+        $web3->sha3('hello world', function ($err, $hash) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertEquals($hash, $this->testHash);
+        });
     }
 
     /**
@@ -88,6 +95,8 @@ class Web3ApiTest extends TestCase
 
     /**
      * testWrongParam
+     * We transform data and throw invalid argument exception
+     * instead of runtime exception.
      * 
      * @return void
      */
@@ -97,7 +106,7 @@ class Web3ApiTest extends TestCase
 
         $web3 = $this->web3;
 
-        $web3->sha3('hello world', function ($err, $hash) {
+        $web3->sha3($web3, function ($err, $hash) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }

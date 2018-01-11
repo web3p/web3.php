@@ -14,6 +14,7 @@ namespace Web3\Methods\Net;
 use InvalidArgumentException;
 use Web3\Methods\IMethod;
 use Web3\Methods\JSONRPC;
+use Web3\Formatters\BigNumberFormatter;
 
 class PeerCount extends JSONRPC implements IMethod
 {
@@ -29,7 +30,9 @@ class PeerCount extends JSONRPC implements IMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [];
+    protected $outputFormatters = [
+        BigNumberFormatter::class
+    ];
 
     /**
      * construct
