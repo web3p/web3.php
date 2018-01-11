@@ -14,7 +14,6 @@ namespace Web3\Formatters;
 use InvalidArgumentException;
 use Web3\Utils;
 use Web3\Formatters\IFormatter;
-use Web3\Formatters\Integer as IntegerFormatter;
 
 class HexFormatter implements IFormatter
 {
