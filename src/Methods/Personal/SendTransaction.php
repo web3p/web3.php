@@ -12,12 +12,11 @@
 namespace Web3\Methods\Personal;
 
 use InvalidArgumentException;
-use Web3\Methods\IMethod;
-use Web3\Methods\JSONRPC;
+use Web3\Methods\EthMethod;
 use Web3\Formatters\TransactionFormatter;
 use Web3\Formatters\StringFormatter;
 
-class SendTransaction extends JSONRPC implements IMethod
+class SendTransaction extends EthMethod
 {
     /**
      * inputFormatters
@@ -36,6 +35,13 @@ class SendTransaction extends JSONRPC implements IMethod
     protected $outputFormatters = [];
 
     /**
+     * defaultValues
+     * 
+     * @var array
+     */
+    protected $defaultValues = [];
+
+    /**
      * construct
      * 
      * @param string $method
@@ -46,47 +52,4 @@ class SendTransaction extends JSONRPC implements IMethod
     // {
     //     parent::__construct($method, $arguments);
     // }
-
-    /**
-     * getInputFormatters
-     * 
-     * @return array
-     */
-    public function getInputFormatters()
-    {
-        return $this->inputFormatters;
-    }
-
-    /**
-     * getOutputFormatters
-     * 
-     * @return array
-     */
-    public function getOutputFormatters()
-    {
-        return $this->outputFormatters;
-    }
-
-    /**
-     * transform
-     * 
-     * @param array $params
-     * @param array $rules
-     * @return array
-     */
-    public function transform($params, $rules)
-    {
-        if (!is_array($params)) {
-            throw new InvalidArgumentException('Please use array params when call transform.');
-        }
-        if (!is_array($rules)) {
-            throw new InvalidArgumentException('Please use array rules when call transform.');
-        }
-        foreach ($params as $key => $param) {
-            if (isset($rules[$key])) {
-                $params[$key] = call_user_func([$rules[$key], 'format'], $param);
-            }
-        }
-        return $params;
-    }
 }

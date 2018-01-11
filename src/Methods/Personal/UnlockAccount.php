@@ -12,13 +12,12 @@
 namespace Web3\Methods\Personal;
 
 use InvalidArgumentException;
-use Web3\Methods\IMethod;
-use Web3\Methods\JSONRPC;
+use Web3\Methods\EthMethod;
 use Web3\Formatters\AddressFormatter;
 use Web3\Formatters\StringFormatter;
 use Web3\Formatters\QuantityFormatter;
 
-class UnlockAccount extends JSONRPC implements IMethod
+class UnlockAccount extends EthMethod
 {
     /**
      * inputFormatters
@@ -41,10 +40,8 @@ class UnlockAccount extends JSONRPC implements IMethod
      * 
      * @var array
      */
-    private $defaultValues = [
-        'personal_unlockAccount' => [
-            2 => 300
-        ]
+    protected $defaultValues = [
+        2 => 300
     ];
 
     /**
@@ -58,59 +55,4 @@ class UnlockAccount extends JSONRPC implements IMethod
     // {
     //     parent::__construct($method, $arguments);
     // }
-
-    /**
-     * getInputFormatters
-     * 
-     * @return array
-     */
-    public function getInputFormatters()
-    {
-        return $this->inputFormatters;
-    }
-
-    /**
-     * getOutputFormatters
-     * 
-     * @return array
-     */
-    public function getOutputFormatters()
-    {
-        return $this->outputFormatters;
-    }
-
-    /**
-     * transform
-     * 
-     * @param array $params
-     * @param array $rules
-     * @return array
-     */
-    public function transform($params, $rules)
-    {
-        if (!is_array($params)) {
-            throw new InvalidArgumentException('Please use array params when call transform.');
-        }
-        if (!is_array($rules)) {
-            throw new InvalidArgumentException('Please use array rules when call transform.');
-        }
-        if (count($params) < count($rules)) {
-            if (!isset($this->defaultValues[$this->method])) {
-                throw new \InvalidArgumentException('The params are less than inputFormatters.');
-            }
-            $defaultValues = $this->defaultValues[$this->method];
-
-            foreach ($defaultValues as $key => $value) {
-                if (!isset($params[$key])) {
-                    $params[$key] = $value;
-                }
-            }
-        }
-        foreach ($params as $key => $param) {
-            if (isset($rules[$key])) {
-                $params[$key] = call_user_func([$rules[$key], 'format'], $param);
-            }
-        }
-        return $params;
-    }
 }
