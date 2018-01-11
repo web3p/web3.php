@@ -13,15 +13,20 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Formatters\AddressFormatter;
+use Web3\Formatters\QuantityFormatter;
+use Web3\Formatters\OptionalQuantityFormatter;
 
-class Syncing extends EthMethod
+class GetStorageAt extends EthMethod
 {
     /**
      * inputFormatters
      * 
      * @var array
      */
-    protected $inputFormatters = [];
+    protected $inputFormatters = [
+        AddressFormatter::class, QuantityFormatter::class, OptionalQuantityFormatter::class
+    ];
 
     /**
      * outputFormatters
@@ -35,7 +40,9 @@ class Syncing extends EthMethod
      * 
      * @var array
      */
-    protected $defaultValues = [];
+    protected $defaultValues = [
+        2 => 'latest'
+    ];
 
     /**
      * construct

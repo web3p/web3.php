@@ -13,15 +13,19 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Formatters\HexFormatter;
+use Web3\Formatters\BooleanFormatter;
 
-class Syncing extends EthMethod
+class GetBlockByHash extends EthMethod
 {
     /**
      * inputFormatters
      * 
      * @var array
      */
-    protected $inputFormatters = [];
+    protected $inputFormatters = [
+        HexFormatter::class, BooleanFormatter::class
+    ];
 
     /**
      * outputFormatters

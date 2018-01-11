@@ -13,15 +13,18 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Formatters\TransactionFormatter;
 
-class Syncing extends EthMethod
+class SendTransaction extends EthMethod
 {
     /**
      * inputFormatters
      * 
      * @var array
      */
-    protected $inputFormatters = [];
+    protected $inputFormatters = [
+        TransactionFormatter::class
+    ];
 
     /**
      * outputFormatters

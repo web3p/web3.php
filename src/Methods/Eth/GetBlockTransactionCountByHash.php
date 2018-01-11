@@ -13,15 +13,18 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Formatters\HexFormatter;
 
-class Syncing extends EthMethod
+class GetBlockTransactionCountByHash extends EthMethod
 {
     /**
      * inputFormatters
      * 
      * @var array
      */
-    protected $inputFormatters = [];
+    protected $inputFormatters = [
+        HexFormatter::class
+    ];
 
     /**
      * outputFormatters

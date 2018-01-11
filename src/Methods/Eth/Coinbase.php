@@ -14,7 +14,7 @@ namespace Web3\Methods\Eth;
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
 
-class Syncing extends EthMethod
+class Coinbase extends EthMethod
 {
     /**
      * inputFormatters
