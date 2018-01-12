@@ -456,7 +456,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($transaction));
+            $this->assertTrue($transaction !== null);
         });
     }
 
@@ -473,7 +473,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($transaction));
+            $this->assertTrue($transaction !== null);
         });
     }
 
@@ -490,7 +490,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($transaction));
+            $this->assertTrue($transaction !== null);
         });
     }
 
@@ -507,7 +507,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($transaction));
+            $this->assertTrue($transaction !== null);
         });
     }
 
@@ -524,7 +524,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($uncle));
+            $this->assertTrue($uncle !== null);
         });
     }
 
@@ -541,7 +541,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($uncle));
+            $this->assertTrue($uncle !== null);
         });
     }
 
