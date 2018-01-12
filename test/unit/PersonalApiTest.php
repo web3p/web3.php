@@ -15,6 +15,13 @@ class PersonalApiTest extends TestCase
     protected $personal;
 
     /**
+     * newAccount
+     * 
+     * @var string
+     */
+    protected $newAccount;
+
+    /**
      * setUp
      * 
      * @return void
@@ -55,8 +62,7 @@ class PersonalApiTest extends TestCase
 
         $personal->newAccount('123456', function ($err, $account) {
             if ($err !== null) {
-                // infura banned us to use new account
-                return $this->assertTrue($err->getCode() === 405);
+                return $this->fail($e->getMessage());
             }
             $this->assertTrue(is_string($account));
         });
@@ -71,12 +77,21 @@ class PersonalApiTest extends TestCase
     {
         $personal = $this->personal;
 
-        $personal->unlockAccount('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '123456', function ($err, $account) {
+        // create account
+        $personal->newAccount('123456', function ($err, $account) {
+            if ($err !== null) {
+                return $this->fail($e->getMessage());
+            }
+            $this->newAccount = $account;
+            $this->assertTrue(is_string($account));
+        });
+
+        $personal->unlockAccount($this->newAccount, '123456', function ($err, $unlocked) {
             if ($err !== null) {
                 // infura banned us to use unlock account
                 return $this->assertTrue($err->getCode() === 405);
             }
-            $this->assertTrue(is_bool($account));
+            $this->assertTrue($unlocked);
         });
     }
 
