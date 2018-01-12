@@ -3,7 +3,11 @@ language: php
 php:
   - 7.1
 
+before_install:
+  - nvm install 8
+
 install:
+  - npm install -g ganache-cli
   - composer install
 
 notifications:
@@ -14,7 +18,7 @@ notifications:
     on_failure: always
 
 script:
-  -  vendor/bin/phpunit --coverage-clover=coverage.xml
+  - ganache-cli > /dev/null & vendor/bin/phpunit --coverage-clover=coverage.xml
 
 after_success:
     - bash <(curl -s https://codecov.io/bash) -t 8436848f-9a99-4b49-be60-629d7ff9a62c
