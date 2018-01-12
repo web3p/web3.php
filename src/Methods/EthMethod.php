@@ -12,11 +12,19 @@
 namespace Web3\Methods;
 
 use InvalidArgumentException;
+use RuntimeException;
 use Web3\Methods\IMethod;
 use Web3\Methods\JSONRPC;
 
 class EthMethod extends JSONRPC implements IMethod
 {
+    /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [];
+
     /**
      * inputFormatters
      * 
@@ -68,6 +76,46 @@ class EthMethod extends JSONRPC implements IMethod
     public function getOutputFormatters()
     {
         return $this->outputFormatters;
+    }
+
+    /**
+     * validate
+     * 
+     * @param array $params
+     * @return bool
+     */
+    public function validate($params)
+    {
+        if (!is_array($params)) {
+            throw new InvalidArgumentException('Please use array params when call validate.');
+        }
+        $rules = $this->validators;
+
+        if (count($params) < count($rules)) {
+            if (!isset($this->defaultValues) || empty($this->defaultValues)) {
+                throw new InvalidArgumentException('The params are less than validators.');
+            }
+            $defaultValues = $this->defaultValues;
+
+            foreach ($defaultValues as $key => $value) {
+                if (!isset($params[$key])) {
+                    $params[$key] = $value;
+                }
+
+            }
+        } elseif (count($params) > count($rules)) {
+            throw new InvalidArgumentException('The params are more than validators.');
+        }
+        foreach ($rules as $key => $rule) {
+            if (isset($params[$key])) {
+                if (call_user_func([$rule, 'validate'], $params[$key]) === false) {
+                    throw new RuntimeException('Wrong type of ' . $this->method . ' method argument ' . $key . '.');
+                }
+            } else {
+                throw new RuntimeException($this->method . ' method argument ' . $key . ' doesn\'t have default value.');
+            }
+        }
+        return true;
     }
 
     /**
