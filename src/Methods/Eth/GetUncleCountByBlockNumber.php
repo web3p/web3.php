@@ -16,6 +16,7 @@ use Web3\Methods\EthMethod;
 use Web3\Validators\TagValidator;
 use Web3\Validators\QuantityValidator;
 use Web3\Formatters\OptionalQuantityFormatter;
+use Web3\Formatters\BigNumberFormatter;
 
 class GetUncleCountByBlockNumber extends EthMethod
 {
@@ -44,7 +45,9 @@ class GetUncleCountByBlockNumber extends EthMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [];
+    protected $outputFormatters = [
+        BigNumberFormatter::class
+    ];
 
     /**
      * defaultValues

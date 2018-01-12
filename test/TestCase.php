@@ -22,14 +22,35 @@ class TestCase extends BaseTestCase
     protected $testRinkebyHost = 'https://rinkeby.infura.io/vuethexplore';
 
     /**
+     * testHost
+     * 
+     * @var string
+     */
+    protected $testHost = 'http://localhost:8545';
+
+    /**
+     * coinbase
+     * 
+     * @var string
+     */
+    protected $coinbase;
+
+    /**
      * setUp
      * 
      * @return void
      */
     public function setUp()
     {
-        $web3 = new Web3($this->testRinkebyHost);
+        $web3 = new Web3($this->testHost);
         $this->web3 = $web3;
+
+        $web3->eth->coinbase(function ($err, $coinbase) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->coinbase = $coinbase;
+        });
     }
 
     /**

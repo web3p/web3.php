@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use Web3\Methods\EthMethod;
 use Web3\Validators\BlockHashValidator;
 use Web3\Formatters\HexFormatter;
+use Web3\Formatters\BigNumberFormatter;
 
 class GetBlockTransactionCountByHash extends EthMethod
 {
@@ -41,7 +42,9 @@ class GetBlockTransactionCountByHash extends EthMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [];
+    protected $outputFormatters = [
+        BignumberFormatter::class
+    ];
 
     /**
      * defaultValues

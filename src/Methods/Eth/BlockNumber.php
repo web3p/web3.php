@@ -13,6 +13,7 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Formatters\BigNumberFormatter;
 
 class BlockNumber extends EthMethod
 {
@@ -35,7 +36,9 @@ class BlockNumber extends EthMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [];
+    protected $outputFormatters = [
+        BigNumberFormatter::class
+    ];
 
     /**
      * defaultValues

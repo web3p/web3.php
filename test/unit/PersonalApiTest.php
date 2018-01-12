@@ -15,6 +15,13 @@ class PersonalApiTest extends TestCase
     protected $personal;
 
     /**
+     * newAccount
+     * 
+     * @var string
+     */
+    protected $newAccount;
+
+    /**
      * setUp
      * 
      * @return void
@@ -55,8 +62,7 @@ class PersonalApiTest extends TestCase
 
         $personal->newAccount('123456', function ($err, $account) {
             if ($err !== null) {
-                // infura banned us to use new account
-                return $this->assertTrue($err->getCode() === 405);
+                return $this->fail($e->getMessage());
             }
             $this->assertTrue(is_string($account));
         });
@@ -71,12 +77,21 @@ class PersonalApiTest extends TestCase
     {
         $personal = $this->personal;
 
-        $personal->unlockAccount('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '123456', function ($err, $account) {
+        // create account
+        $personal->newAccount('123456', function ($err, $account) {
+            if ($err !== null) {
+                return $this->fail($e->getMessage());
+            }
+            $this->newAccount = $account;
+            $this->assertTrue(is_string($account));
+        });
+
+        $personal->unlockAccount($this->newAccount, '123456', function ($err, $unlocked) {
             if ($err !== null) {
                 // infura banned us to use unlock account
                 return $this->assertTrue($err->getCode() === 405);
             }
-            $this->assertTrue(is_bool($account));
+            $this->assertTrue($unlocked);
         });
     }
 
@@ -89,19 +104,37 @@ class PersonalApiTest extends TestCase
     {
         $personal = $this->personal;
 
-        $personal->sendTransaction([
-            'from' => "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
-            'to' => "0xd46e8dd67c5d32be8058bb8eb970870f07244567",
-            'gas' => "0x76c0",
-            'gasPrice' => "0x9184e72a000",
-            'value' => "0x9184e72a",
-            'data' => "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675"
-        ], '123456', function ($err, $transaction) {
+        // create account
+        $personal->newAccount('123456', function ($err, $account) {
             if ($err !== null) {
-                // infura banned us to use send transaction
-                return $this->assertTrue($err->getCode() === 405);
+                return $this->fail($e->getMessage());
+            }
+            $this->newAccount = $account;
+            $this->assertTrue(is_string($account));
+        });
+
+        $this->web3->eth->sendTransaction([
+            'from' => $this->coinbase,
+            'to' => $this->newAccount,
+            'value' => '0xfffffffff',
+        ], function ($err, $transaction) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_string($transaction));
+            $this->assertTrue(mb_strlen($transaction) === 66);
+        });
+
+        $personal->sendTransaction([
+            'from' => $this->newAccount,
+            'to' => $this->coinbase,
+            'value' => '0x01',
+        ], '123456', function ($err, $transaction) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue(is_string($transaction));
+            $this->assertTrue(mb_strlen($transaction) === 66);
         });
     }
 

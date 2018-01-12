@@ -304,7 +304,6 @@ class ContractTest extends TestCase
     {
         parent::setUp();
 
-        // $this->contract = new Contract('http://localhost:8545', $this->testAbi);
         $this->contract = new Contract($this->web3->provider, $this->testAbi);
         $this->contract->eth->accounts(function ($err, $accounts) {
             if ($err === null) {
@@ -417,7 +416,7 @@ class ContractTest extends TestCase
             $transactionId = $result;
             $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
 
-            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use ($fromAccount, $toAccount) {
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use ($fromAccount, $toAccount, $contract) {
                 if ($err !== null) {
                     return $this->fail($err);
                 }
@@ -426,7 +425,7 @@ class ContractTest extends TestCase
                     echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
 
                     // validate topics
-                    $this->assertEquals(Ethabi::encodeEventSignature($this->contract->events['Transfer']), $topics[0]);
+                    $this->assertEquals($contract->ethabi->encodeEventSignature($this->contract->events['Transfer']), $topics[0]);
                     $this->assertEquals('0x' . IntegerFormatter::format($fromAccount), $topics[1]);
                     $this->assertEquals('0x' . IntegerFormatter::format($toAccount), $topics[2]);
                 }
