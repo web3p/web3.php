@@ -3,7 +3,7 @@
 namespace Test\Unit;
 
 use Test\TestCase;
-use Web3\Formatters\Boolean;
+use Web3\Formatters\BooleanFormatter;
 
 class BooleanFormatterTest extends TestCase
 {
@@ -22,7 +22,7 @@ class BooleanFormatterTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->formatter = new Boolean;
+        $this->formatter = new BooleanFormatter;
     }
 
     /**
