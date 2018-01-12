@@ -279,7 +279,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($uncleCount));
+            $this->assertTrue(is_numeric($uncleCount->toString()));
         });
     }
 
