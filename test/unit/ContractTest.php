@@ -304,7 +304,6 @@ class ContractTest extends TestCase
     {
         parent::setUp();
 
-        // $this->contract = new Contract('http://localhost:8545', $this->testAbi);
         $this->contract = new Contract($this->web3->provider, $this->testAbi);
         $this->contract->eth->accounts(function ($err, $accounts) {
             if ($err === null) {

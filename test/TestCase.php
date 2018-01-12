@@ -22,13 +22,20 @@ class TestCase extends BaseTestCase
     protected $testRinkebyHost = 'https://rinkeby.infura.io/vuethexplore';
 
     /**
+     * testHost
+     * 
+     * @var string
+     */
+    protected $testHost = 'http://localhost:8545';
+
+    /**
      * setUp
      * 
      * @return void
      */
     public function setUp()
     {
-        $web3 = new Web3($this->testRinkebyHost);
+        $web3 = new Web3($this->testHost);
         $this->web3 = $web3;
     }
 
