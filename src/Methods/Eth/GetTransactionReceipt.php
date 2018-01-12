@@ -13,32 +13,35 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
-use Web3\Formatters\BigNumberFormatter;
+use Web3\Validators\BlockHashValidator;
+use Web3\Formatters\HexFormatter;
 
-class ProtocolVersion extends EthMethod
+class GetTransactionReceipt extends EthMethod
 {
     /**
      * validators
      * 
      * @var array
      */
-    protected $validators = [];
+    protected $validators = [
+        BlockHashValidator::class
+    ];
 
     /**
      * inputFormatters
      * 
      * @var array
      */
-    protected $inputFormatters = [];
+    protected $inputFormatters = [
+        HexFormatter::class
+    ];
 
     /**
      * outputFormatters
      * 
      * @var array
      */
-    protected $outputFormatters = [
-        BigNumberFormatter::class
-    ];
+    protected $outputFormatters = [];
 
     /**
      * defaultValues

@@ -13,32 +13,39 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
-use Web3\Formatters\BigNumberFormatter;
+use Web3\Validators\TagValidator;
+use Web3\Validators\QuantityValidator;
+use Web3\Formatters\OptionalQuantityFormatter;
+use Web3\Formatters\QuantityFormatter;
 
-class ProtocolVersion extends EthMethod
+class GetUncleByBlockNumberAndIndex extends EthMethod
 {
     /**
      * validators
      * 
      * @var array
      */
-    protected $validators = [];
+    protected $validators = [
+        [
+            TagValidator::class, QuantityValidator::class
+        ], QuantityValidator::class
+    ];
 
     /**
      * inputFormatters
      * 
      * @var array
      */
-    protected $inputFormatters = [];
+    protected $inputFormatters = [
+        OptionalQuantityFormatter::class, QuantityFormatter::class
+    ];
 
     /**
      * outputFormatters
      * 
      * @var array
      */
-    protected $outputFormatters = [
-        BigNumberFormatter::class
-    ];
+    protected $outputFormatters = [];
 
     /**
      * defaultValues

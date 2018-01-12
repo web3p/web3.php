@@ -13,32 +13,36 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
-use Web3\Formatters\BigNumberFormatter;
+use Web3\Validators\NonceValidator;
+use Web3\Validators\BlockHashValidator;
+use Web3\Formatters\QuantityFormatter;
 
-class ProtocolVersion extends EthMethod
+class SubmitWork extends EthMethod
 {
     /**
      * validators
      * 
      * @var array
      */
-    protected $validators = [];
+    protected $validators = [
+        NonceValidator::class, BlockHashValidator::class, BlockHashValidator::class
+    ];
 
     /**
      * inputFormatters
      * 
      * @var array
      */
-    protected $inputFormatters = [];
+    protected $inputFormatters = [
+        QuantityFormatter::class
+    ];
 
     /**
      * outputFormatters
      * 
      * @var array
      */
-    protected $outputFormatters = [
-        BigNumberFormatter::class
-    ];
+    protected $outputFormatters = [];
 
     /**
      * defaultValues

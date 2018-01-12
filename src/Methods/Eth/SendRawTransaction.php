@@ -13,10 +13,20 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Validators\HexValidator;
 use Web3\Formatters\HexFormatter;
 
 class SendRawTransaction extends EthMethod
 {
+    /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [
+        HexValidator::class
+    ];
+
     /**
      * inputFormatters
      * 

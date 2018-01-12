@@ -16,6 +16,13 @@ use Web3\Methods\EthMethod;
 
 class Accounts extends EthMethod
 {
+  /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [];
+
     /**
      * inputFormatters
      * 

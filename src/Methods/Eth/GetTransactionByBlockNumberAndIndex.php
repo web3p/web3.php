@@ -13,11 +13,24 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Validators\TagValidator;
+use Web3\Validators\QuantityValidator;
 use Web3\Formatters\OptionalQuantityFormatter;
 use Web3\Formatters\QuantityFormatter;
 
 class GetTransactionByBlockNumberAndIndex extends EthMethod
 {
+    /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [
+        [
+            TagValidator::class, QuantityValidator::class
+        ], QuantityValidator::class
+    ];
+
     /**
      * inputFormatters
      * 

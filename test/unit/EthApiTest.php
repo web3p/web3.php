@@ -4,6 +4,7 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
+use phpseclib\Math\BigInteger as BigNumber;
 
 class EthApiTest extends TestCase
 {
@@ -39,7 +40,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($version));
+            $this->assertTrue($version instanceof BigNumber);
         });
     }
 

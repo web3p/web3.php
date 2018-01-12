@@ -13,9 +13,8 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
-use Web3\Formatters\BigNumberFormatter;
 
-class ProtocolVersion extends EthMethod
+class GetCompilers extends EthMethod
 {
     /**
      * validators
@@ -36,9 +35,7 @@ class ProtocolVersion extends EthMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [
-        BigNumberFormatter::class
-    ];
+    protected $outputFormatters = [];
 
     /**
      * defaultValues
