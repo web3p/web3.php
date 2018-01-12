@@ -15,10 +15,6 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
-use Web3\Validators\AddressValidator;
-use Web3\Validators\StringValidator;
-use Web3\Validators\QuantityValidator;
-use Web3\Validators\TransactionValidator;
 
 class Personal
 {

@@ -15,17 +15,6 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
-use Web3\Validators\AddressValidator;
-use Web3\Validators\TagValidator;
-use Web3\Validators\QuantityValidator;
-use Web3\Validators\BlockHashValidator;
-use Web3\Validators\HexValidator;
-use Web3\Validators\TransactionValidator;
-use Web3\Validators\BooleanValidator;
-use Web3\Validators\StringValidator;
-use Web3\Validators\FilterValidator;
-use Web3\Validators\NonceValidator;
-use Web3\Validators\CallValidator;
 
 class Eth
 {
