@@ -421,7 +421,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($block));
+            $this->assertTrue($block !== null);
         });
     }
 
@@ -558,7 +558,8 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($compilers));
+            $this->assertTrue(is_array($compilers));
+            $this->assertEquals($compilers[0], 'solidity');
         });
     }
 
