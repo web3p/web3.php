@@ -221,7 +221,7 @@ class Utils
      * @param mixed $value
      * @return string
      */
-    public function toString($value)
+    public static function toString($value)
     {
         try {
             $value = (string) $value;
