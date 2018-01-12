@@ -73,10 +73,9 @@ class EthApiTest extends TestCase
 
         $eth->coinbase(function ($err, $coinbase) {
             if ($err !== null) {
-                // infura banned us to use coinbase
-                return $this->assertTrue($err->getCode() === 405);
+                return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($coinbass));
+            $this->assertEquals($coinbase, '0x561a2aa10f9a8589c93665554c871106342f70af');
         });
     }
 
@@ -93,7 +92,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue($mining !== null);
+            $this->assertTrue($mining);
         });
     }
 
@@ -110,7 +109,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($hashrate));
+            $this->assertEquals($hashrate->toString(), '0');
         });
     }
 
