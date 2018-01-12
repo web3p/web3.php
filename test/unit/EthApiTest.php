@@ -126,7 +126,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($gasPrice));
+            $this->assertTrue(is_numeric($gasPrice->toString()));
         });
     }
 
