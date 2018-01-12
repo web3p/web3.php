@@ -18,6 +18,13 @@ use Web3\Formatters\BigNumberFormatter;
 class PeerCount extends EthMethod
 {
     /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [];
+
+    /**
      * inputFormatters
      * 
      * @var array
