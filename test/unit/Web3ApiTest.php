@@ -102,13 +102,13 @@ class Web3ApiTest extends TestCase
      */
     public function testWrongParam()
     {
-        // $this->expectException(RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $web3 = $this->web3;
 
         $web3->sha3($web3, function ($err, $hash) {
             if ($err !== null) {
-                return $this->assertTrue($err instanceof RuntimeException);
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(true);
         });
