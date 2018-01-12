@@ -14,9 +14,19 @@ namespace Web3\Methods\Web3;
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
 use Web3\Formatters\HexFormatter;
+use Web3\Validators\StringValidator;
 
 class Sha3 extends EthMethod
 {
+    /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [
+        StringValidator::class
+    ];
+
     /**
      * inputFormatters
      * 

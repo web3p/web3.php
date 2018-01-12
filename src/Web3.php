@@ -132,10 +132,19 @@ class Web3
             } else {
                 $methodObject = $this->methods[$method];
             }
-            $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
-            $methodObject->arguments = $inputs;
-
-            $this->provider->send($methodObject, $callback);
+            try {
+                if ($methodObject->validate($arguments)) {
+                    $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
+                    $methodObject->arguments = $inputs;
+                    $this->provider->send($methodObject, $callback);
+                }
+            } catch (\Exception $e) {
+                if (is_callable($callback) === true) {
+                    call_user_func($callback, $e, null);
+                } else {
+                    throw $e;
+                }
+            }
         }
     }
 
