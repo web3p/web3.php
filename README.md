@@ -167,6 +167,12 @@ $contract->at($contractAddress)->call($functionName, $params, $callback);
 
 // change function state
 $contract->at($contractAddress)->send($functionName, $params, $callback);
+
+// estimate deploy contract gas
+$contract->bytecode($bytecode)->estimateGas($params, $callback);
+
+// estimate function gas
+$contract->bytecode($bytecode)->estimateGas($functionName, $params, $callback);
 ```
 
 # Examples
