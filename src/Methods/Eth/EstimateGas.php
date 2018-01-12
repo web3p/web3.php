@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use Web3\Methods\EthMethod;
 use Web3\Validators\TransactionValidator;
 use Web3\Formatters\TransactionFormatter;
+use Web3\Formatters\BigNumberFormatter;
 
 class EstimateGas extends EthMethod
 {
@@ -41,7 +42,9 @@ class EstimateGas extends EthMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [];
+    protected $outputFormatters = [
+        BigNumberFormatter::class
+    ];
 
     /**
      * defaultValues
