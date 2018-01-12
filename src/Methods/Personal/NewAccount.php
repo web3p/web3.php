@@ -13,10 +13,20 @@ namespace Web3\Methods\Personal;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Validators\StringValidator;
 use Web3\Formatters\StringFormatter;
 
 class NewAccount extends EthMethod
 {
+    /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [
+        StringValidator::class
+    ];
+
     /**
      * inputFormatters
      * 

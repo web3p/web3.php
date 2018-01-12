@@ -47,4 +47,28 @@ class PersonalBatchTest extends TestCase
             $this->assertTrue(is_string($data[1]));
         });
     }
+
+    /**
+     * testWrongParam
+     * 
+     * @return void
+     */
+    public function testWrongParam()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $personal = $this->personal;
+
+        $personal->batch(true);
+        $personal->listAccounts();
+        $personal->newAccount($personal);
+
+        $personal->provider->execute(function ($err, $data) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue(is_string($data[0]));
+            $this->assertEquals($data[1], $this->testHash);
+        });
+    }
 }

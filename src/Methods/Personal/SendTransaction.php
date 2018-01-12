@@ -13,11 +13,22 @@ namespace Web3\Methods\Personal;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
+use Web3\Validators\TransactionValidator;
+use Web3\Validators\StringValidator;
 use Web3\Formatters\TransactionFormatter;
 use Web3\Formatters\StringFormatter;
 
 class SendTransaction extends EthMethod
 {
+    /**
+     * validators
+     * 
+     * @var array
+     */
+    protected $validators = [
+        TransactionValidator::class, StringValidator::class
+    ];
+
     /**
      * inputFormatters
      * 

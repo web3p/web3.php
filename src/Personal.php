@@ -103,10 +103,11 @@ class Personal
             } else {
                 $methodObject = $this->methods[$method];
             }
-            $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
-            $methodObject->arguments = $inputs;
-
-            $this->provider->send($methodObject, $callback);
+            if ($methodObject->validate($arguments)) {
+                $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
+                $methodObject->arguments = $inputs;
+                $this->provider->send($methodObject, $callback);
+            }
         }
     }
 
