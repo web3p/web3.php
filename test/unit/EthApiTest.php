@@ -190,7 +190,7 @@ class EthApiTest extends TestCase
     {
         $eth = $this->eth;
 
-        $eth->getStorageAt('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0x0', function ($err, $storage) {
+        $eth->getStorageAt('0x561a2aa10f9a8589c93665554c871106342f70af', '0x0', function ($err, $storage) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
@@ -207,11 +207,11 @@ class EthApiTest extends TestCase
     {
         $eth = $this->eth;
 
-        $eth->getTransactionCount('0x407d73d8a49eeb85d32cf465507dd71d507100c1', function ($err, $transactionCount) {
+        $eth->getTransactionCount('0x561a2aa10f9a8589c93665554c871106342f70af', function ($err, $transactionCount) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($transactionCount));
+            $this->assertTrue(is_numeric($transactionCount->toString()));
         });
     }
 
