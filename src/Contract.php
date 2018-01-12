@@ -243,13 +243,23 @@ class Contract
     }
 
     /**
-     * getAbr
+     * getAbi
      * 
      * @return array
      */
     public function getAbi()
     {
         return $this->abi;
+    }
+
+    /**
+     * getEthabi
+     * 
+     * @return array
+     */
+    public function getEthabi()
+    {
+        return $this->ethabi;
     }
 
     /**
