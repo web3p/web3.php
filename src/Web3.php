@@ -63,15 +63,15 @@ class Web3
      * 
      * @var array
      */
-    private $methods = [
-        'web3_clientVersion' => [],
-        'web3_sha3' => [
-            'params' => [
-                [
-                    'validators' => HexValidator::class
-                ]
-            ]
-        ]
+    private $methods = [];
+
+    /**
+     * allowedMethods
+     * 
+     * @var array
+     */
+    private $allowedMethods = [
+        'web3_clientVersion', 'web3_sha3'
     ];
 
     /**
@@ -112,11 +112,9 @@ class Web3
         if (preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
             $method = strtolower($class[1]) . '_' . $name;
 
-            if (!array_key_exists($method, $this->methods)) {
+            if (!in_array($method, $this->allowedMethods)) {
                 throw new \RuntimeException('Unallowed rpc method: ' . $method);
             }
-            $allowedMethod = $this->methods[$method];
-
             if ($this->provider->isBatch) {
                 $callback = null;
             } else {
@@ -126,43 +124,19 @@ class Web3
                     throw new \InvalidArgumentException('The last param must be callback function.');
                 }
             }
-            if (isset($allowedMethod['params']) && is_array($allowedMethod['params'])) {
-                // validate params
-                foreach ($allowedMethod['params'] as $key => $param) {
-                    if (isset($param['validators'])) {
-                        if (is_array($param['validators'])) {
-                            $isError = true;
-
-                            foreach ($param['validators'] as $rule) {
-                                if (isset($arguments[$key])) {
-                                    if (call_user_func([$rule, 'validate'], $arguments[$key]) === true) {
-                                        $isError = false;
-                                        break;
-                                    }
-                                } else {
-                                    if (isset($param['default'])) {
-                                        $arguments[$key] = $param['default'];
-                                        $isError = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            if ($isError === true) {
-                                throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
-                            }
-                        } else {
-                            if (!isset($arguments[$key]) || call_user_func([$param['validators'], 'validate'], $arguments[$key]) === false) {
-                                if (isset($param['default']) && !isset($arguments[$key])) {
-                                    $arguments[$key] = $param['default'];
-                                } else {
-                                    throw new \RuntimeException('Wrong type of ' . $name . ' method argument ' . $key . '.');
-                                }
-                            }
-                        }
-                    }
-                }
+            if (!array_key_exists($method, $this->methods)) {
+                // new the method
+                $methodClass = sprintf("\Web3\Methods\%s\%s", ucfirst($class[1]), ucfirst($name));
+                $methodObject = new $methodClass($method, $arguments);
+                $this->methods[$method] = $methodObject;
+            } else {
+                $methodObject = $this->methods[$method];
             }
-            $this->provider->send($method, $arguments, $callback);
+            if ($methodObject->validate($arguments)) {
+                $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
+                $methodObject->arguments = $inputs;
+                $this->provider->send($methodObject, $callback);
+            }
         }
     }
 

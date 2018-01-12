@@ -18,6 +18,13 @@ use Web3\RequestManagers\RequestManager;
 class HttpProvider extends Provider implements IProvider
 {
     /**
+     * methods
+     * 
+     * @var array
+     */
+    protected $methods = [];
+
+    /**
      * construct
      * 
      * @param \Web3\RequestManagers\RequestManager $requestManager
@@ -31,19 +38,31 @@ class HttpProvider extends Provider implements IProvider
     /**
      * send
      * 
-     * @param string $method
-     * @param array $arguments
+     * @param \Web3\Methods\Method $method
      * @param callable $callback
      * @return void
      */
-    public function send($method, $arguments, $callback)
+    public function send($method, $callback)
     {
-        $rpc = $this->createRpc($method, $arguments);
+        $payload = $method->toPayloadString();
 
-        if (!$this->isBatch) {            
-            $this->requestManager->sendPayload(json_encode($rpc), $callback);
+        if (!$this->isBatch) {
+            $proxy = function ($err, $res) use ($method, $callback) {
+                if ($err !== null) {
+                    return call_user_func($callback, $err, null);
+                }
+                if (!is_array($res)) {
+                    $res = $method->transform([$res], $method->outputFormatters);
+                    return call_user_func($callback, null, $res[0]);
+                }
+                $res = $method->transform($res, $method->outputFormatters);
+
+                return call_user_func($callback, null, $res);
+            };
+            $this->requestManager->sendPayload($payload, $proxy);
         } else {
-            $this->batch[] = json_encode($rpc);
+            $this->methods[] = $method;
+            $this->batch[] = $payload;
         }
     }
 
@@ -71,30 +90,26 @@ class HttpProvider extends Provider implements IProvider
         if (!$this->isBatch) {
             throw new \RuntimeException('Please batch json rpc first.');
         }
-        $this->requestManager->sendPayload('[' . implode(',', $this->batch) . ']', $callback);
+        $methods = $this->methods;
+        $proxy = function ($err, $res) use ($methods, $callback) {
+            if ($err !== null) {
+                return call_user_func($callback, $err, null);
+            }
+            foreach ($methods as $key => $method) {
+                if (isset($res[$key])) {
+                    if (!is_array($res[$key])) {
+                        $transformed = $method->transform([$res[$key]], $method->outputFormatters);
+                        $res[$key] = $transformed[0];
+                    } else {
+                        $transformed = $method->transform($res[$key], $method->outputFormatters);
+                        $res[$key] = $transformed;
+                    }
+                }
+            }
+            return call_user_func($callback, null, $res);
+        };
+        $this->requestManager->sendPayload('[' . implode(',', $this->batch) . ']', $proxy);
+        $this->methods[] = [];
         $this->batch = [];
-    }
-
-    /**
-     * createRpc
-     * 
-     * @param string $rpc
-     * @param array $arguments
-     * @return array
-     */
-    protected function createRpc($rpc, $arguments)
-    {
-        $this->id += 1;
-
-        $rpc = [
-            'id' => $this->id,
-            'jsonrpc' => $this->rpcVersion,
-            'method' => $rpc
-        ];
-
-        if (count($arguments) > 0) {
-            $rpc['params'] = $arguments;
-        }
-        return $rpc;
     }
 }

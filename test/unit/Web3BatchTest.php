@@ -54,4 +54,28 @@ class Web3BatchTest extends TestCase
             $this->assertEquals($data[1], $this->testHash);
         });
     }
+
+    /**
+     * testWrongParam
+     * 
+     * @return void
+     */
+    public function testWrongParam()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $web3 = $this->web3;
+
+        $web3->batch(true);
+        $web3->clientVersion();
+        $web3->sha3($web3);
+
+        $web3->provider->execute(function ($err, $data) {
+            if ($err !== null) {
+                return $this->fail('Got error!');
+            }
+            $this->assertTrue(is_string($data[0]));
+            $this->assertEquals($data[1], $this->testHash);
+        });
+    }
 }

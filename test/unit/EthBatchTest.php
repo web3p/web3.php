@@ -4,6 +4,7 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
+use phpseclib\Math\BigInteger as BigNumber;
 
 class EthBatchTest extends TestCase
 {
@@ -43,7 +44,7 @@ class EthBatchTest extends TestCase
             if ($err !== null) {
                 return $this->fail('Got error!');
             }
-            $this->assertTrue(is_string($data[0]));
+            $this->assertTrue($data[0] instanceof BigNumber);
             $this->assertTrue($data[1] !== null);
         });
     }

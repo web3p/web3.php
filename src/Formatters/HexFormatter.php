@@ -14,31 +14,27 @@ namespace Web3\Formatters;
 use InvalidArgumentException;
 use Web3\Utils;
 use Web3\Formatters\IFormatter;
-use Web3\Formatters\Integer as IntegerFormatter;
 
-class Address implements IFormatter
+class HexFormatter implements IFormatter
 {
     /**
      * format
-     * to do: iban
      * 
      * @param mixed $value
      * @return string
      */
     public static function format($value)
     {
-        $value = (string) $value;
+        $value = Utils::toString($value);
+        $value = mb_strtolower($value);
 
-        if (Utils::isAddress($value)) {
-            $value = mb_strtolower($value);
-
-            if (Utils::isZeroPrefixed($value)) {
-                return $value;
-            }
-            return '0x' . $value;
+        if (Utils::isZeroPrefixed($value)) {
+            return $value;
+        } elseif (Utils::isHex($value)) {
+            $value = '0x' . $value;
+        } else {
+            $value = Utils::toHex($value, true);
         }
-        $value = IntegerFormatter::format($value);
-
         return $value;
     }
 }

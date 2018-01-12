@@ -4,6 +4,7 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
+use phpseclib\Math\BigInteger as BigNumber;
 
 class NetBatchTest extends TestCase
 {
@@ -38,6 +39,7 @@ class NetBatchTest extends TestCase
         $net->batch(true);
         $net->version();
         $net->listening();
+        $net->peerCount();
 
         $net->provider->execute(function ($err, $data) {
             if ($err !== null) {
@@ -45,6 +47,7 @@ class NetBatchTest extends TestCase
             }
             $this->assertTrue(is_string($data[0]));
             $this->assertTrue(is_bool($data[1]));
+            $this->assertTrue($data[2] instanceof BigNumber);
         });
     }
 }

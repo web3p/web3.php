@@ -27,7 +27,7 @@ use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\HexValidator;
-use Web3\Formatters\Address as AddressFormatter;
+use Web3\Formatters\AddressFormatter;
 
 class Contract
 {

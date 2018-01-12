@@ -4,6 +4,7 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
+use phpseclib\Math\BigInteger as BigNumber;
 
 class NetApiTest extends TestCase
 {
@@ -56,7 +57,7 @@ class NetApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue(is_string($count));
+            $this->assertTrue($count instanceof BigNumber);
         });
     }
 

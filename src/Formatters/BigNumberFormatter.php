@@ -15,19 +15,19 @@ use InvalidArgumentException;
 use Web3\Utils;
 use Web3\Formatters\IFormatter;
 
-class Boolean implements IFormatter
+class BigNumberFormatter implements IFormatter
 {
     /**
      * format
      * 
      * @param mixed $value
-     * @return int
+     * @return string
      */
     public static function format($value)
     {
-        if (!is_bool($value)) {
-            throw new InvalidArgumentException('The value to inputFormat function must be boolean.');
-        }
-        return (int) $value;
+        $value = Utils::toString($value);
+        $bn = Utils::toBn($value);
+
+        return $bn;
     }
 }

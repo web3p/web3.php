@@ -3,14 +3,14 @@
 namespace Test\Unit;
 
 use Test\TestCase;
-use Web3\Formatters\Address;
+use Web3\Formatters\AddressFormatter;
 
 class AddressFormatterTest extends TestCase
 {
     /**
      * formatter
      * 
-     * @var \Web3\Formatters\Address
+     * @var \Web3\Formatters\AddressFormatter
      */
     protected $formatter;
 
@@ -22,7 +22,7 @@ class AddressFormatterTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->formatter = new Address;
+        $this->formatter = new AddressFormatter;
     }
 
     /**

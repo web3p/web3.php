@@ -11,6 +11,7 @@
 
 namespace Web3;
 
+use RuntimeException;
 use InvalidArgumentException;
 use stdClass;
 use kornrunner\Keccak;
@@ -212,6 +213,22 @@ class Utils
             return null;
         }
         return '0x' . $hash;
+    }
+
+    /**
+     * toString
+     * 
+     * @param mixed $value
+     * @return string
+     */
+    public static function toString($value)
+    {
+        try {
+            $value = (string) $value;
+        } catch (\Exception $e) {
+            throw new RuntimeException('Cannot transform value to string!');
+        }
+        return $value;
     }
 
     /**

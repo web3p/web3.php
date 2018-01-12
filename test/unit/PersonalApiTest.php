@@ -135,7 +135,7 @@ class PersonalApiTest extends TestCase
 
         $personal = $this->personal;
 
-        $personal->newAccount(123456, function ($err, $account) {
+        $personal->newAccount($personal, function ($err, $account) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
