@@ -700,12 +700,12 @@ class EthApiTest extends TestCase
     {
         $eth = $this->eth;
 
-        $eth->getFilterChanges('0x01', function ($err, $filter) {
+        $eth->getFilterChanges('0x01', function ($err, $changes) {
             if ($err !== null) {
                 // infura banned us to get filter changes
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($filter));
+            $this->assertTrue(is_array($changes));
         });
     }
 
