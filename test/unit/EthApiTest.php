@@ -687,7 +687,7 @@ class EthApiTest extends TestCase
                 // infura banned us to uninstall filter
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($filter));
+            $this->assertTrue(is_bool($filter));
         });
     }
 
