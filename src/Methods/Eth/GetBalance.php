@@ -18,6 +18,7 @@ use Web3\Validators\QuantityValidator;
 use Web3\Validators\AddressValidator;
 use Web3\Formatters\AddressFormatter;
 use Web3\Formatters\OptionalQuantityFormatter;
+use Web3\Formatters\BigNumberFormatter;
 
 class GetBalance extends EthMethod
 {
@@ -46,7 +47,9 @@ class GetBalance extends EthMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [];
+    protected $outputFormatters = [
+        BigNumberFormatter::class
+    ];
 
     /**
      * defaultValues
