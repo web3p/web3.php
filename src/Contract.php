@@ -427,4 +427,74 @@ class Contract
             });
         }
     }
+
+    /**
+     * estimateGas
+     * Estimate function gas.
+     * 
+     * @param mixed
+     * @return void
+     */
+    public function estimateGas()
+    {
+        if (isset($this->functions) || isset($this->callback)) {
+            $arguments = func_get_args();
+            $callback = array_pop($arguments);
+
+            if (empty($this->toAddress) && !empty($this->bytecode)) {
+                $constructor = $this->constructor;
+
+                if (count($arguments) < count($constructor['inputs'])) {
+                    throw new InvalidArgumentException('Please make sure you have put all constructor params and callback.');
+                }
+                if (is_callable($callback) !== true) {
+                    throw new \InvalidArgumentException('The last param must be callback function.');
+                }
+                if (!isset($this->bytecode)) {
+                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before new().');
+                }
+                $params = array_splice($arguments, 0, count($constructor['inputs']));
+                $data = $this->ethabi->encodeParameters($constructor, $params);
+                $transaction = [];
+
+                if (count($arguments) > 0) {
+                    $transaction = $arguments[0];
+                }
+                $transaction['to'] = '';
+                $transaction['data'] = '0x' . $this->bytecode . Utils::stripZero($data);
+            } else {
+                $method = array_splice($arguments, 0, 1)[0];
+
+                if (!is_string($method) && !isset($this->functions[$method])) {
+                    throw new InvalidArgumentException('Please make sure the method is existed.');
+                }
+                $function = $this->functions[$method];
+
+                if (count($arguments) < count($function['inputs'])) {
+                    throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+                }
+                if (is_callable($callback) !== true) {
+                    throw new \InvalidArgumentException('The last param must be callback function.');
+                }
+                $params = array_splice($arguments, 0, count($function['inputs']));
+                $data = $this->ethabi->encodeParameters($function, $params);
+                $functionName = Utils::jsonMethodToString($function);
+                $functionSignature = $this->ethabi->encodeFunctionSignature($functionName);
+                $transaction = [];
+
+                if (count($arguments) > 0) {
+                    $transaction = $arguments[0];
+                }
+                $transaction['to'] = $this->toAddress;
+                $transaction['data'] = $functionSignature . Utils::stripZero($data);
+            }
+
+            $this->eth->estimateGas($transaction, function ($err, $gas) use ($callback){
+                if ($err !== null) {
+                    return call_user_func($callback, $err, null);
+                }
+                return call_user_func($callback, null, $gas);
+            });
+        }
+    }
 }

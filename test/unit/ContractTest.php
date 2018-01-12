@@ -308,8 +308,8 @@ class ContractTest extends TestCase
         $this->contract = new Contract($this->web3->provider, $this->testAbi);
         $this->contract->eth->accounts(function ($err, $accounts) {
             if ($err === null) {
-                if (isset($accounts->result)) {
-                    $this->accounts = $accounts->result;
+                if (isset($accounts)) {
+                    $this->accounts = $accounts;
                     return;
                 }
             }
@@ -338,19 +338,19 @@ class ContractTest extends TestCase
                 // infura api gg
                 return $this->assertTrue($err !== null);
             }
-            if ($result->result) {
-                echo "\nTransaction has made:) id: " . $result->result . "\n";
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
             }
-            $transactionId = $result->result;
+            $transactionId = $result;
             $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
 
             $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
                 if ($err !== null) {
                     return $this->fail($err);
                 }
-                if ($transaction->result) {
-                    $this->contractAddress = $transaction->result->contractAddress;
-                    echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\n";
+                if ($transaction) {
+                    $this->contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
                 }
             });
         });
@@ -383,19 +383,19 @@ class ContractTest extends TestCase
                 // infura api gg
                 return $this->assertTrue($err !== null);
             }
-            if ($result->result) {
-                echo "\nTransaction has made:) id: " . $result->result . "\n";
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
             }
-            $transactionId = $result->result;
+            $transactionId = $result;
             $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
 
             $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
                 if ($err !== null) {
                     return $this->fail($err);
                 }
-                if ($transaction->result) {
-                    $this->contractAddress = $transaction->result->contractAddress;
-                    echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\n";
+                if ($transaction) {
+                    $this->contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
                 }
             });
         });
@@ -411,19 +411,19 @@ class ContractTest extends TestCase
                 // infura api gg
                 return $this->assertTrue($err !== null);
             }
-            if ($result->result) {
-                echo "\nTransaction has made:) id: " . $result->result . "\n";
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
             }
-            $transactionId = $result->result;
+            $transactionId = $result;
             $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
 
             $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use ($fromAccount, $toAccount) {
                 if ($err !== null) {
                     return $this->fail($err);
                 }
-                if ($transaction->result) {
-                    $topics = $transaction->result->logs[0]->topics;
-                    echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\n";
+                if ($transaction) {
+                    $topics = $transaction->logs[0]->topics;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
 
                     // validate topics
                     $this->assertEquals(Ethabi::encodeEventSignature($this->contract->events['Transfer']), $topics[0]);
@@ -461,19 +461,19 @@ class ContractTest extends TestCase
                 // infura api gg
                 return $this->assertTrue($err !== null);
             }
-            if ($result->result) {
-                echo "\nTransaction has made:) id: " . $result->result . "\n";
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
             }
-            $transactionId = $result->result;
+            $transactionId = $result;
             $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
 
             $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
                 if ($err !== null) {
                     return $this->fail($err);
                 }
-                if ($transaction->result) {
-                    $this->contractAddress = $transaction->result->contractAddress;
-                    echo "\nTransaction has mind:) block number: " . $transaction->result->blockNumber . "\n";
+                if ($transaction) {
+                    $this->contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
                 }
             });
         });
@@ -488,10 +488,85 @@ class ContractTest extends TestCase
                 // infura api gg
                 return $this->assertTrue($err !== null);
             }
-            if (isset($result->result)) {
-                // $bn = Utils::toBn($result->result);
+            if (isset($result)) {
+                // $bn = Utils::toBn($result);
                 // $this->assertEquals($bn->toString(), '10000', 'Balance should be 10000.');
-                $this->assertTrue($result->result !== null);
+                $this->assertTrue($result !== null);
+            }
+        });
+    }
+
+    /**
+     * testEstimateGas
+     * 
+     * @return void
+     */
+    public function testEstimateGas()
+    {
+        $contract = $this->contract;
+
+        if (!isset($this->accounts[0])) {
+            $fromAccount = '0x407d73d8a49eeb85d32cf465507dd71d507100c1';
+        } else {
+            $fromAccount = $this->accounts[0];
+        }
+        if (!isset($this->accounts[1])) {
+            $toAccount = '0x407d73d8a49eeb85d32cf465507dd71d507100c2';
+        } else {
+            $toAccount = $this->accounts[1];
+        }
+        $contract->bytecode($this->testBytecode)->new(10000, 'Game Token', 1, 'GT', [
+            'from' => $fromAccount,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                // infura api gg
+                return $this->assertTrue($err !== null);
+            }
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
+            }
+            $transactionId = $result;
+            $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
+
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
+                if ($err !== null) {
+                    return $this->fail($err);
+                }
+                if ($transaction) {
+                    $this->contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
+                }
+            });
+        });
+
+        $contract->bytecode($this->testBytecode)->estimateGas(10000, 'Game Token', 1, 'GT', [
+            'from' => $fromAccount,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                // infura api gg
+                return $this->assertTrue($err !== null);
+            }
+            if (isset($result)) {
+                echo "\nEstimate gas: " . $result->toString() . "\n";
+                $this->assertTrue($result !== null);
+            }
+        });
+
+        if (!isset($this->contractAddress)) {
+            $this->contractAddress = '0x407d73d8a49eeb85d32cf465507dd71d507100c2';
+        }
+        $contract->at($this->contractAddress)->estimateGas('balanceOf', $fromAccount, [
+            'from' => $fromAccount
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                // infura api gg
+                return $this->assertTrue($err !== null);
+            }
+            if (isset($result)) {
+                echo "\nEstimate gas: " . $result->toString() . "\n";
+                $this->assertTrue($result !== null);
             }
         });
     }
