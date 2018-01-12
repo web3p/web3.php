@@ -75,7 +75,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertEquals($coinbase, '0x561a2aa10f9a8589c93665554c871106342f70af');
+            $this->assertEquals($coinbase, $this->coinbase);
         });
     }
 

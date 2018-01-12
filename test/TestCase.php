@@ -29,6 +29,13 @@ class TestCase extends BaseTestCase
     protected $testHost = 'http://localhost:8545';
 
     /**
+     * coinbase
+     * 
+     * @var string
+     */
+    protected $coinbase;
+
+    /**
      * setUp
      * 
      * @return void
@@ -37,6 +44,13 @@ class TestCase extends BaseTestCase
     {
         $web3 = new Web3($this->testHost);
         $this->web3 = $web3;
+
+        $web3->eth->coinbase(function ($err, $coinbase) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->coinbase = $coinbase;
+        });
     }
 
     /**
