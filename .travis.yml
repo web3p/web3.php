@@ -18,7 +18,7 @@ notifications:
     on_failure: always
 
 script:
-  - ganache-cli > /dev/null & vendor/bin/phpunit --coverage-clover=coverage.xml
+  - scripts/test.sh
 
 after_success:
     - bash <(curl -s https://codecov.io/bash) -t 8436848f-9a99-4b49-be60-629d7ff9a62c
