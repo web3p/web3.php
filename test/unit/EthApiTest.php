@@ -404,7 +404,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue(is_string($gas));
+            $this->assertTrue(is_numeric($gas->toString()));
         });
     }
 
