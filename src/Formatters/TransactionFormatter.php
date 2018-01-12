@@ -37,7 +37,7 @@ class TransactionFormatter implements IFormatter
             $value['value'] = QuantityFormatter::format($value['value']);
         }
         if (isset($value['data'])) {
-            $value['data'] = HexFormatter::format($value['gas']);
+            $value['data'] = HexFormatter::format($value['data']);
         }
         if (isset($value['nonce'])) {
             $value['nonce'] = QuantityFormatter::format($value['nonce']);
