@@ -291,4 +291,29 @@ class Ethabi
         }
         return $result;
     }
+
+    /**
+     * decodeParameter
+     * 
+     * @param string $type
+     * @param mixed $param
+     * @return string
+     */
+    public function decodeParameter($type, $param)
+    {
+        if (!is_string($type)) {
+            throw new InvalidArgumentException('The type to decodeParameter must be string.');
+        }
+        return $this->decodeParameters([$type], [$param]);
+    }
+
+    /**
+     * decodeParameters
+     * 
+     * @param stdClass|array $type
+     * @param array $param
+     * @return string
+     */
+    public function decodeParameters($type, $param)
+    {}
 }
