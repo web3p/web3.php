@@ -175,7 +175,7 @@ $contract->at($contractAddress)->send($functionName, $params, $callback);
 $contract->bytecode($bytecode)->estimateGas($params, $callback);
 
 // estimate function gas
-$contract->bytecode($bytecode)->estimateGas($functionName, $params, $callback);
+$contract->at($contractAddress)->estimateGas($functionName, $params, $callback);
 ```
 
 # Examples
