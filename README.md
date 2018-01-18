@@ -176,6 +176,23 @@ $contract->bytecode($bytecode)->estimateGas($params, $callback);
 $contract->bytecode($bytecode)->estimateGas($functionName, $params, $callback);
 ```
 
+# Assign value to outside scope(from callback scope to outside scope)
+Due to callback is not like javascript callback, 
+if we need to assign value to outside scope, 
+we need to assign reference to callback.
+```
+$newAccount = '';
+
+$web3->personal->newAccount('123456', function ($err, $account) use (&$newAccount) {
+    if ($err !== null) {
+        echo 'Error: ' . $err->getMessage();
+        return;
+    }
+    $newAccount = $account;
+    echo 'New account: ' . $account . PHP_EOL;
+});
+```
+
 # Examples
 
 To run examples, you need to run ethereum blockchain local (testrpc).
