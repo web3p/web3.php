@@ -183,6 +183,18 @@ class EthabiTest extends TestCase
     }
 
     /**
+     * testEncodeParameter
+     * 
+     * @return void
+     */
+    public function testEncodeParameter()
+    {
+        $abi = $this->abi;
+
+        $this->assertEquals('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', $abi->encodeParameter('int256', '-1'));
+    }
+
+    /**
      * testEncodeParameters
      * 
      * @return void
