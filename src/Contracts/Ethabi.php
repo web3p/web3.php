@@ -153,7 +153,7 @@ class Ethabi
             throw new InvalidArgumentException('encodeParameters number of types must equal to number of params.');
         }
         $typesLength = count($types);
-        $solidityTypes = array_fill(0, $typesLength, 0);
+        $solidityTypes = $this->getSolidityTypes($types);
 
         foreach ($types as $key => $type) {
             $match = [];
@@ -187,6 +187,101 @@ class Ethabi
             }
         }
         return '0x' . $this->encodeMultiWithOffset($types, $solidityTypes, $encodes, $dynamicOffset);
+    }
+
+    /**
+     * decodeParameter
+     * 
+     * @param string $type
+     * @param mixed $param
+     * @return string
+     */
+    public function decodeParameter($type, $param)
+    {
+        if (!is_string($type)) {
+            throw new InvalidArgumentException('The type to decodeParameter must be string.');
+        }
+        return $this->decodeParameters([$type], $param)[0];
+    }
+
+    /**
+     * decodeParameters
+     * 
+     * @param stdClass|array $type
+     * @param string $param
+     * @return string
+     */
+    public function decodeParameters($types, $param)
+    {
+        if (!is_string($param)) {
+            throw new InvalidArgumentException('The type or param to decodeParameters must be string.');
+        }
+
+        // change json to array
+        if ($types instanceof stdClass && isset($types->outputs)) {
+            $types = Utils::jsonToArray($types, 2);
+        }
+        if (is_array($types) && isset($types['outputs'])) {
+            $outputTypes = $types;
+            $types = [];
+
+            foreach ($outputTypes['outputs'] as $output) {
+                if (isset($output['type'])) {
+                    $types[] = $output['type'];
+                }
+            }
+        }
+        $typesLength = count($types);
+        $solidityTypes = $this->getSolidityTypes($types);
+        $offsets = array_fill(0, $typesLength, 0);
+
+        for ($i=0; $i<$typesLength; $i++) {
+            $offsets[$i] = $solidityTypes[$i]->staticPartLength($types[$i]);
+        }
+        for ($i=1; $i<$typesLength; $i++) {
+            $offsets[$i] += $offsets[$i - 1];
+        }
+        for ($i=0; $i<$typesLength; $i++) {
+            $offsets[$i] -= $solidityTypes[$i]->staticPartLength($types[$i]);
+        }
+        $result = [];
+        $param = mb_strtolower(Utils::stripZero($param));
+
+        for ($i=0; $i<$typesLength; $i++) {
+            $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * getSolidityTypes
+     * 
+     * @param array $types
+     * @return array
+     */
+    protected function getSolidityTypes($types)
+    {
+        if (!is_array($types)) {
+            throw new InvalidArgumentException('Types must be array');
+        }
+        $solidityTypes = array_fill(0, count($types), 0);
+
+        foreach ($types as $key => $type) {
+            $match = [];
+
+            if (preg_match('/^([a-zA-Z]+)/', $type, $match) === 1) {
+                if (isset($this->types[$match[0]])) {
+                    $className = $this->types[$match[0]];
+
+                    if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
+                        throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+                    }
+                    $solidityTypes[$key] = $className;
+                }
+            }
+        }
+        return $solidityTypes;
     }
 
     /**
@@ -291,29 +386,4 @@ class Ethabi
         }
         return $result;
     }
-
-    /**
-     * decodeParameter
-     * 
-     * @param string $type
-     * @param mixed $param
-     * @return string
-     */
-    public function decodeParameter($type, $param)
-    {
-        if (!is_string($type)) {
-            throw new InvalidArgumentException('The type to decodeParameter must be string.');
-        }
-        return $this->decodeParameters([$type], [$param]);
-    }
-
-    /**
-     * decodeParameters
-     * 
-     * @param stdClass|array $type
-     * @param array $param
-     * @return string
-     */
-    public function decodeParameters($type, $param)
-    {}
 }

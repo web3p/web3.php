@@ -75,4 +75,21 @@ class Bytes extends SolidityType implements IType
 
         return $value . implode('', array_fill(0, $padding, '0'));
     }
+
+    /**
+     * outputFormat
+     * 
+     * @param mixed $value
+     * @param string $name
+     * @return string
+     */
+    public function outputFormat($value, $name)
+    {
+        $checkZero = str_replace('0', '', $value);
+
+        if (empty($checkZero)) {
+            return '0';
+        }
+        return '0x' . $value;
+    }
 }

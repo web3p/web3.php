@@ -74,4 +74,21 @@ class DynamicBytes extends SolidityType implements IType
 
         return implode('', array_fill(0, 64-mb_strlen($bnHex), $padded)) . $bnHex . $value . implode('', array_fill(0, $padding, '0'));
     }
+
+    /**
+     * outputFormat
+     * 
+     * @param mixed $value
+     * @param string $name
+     * @return string
+     */
+    public function outputFormat($value, $name)
+    {
+        $checkZero = str_replace('0', '', $value);
+
+        if (empty($checkZero)) {
+            return '0';
+        }
+        return '0x' . $value;
+    }
 }

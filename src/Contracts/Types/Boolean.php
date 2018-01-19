@@ -64,4 +64,18 @@ class Boolean extends SolidityType implements IType
 
         return '000000000000000000000000000000000000000000000000000000000000000' . $value;
     }
+
+    /**
+     * outputFormat
+     * 
+     * @param mixed $value
+     * @param string $name
+     * @return string
+     */
+    public function outputFormat($value, $name)
+    {
+        $value = (int) mb_substr($value, 63, 1);
+
+        return (bool) $value;
+    }
 }
