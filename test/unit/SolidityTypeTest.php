@@ -123,9 +123,20 @@ class SolidityTypeTest extends TestCase
      * 
      * @return void
      */
-    public function testEncode()
-    {
-        $type = $this->type;
-        $this->assertTrue(true);
-    }
+    // public function testEncode()
+    // {
+    //     $type = $this->type;
+    //     $this->assertTrue(true);
+    // }
+
+    /**
+     * testDecode
+     * 
+     * @return void
+     */
+    // public function testDecode()
+    // {
+    //     $type = $this->type;
+    //     $this->assertTrue(true);
+    // }
 }

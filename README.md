@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/sc0Vu/web3.php.svg?branch=master)](https://travis-ci.org/sc0Vu/web3.php)
 [![codecov](https://codecov.io/gh/sc0Vu/web3.php/branch/master/graph/badge.svg)](https://codecov.io/gh/sc0Vu/web3.php)
 [![Join the chat at https://gitter.im/web3-php/web3.php](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg)](https://gitter.im/web3-php/web3.php)
+[![Licensed under the MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/sc0Vu/web3.php/blob/master/LICENSE)
+
 
 A php interface for interacting with the Ethereum blockchain and ecosystem.
 
@@ -173,7 +175,7 @@ $contract->at($contractAddress)->send($functionName, $params, $callback);
 $contract->bytecode($bytecode)->estimateGas($params, $callback);
 
 // estimate function gas
-$contract->bytecode($bytecode)->estimateGas($functionName, $params, $callback);
+$contract->at($contractAddress)->estimateGas($functionName, $params, $callback);
 ```
 
 # Assign value to outside scope(from callback scope to outside scope)

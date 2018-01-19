@@ -185,6 +185,16 @@ class SolidityType
     }
 
     /**
+     * isDynamicType
+     * 
+     * @return bool
+     */
+    public function isDynamicType()
+    {
+        return false;
+    }
+
+    /**
      * encode
      * 
      * @param mixed $value
@@ -214,5 +224,55 @@ class SolidityType
             return $result;
         }
         return $this->inputFormat($value, $name);
+    }
+
+    /**
+     * decode
+     * 
+     * @param mixed $value
+     * @param string $offset
+     * @param string $name
+     * @return array
+     */
+    public function decode($value, $offset, $name)
+    {
+        if ($this->isDynamicArray($name)) {
+            $arrayOffset = (int) Utils::toBn('0x' . mb_substr($value, $offset * 2, 64))->toString();
+            $length = (int) Utils::toBn('0x' . mb_substr($value, $arrayOffset * 2, 64))->toString();
+            $arrayStart = $arrayOffset + 32;
+
+            $nestedName = $this->nestedName($name);
+            $nestedStaticPartLength = $this->staticPartLength($nestedName);
+            $roundedNestedStaticPartLength = floor(($nestedStaticPartLength + 31) / 32) * 32;
+            $result = [];
+
+            for ($i=0; $i<$length * $roundedNestedStaticPartLength; $i+=$roundedNestedStaticPartLength) {
+                $result[] = $this->decode($value, $arrayStart + $i, $nestedName);
+            }
+            return $result;
+        } elseif ($this->isStaticArray($name)) {
+            $length = $this->staticArrayLength($name);
+            $arrayStart = $offset;
+
+            $nestedName = $this->nestedName($name);
+            $nestedStaticPartLength = $this->staticPartLength($nestedName);
+            $roundedNestedStaticPartLength = floor(($nestedStaticPartLength + 31) / 32) * 32;
+            $result = [];
+
+            for ($i=0; $i<$length * $roundedNestedStaticPartLength; $i+=$roundedNestedStaticPartLength) {
+                $result[] = $this->decode($value, $arrayStart + $i, $nestedName);
+            }
+            return $result;
+        } elseif ($this->isDynamicType()) {
+            $dynamicOffset = (int) Utils::toBn('0x' . mb_substr($value, $offset * 2, 64))->toString();
+            $length = (int) Utils::toBn('0x' . mb_substr($value, $dynamicOffset * 2, 64))->toString();
+            $roundedLength = floor(($length + 31) / 32);
+            $param = mb_substr($value, $dynamicOffset * 2, ( 1 + $roundedLength) * 64);
+            return $this->outputFormat($param, $name);
+        }
+        $length = $this->staticPartLength($name);
+        $param = mb_substr($value, $offset * 2, $length * 2);
+
+        return $this->outputFormat($param, $name);
     }
 }

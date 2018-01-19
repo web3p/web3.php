@@ -73,4 +73,16 @@ class Address extends SolidityType implements IType
 
         return $value;
     }
+
+    /**
+     * outputFormat
+     * 
+     * @param mixed $value
+     * @param string $name
+     * @return string
+     */
+    public function outputFormat($value, $name)
+    {
+        return '0x' . mb_substr($value, 24, 40);
+    }
 }
