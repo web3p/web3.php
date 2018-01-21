@@ -447,7 +447,7 @@ class Contract
      */
     public function estimateGas()
     {
-        if (isset($this->functions) || isset($this->callback)) {
+        if (isset($this->functions) || isset($this->constructor)) {
             $arguments = func_get_args();
             $callback = array_pop($arguments);
 
@@ -461,7 +461,7 @@ class Contract
                     throw new \InvalidArgumentException('The last param must be callback function.');
                 }
                 if (!isset($this->bytecode)) {
-                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before new().');
+                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before estimateGas().');
                 }
                 $params = array_splice($arguments, 0, count($constructor['inputs']));
                 $data = $this->ethabi->encodeParameters($constructor, $params);
@@ -505,6 +505,56 @@ class Contract
                 }
                 return call_user_func($callback, null, $gas);
             });
+        }
+    }
+
+    /**
+     * getData
+     * Get the function method call data.
+     * With this function, you can send signed contract function transaction.
+     * 1. Get the funtion data with params.
+     * 2. Sign the data with user private key.
+     * 3. Call sendRawTransaction.
+     * 
+     * @param mixed
+     * @return void
+     */
+    public function getData()
+    {
+        if (isset($this->functions) || isset($this->constructor)) {
+            $arguments = func_get_args();
+            $functionData = '';
+
+            if (empty($this->toAddress) && !empty($this->bytecode)) {
+                $constructor = $this->constructor;
+
+                if (count($arguments) < count($constructor['inputs'])) {
+                    throw new InvalidArgumentException('Please make sure you have put all constructor params and callback.');
+                }
+                if (!isset($this->bytecode)) {
+                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before getData().');
+                }
+                $params = array_splice($arguments, 0, count($constructor['inputs']));
+                $data = $this->ethabi->encodeParameters($constructor, $params);
+                $functionData = $this->bytecode . Utils::stripZero($data);
+            } else {
+                $method = array_splice($arguments, 0, 1)[0];
+
+                if (!is_string($method) && !isset($this->functions[$method])) {
+                    throw new InvalidArgumentException('Please make sure the method is existed.');
+                }
+                $function = $this->functions[$method];
+
+                if (count($arguments) < count($function['inputs'])) {
+                    throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+                }
+                $params = array_splice($arguments, 0, count($function['inputs']));
+                $data = $this->ethabi->encodeParameters($function, $params);
+                $functionName = Utils::jsonMethodToString($function);
+                $functionSignature = $this->ethabi->encodeFunctionSignature($functionName);
+                $functionData = Utils::stripZero($functionSignature) . Utils::stripZero($data);
+            }
+            return $functionData;
         }
     }
 }
