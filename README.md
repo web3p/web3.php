@@ -176,6 +176,13 @@ $contract->bytecode($bytecode)->estimateGas($params, $callback);
 
 // estimate function gas
 $contract->at($contractAddress)->estimateGas($functionName, $params, $callback);
+
+// get constructor data
+$constructorData = $contract->bytecode($bytecode)->getData($params);
+
+// get function data
+$functionData = $contract->at($contractAddress)->getData($functionName, $params);
+
 ```
 
 # Assign value to outside scope(from callback scope to outside scope)
