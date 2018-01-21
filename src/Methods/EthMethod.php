@@ -84,7 +84,7 @@ class EthMethod extends JSONRPC implements IMethod
      * @param array $params
      * @return bool
      */
-    public function validate($params)
+    public function validate(&$params)
     {
         if (!is_array($params)) {
             throw new InvalidArgumentException('Please use array params when call validate.');
@@ -147,22 +147,22 @@ class EthMethod extends JSONRPC implements IMethod
         if (!is_array($rules)) {
             throw new InvalidArgumentException('Please use array rules when call transform.');
         }
-        if (count($params) < count($rules)) {
-            if (!isset($this->defaultValues) || empty($this->defaultValues)) {
-                throw new \InvalidArgumentException('The params are less than inputFormatters.');
-            }
-            $defaultValues = $this->defaultValues;
+        // $defaultValues = $this->defaultValues;
 
-            foreach ($defaultValues as $key => $value) {
-                if (!isset($params[$key])) {
-                    $params[$key] = $value;
-                }
-
-            }
-        }
         foreach ($params as $key => $param) {
             if (isset($rules[$key])) {
-                $params[$key] = call_user_func([$rules[$key], 'format'], $param);
+                $formatted = call_user_func([$rules[$key], 'format'], $param);
+
+                // if (is_int($formatted)) {
+                //     if ($formatted >= 0) {
+                //         $params[$key] = $formatted;
+                //     } elseif (isset($defaultValues[$key])) {
+                //         $params[$key] = $defaultValues[$key];
+                //     }
+                // } else {
+                //     $params[$key] = $formatted;
+                // }
+                $params[$key] = $formatted;
             }
         }
         return $params;

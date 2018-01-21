@@ -18,7 +18,7 @@ use Web3\Validators\StringValidator;
 use Web3\Validators\QuantityValidator;
 use Web3\Formatters\AddressFormatter;
 use Web3\Formatters\StringFormatter;
-use Web3\Formatters\QuantityFormatter;
+use Web3\Formatters\NumberFormatter;
 
 class UnlockAccount extends EthMethod
 {
@@ -37,7 +37,7 @@ class UnlockAccount extends EthMethod
      * @var array
      */
     protected $inputFormatters = [
-        AddressFormatter::class, StringFormatter::class, QuantityFormatter::class
+        AddressFormatter::class, StringFormatter::class, NumberFormatter::class
     ];
 
     /**

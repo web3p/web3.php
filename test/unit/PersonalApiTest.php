@@ -88,8 +88,33 @@ class PersonalApiTest extends TestCase
 
         $personal->unlockAccount($this->newAccount, '123456', function ($err, $unlocked) {
             if ($err !== null) {
-                // infura banned us to use unlock account
-                return $this->assertTrue($err->getCode() === 405);
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue($unlocked);
+        });
+    }
+
+    /**
+     * testUnlockAccountWithDuration
+     * 
+     * @return void
+     */
+    public function testUnlockAccountWithDuration()
+    {
+        $personal = $this->personal;
+
+        // create account
+        $personal->newAccount('123456', function ($err, $account) {
+            if ($err !== null) {
+                return $this->fail($e->getMessage());
+            }
+            $this->newAccount = $account;
+            $this->assertTrue(is_string($account));
+        });
+
+        $personal->unlockAccount($this->newAccount, '123456', 100, function ($err, $unlocked) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue($unlocked);
         });
