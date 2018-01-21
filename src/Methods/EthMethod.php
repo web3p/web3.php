@@ -84,7 +84,7 @@ class EthMethod extends JSONRPC implements IMethod
      * @param array $params
      * @return bool
      */
-    public function validate($params)
+    public function validate(&$params)
     {
         if (!is_array($params)) {
             throw new InvalidArgumentException('Please use array params when call validate.');
