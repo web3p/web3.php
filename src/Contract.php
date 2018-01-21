@@ -447,7 +447,7 @@ class Contract
      */
     public function estimateGas()
     {
-        if (isset($this->functions) || isset($this->callback)) {
+        if (isset($this->functions) || isset($this->constructor)) {
             $arguments = func_get_args();
             $callback = array_pop($arguments);
 
@@ -461,7 +461,7 @@ class Contract
                     throw new \InvalidArgumentException('The last param must be callback function.');
                 }
                 if (!isset($this->bytecode)) {
-                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before new().');
+                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before estimateGas().');
                 }
                 $params = array_splice($arguments, 0, count($constructor['inputs']));
                 $data = $this->ethabi->encodeParameters($constructor, $params);
