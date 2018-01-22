@@ -492,11 +492,13 @@ class Contract
             $transaction['to'] = $this->toAddress;
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
-            $this->eth->call($transaction, function ($err, $transaction) use ($callback){
+            $this->eth->call($transaction, function ($err, $transaction) use ($callback, $function){
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
-                return call_user_func($callback, null, $transaction);
+                $decodedTransaction = $this->ethabi->decodeParameters($function, $transaction);
+
+                return call_user_func($callback, null, $decodedTransaction);
             });
         }
     }
