@@ -28,6 +28,7 @@ use Web3\Contracts\Types\Uinteger;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\HexValidator;
 use Web3\Formatters\AddressFormatter;
+use Web3\Validators\StringValidator;
 
 class Contract
 {
@@ -168,6 +169,7 @@ class Contract
         if (method_exists($this, $method)) {
             return call_user_func_array([$this, $method], []);
         }
+        return false;
     }
 
     /**
@@ -175,7 +177,7 @@ class Contract
      * 
      * @param string $name
      * @param mixed $value
-     * @return bool
+     * @return mixed
      */
     public function __set($name, $value)
     {
@@ -201,15 +203,14 @@ class Contract
      * setProvider
      * 
      * @param $provider
-     * @return bool
+     * @return $this
      */
     public function setProvider($provider)
     {
         if ($provider instanceof Provider) {
             $this->provider = $provider;
-            return true;
         }
-        return false;
+        return $this;
     }
 
     /**
@@ -253,6 +254,17 @@ class Contract
     }
 
     /**
+     * setAbi
+     * 
+     * @param string $abi
+     * @return $this
+     */
+    public function setAbi($abi)
+    {
+        return $this->abi($abi);
+    }
+
+    /**
      * getEthabi
      * 
      * @return array
@@ -270,6 +282,28 @@ class Contract
     public function getEth()
     {
         return $this->eth;
+    }
+
+    /**
+     * setBytecode
+     * 
+     * @param string $bytecode
+     * @return $this
+     */
+    public function setBytecode($bytecode)
+    {
+        return $this->bytecode($bytecode);
+    }
+
+    /**
+     * setToAddress
+     * 
+     * @param string $bytecode
+     * @return $this
+     */
+    public function setToAddress($address)
+    {
+        return $this->at($address);
     }
 
     /**
@@ -300,6 +334,35 @@ class Contract
             throw new InvalidArgumentException('Please make sure bytecode is valid.');
         }
         $this->bytecode = Utils::stripZero($bytecode);
+
+        return $this;
+    }
+
+    /**
+     * abi
+     * 
+     * @param string $abi
+     * @return $this
+     */
+    public function abi($abi)
+    {
+        if (StringValidator::validate($abi) === false) {
+            throw new InvalidArgumentException('Please make sure abi is valid.');
+        }
+        $abi = Utils::jsonToArray($abi, 5);
+
+        foreach ($abi as $item) {
+            if (isset($item['type'])) {
+                if ($item['type'] === 'function') {
+                    $this->functions[$item['name']] = $item;
+                } elseif ($item['type'] === 'constructor') {
+                    $this->constructor = $item;
+                } elseif ($item['type'] === 'event') {
+                    $this->events[$item['name']] = $item;
+                }
+            }
+        }
+        $this->abi = $abi;
 
         return $this;
     }
