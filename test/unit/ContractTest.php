@@ -616,6 +616,6 @@ class ContractTest extends TestCase
 
         $balanceOfData = $contract->at($this->contractAddress)->getData('balanceOf', $fromAccount);
 
-        $this->assertEquals('70a082310000000000000000000000005ec4b94c93b60f233f9cc31ac9614c7b29fe1c62', $balanceOfData);
+        $this->assertEquals('70a08231000000000000000000000000' . Utils::stripZero($fromAccount), $balanceOfData);
     }
 }
