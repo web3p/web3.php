@@ -175,8 +175,8 @@ class Utils
                 (intval($hash[$i], 16) > 7 && mb_strtoupper($value[$i]) !== $value[$i]) ||
                 (intval($hash[$i], 16) <= 7 && mb_strtolower($value[$i]) !== $value[$i])
             ) {
-            return false;
-        }
+                return false;
+            }
         }
         return true;
     }
