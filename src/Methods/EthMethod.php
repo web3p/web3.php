@@ -111,8 +111,8 @@ class EthMethod extends JSONRPC implements IMethod
                 if (is_array($rule)) {
                     $isError = true;
 
-                    foreach ($rule as $r) {
-                        if (call_user_func([$rule, 'validate'], $params[$key]) === true) {
+                    foreach ($rule as $subRule) {
+                        if (call_user_func([$subRule, 'validate'], $params[$key]) === true) {
                             $isError = false;
                             break;
                         }
