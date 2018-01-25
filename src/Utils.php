@@ -74,20 +74,32 @@ class Utils
 
     /**
      * toHex
+     * Encoding string or integer or numeric string(is not zero prefixed) or bug number to hex.
      * 
-     * @param string $value
+     * @param string|int|BigNumber $value
      * @param bool $isPrefix
      * @return string
      */
     public static function toHex($value, $isPrefix=false)
     {
-        if (!is_string($value)) {
-            throw new InvalidArgumentException('The value to toHex function must be string.');
+        if (is_numeric($value)) {
+            // turn to hex number
+            $bn = self::toBn($value);
+            $hex = $bn->toHex(true);
+            $hex = preg_replace('/^0+(?!$)/', '', $hex);
+        } elseif ($value instanceof BigNumber) {
+            $hex = $value->toHex(true);
+            $hex = preg_replace('/^0+(?!$)/', '', $hex);
+        } elseif (is_string($value)) {
+            $value = self::stripZero($value);
+            $hex = implode('', unpack('H*', $value));
+        } else {
+            throw new InvalidArgumentException('The value to toHex function is not support.');
         }
         if ($isPrefix) {
-            return '0x' . implode('', unpack('H*', $value));
+            return '0x' . $hex;
         }
-        return implode('', unpack('H*', $value));
+        return $hex;
     }
 
     /**

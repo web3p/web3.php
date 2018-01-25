@@ -4,7 +4,7 @@ namespace Test\Unit;
 
 use InvalidArgumentException;
 use Test\TestCase;
-use phpseclib\Math\BigInteger;
+use phpseclib\Math\BigInteger as BigNumber;
 use Web3\Utils;
 
 class UtilsTest extends TestCase
@@ -68,13 +68,23 @@ class UtilsTest extends TestCase
      */
     public function testToHex()
     {
-        $hex = Utils::toHex('hello world');
+        $this->assertEquals($this->testHex, Utils::toHex('hello world'));
+        $this->assertEquals('0x' . $this->testHex, Utils::toHex('hello world', true));
 
-        $this->assertEquals($hex, $this->testHex);
+        $this->assertEquals('0x927c0', Utils::toHex(0x0927c0, true));
+        $this->assertEquals('0x927c0', Utils::toHex('600000', true));
+        $this->assertEquals('0x927c0', Utils::toHex(600000, true));
+        $this->assertEquals('0x927c0', Utils::toHex(new BigNumber(600000), true));
+        
+        $this->assertEquals('0xea60', Utils::toHex(0x0ea60, true));
+        $this->assertEquals('0xea60', Utils::toHex('60000', true));
+        $this->assertEquals('0xea60', Utils::toHex(60000, true));
+        $this->assertEquals('0xea60', Utils::toHex(new BigNumber(60000), true));
 
-        $hexPrefixed = Utils::toHex('hello world', true);
-
-        $this->assertEquals($hexPrefixed, '0x' . $this->testHex);
+        $this->assertEquals('0x', Utils::toHex(0x00, true));
+        $this->assertEquals('0x', Utils::toHex('0', true));
+        $this->assertEquals('0x', Utils::toHex(0, true));
+        $this->assertEquals('0x', Utils::toHex(new BigNumber(0), true));
     }
 
     /**
