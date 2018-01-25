@@ -111,9 +111,9 @@ class Utils
     public static function hexToBin($value)
     {
         if (!is_string($value)) {
-            throw new InvalidArgumentException('The value to toHex function must be string.');
+            throw new InvalidArgumentException('The value to hexToBin function must be string.');
         }
-        if (strpos($value, '0x') === 0) {
+        if (self::isZeroPrefixed($value)) {
             $count = 1;
             $value = str_replace('0x', '', $value, $count);
         }
