@@ -95,6 +95,23 @@ class ShhApiTest extends TestCase
     }
 
     /**
+     * testNewGroup
+     * 
+     * @return void
+     */    
+    // public function testNewGroup()
+    // {
+    //     $shh = $this->shh;
+
+    //     $shh->newGroup(function ($err, $group) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertEquals(mb_strlen($group), 132);
+    //     });
+    // }
+
+    /**
      * testWrongParam
      * We transform data and throw invalid argument exception
      * instead of runtime exception.

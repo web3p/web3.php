@@ -38,7 +38,8 @@ class Shh
      * @var array
      */
     private $allowedMethods = [
-        'shh_version', 'shh_newIdentity', 'shh_hasIdentity'
+        'shh_version', 'shh_newIdentity', 'shh_hasIdentity', 
+        // doesn't exist: 'shh_newGroup'
     ];
 
     /**
