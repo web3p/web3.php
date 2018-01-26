@@ -11,17 +11,12 @@
 
 namespace Web3;
 
-use Web3\Eth;
-use Web3\Net;
-use Web3\Personal;
-use Web3\Shh;
-use Web3\Utils;
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
 
-class Web3
+class Shh
 {
     /**
      * provider
@@ -29,41 +24,6 @@ class Web3
      * @var \Web3\Providers\Provider
      */
     protected $provider;
-
-    /**
-     * eth
-     * 
-     * @var \Web3\Eth
-     */
-    protected $eth;
-
-    /**
-     * net
-     * 
-     * @var \Web3\Net
-     */
-    protected $net;
-
-    /**
-     * personal
-     * 
-     * @var \Web3\Personal
-     */
-    protected $personal;
-
-    /**
-     * shh
-     * 
-     * @var \Web3\Shh
-     */
-    protected $shh;
-
-    /**
-     * utils
-     * 
-     * @var \Web3\Utils
-     */
-    protected $utils;
 
     /**
      * methods
@@ -78,7 +38,7 @@ class Web3
      * @var array
      */
     private $allowedMethods = [
-        'web3_clientVersion', 'web3_sha3'
+        'shh_version'
     ];
 
     /**
@@ -202,76 +162,6 @@ class Web3
             return true;
         }
         return false;
-    }
-
-    /**
-     * getEth
-     * 
-     * @return \Web3\Eth
-     */
-    public function getEth()
-    {
-        if (!isset($this->eth)) {
-            $eth = new Eth($this->provider);
-            $this->eth = $eth;
-        }
-        return $this->eth;
-    }
-
-    /**
-     * getNet
-     * 
-     * @return \Web3\Net
-     */
-    public function getNet()
-    {
-        if (!isset($this->net)) {
-            $net = new Net($this->provider);
-            $this->net = $net;
-        }
-        return $this->net;
-    }
-
-    /**
-     * getPersonal
-     * 
-     * @return \Web3\Personal
-     */
-    public function getPersonal()
-    {
-        if (!isset($this->personal)) {
-            $personal = new Personal($this->provider);
-            $this->personal = $personal;
-        }
-        return $this->personal;
-    }
-
-    /**
-     * getShh
-     * 
-     * @return \Web3\Shh
-     */
-    public function getShh()
-    {
-        if (!isset($this->shh)) {
-            $shh = new Shh($this->provider);
-            $this->shh = $shh;
-        }
-        return $this->shh;
-    }
-
-    /**
-     * getUtils
-     * 
-     * @return \Web3\Utils
-     */
-    public function getUtils()
-    {
-        if (!isset($this->utils)) {
-            $utils = new Utils;
-            $this->utils = $utils;
-        }
-        return $this->utils;
     }
 
     /**
