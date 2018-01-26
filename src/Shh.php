@@ -38,7 +38,7 @@ class Shh
      * @var array
      */
     private $allowedMethods = [
-        'shh_version'
+        'shh_version', 'shh_newIdentity', 'shh_hasIdentity'
     ];
 
     /**

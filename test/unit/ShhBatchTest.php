@@ -47,4 +47,28 @@ class ShhBatchTest extends TestCase
             $this->assertEquals(mb_strlen($data[1]), 132);
         });
     }
+
+    /**
+     * testWrongParam
+     * 
+     * @return void
+     */
+    public function testWrongParam()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $shh = $this->shh;
+
+        $shh->batch(true);
+        $shh->version();
+        $shh->hasIdentity('0');
+
+        $shh->provider->execute(function ($err, $data) {
+            if ($err !== null) {
+                return $this->fail('Got error!');
+            }
+            $this->assertTrue(is_string($data[0]));
+            $this->assertFalse($data[1]);
+        });
+    }
 }
