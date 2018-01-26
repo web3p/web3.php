@@ -112,6 +112,33 @@ class ShhApiTest extends TestCase
     // }
 
     /**
+     * testAddToGroup
+     * 
+     * @return void
+     */    
+    // public function testAddToGroup()
+    // {
+    //     $shh = $this->shh;
+    //     $newIdentity = '';
+
+    //     $shh->newIdentity(function ($err, $identity) use (&$newIdentity) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $newIdentity = $identity;
+
+    //         $this->assertEquals(mb_strlen($identity), 132);
+    //     });
+
+    //     $shh->addToGroup($newIdentity, function ($err, $hasAdded) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue($hasAdded);
+    //     });
+    // }
+
+    /**
      * testWrongParam
      * We transform data and throw invalid argument exception
      * instead of runtime exception.

@@ -39,7 +39,7 @@ class Shh
      */
     private $allowedMethods = [
         'shh_version', 'shh_newIdentity', 'shh_hasIdentity', 
-        // doesn't exist: 'shh_newGroup'
+        // doesn't exist: 'shh_newGroup', 'shh_addToGroup'
     ];
 
     /**
