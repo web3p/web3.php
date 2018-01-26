@@ -8,7 +8,7 @@ use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
 
-class PersonalTest extends TestCase
+class ShhTest extends TestCase
 {
     /**
      * shh
