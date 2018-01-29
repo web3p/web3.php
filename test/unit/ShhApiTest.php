@@ -210,7 +210,7 @@ class ShhApiTest extends TestCase
     //     $shh = $this->shh;
     //     $toIdentity = '';
 
-    //     // create fromIdentity and toIdentity to prevent unknown identity error
+    //     // create toIdentity to prevent unknown identity error
     //     $shh->newIdentity(function ($err, $identity) use (&$toIdentity) {
     //         if ($err !== null) {
     //             return $this->fail($err->getMessage());
@@ -248,6 +248,48 @@ class ShhApiTest extends TestCase
     //             return $this->fail($err->getMessage());
     //         }
     //         $this->assertTrue(is_string($filterId));
+    //     });
+    // }
+
+    /**
+     * testUninstallFilter
+     * Comment because ganache-cli only implement shh_version.
+     * 
+     * @return void
+     */    
+    // public function testUninstallFilter()
+    // {
+    //     $shh = $this->shh;
+    //     $toIdentity = '';
+    //     $filter = '';
+
+    //     // create toIdentity to prevent unknown identity error
+    //     $shh->newIdentity(function ($err, $identity) use (&$toIdentity) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $toIdentity = $identity;
+
+    //         $this->assertEquals(mb_strlen($identity), 132);
+    //     });
+
+    //     $shh->newFilter([
+    //         'to' => $toIdentity,
+    //         'topics' => ["0x776869737065722d636861742d636c69656e74", "0x4d5a695276454c39425154466b61693532"],
+    //     ], function ($err, $filterId) use (&$filter) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $filter = $filterId;
+
+    //         $this->assertTrue(is_string($filterId));
+    //     });
+
+    //     $shh->uninstallFilter($filter, function ($err, $uninstalled) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue($uninstalled);
     //     });
     // }
 
