@@ -200,6 +200,58 @@ class ShhApiTest extends TestCase
     // }
 
     /**
+     * testNewFilter
+     * Comment because ganache-cli only implement shh_version.
+     * 
+     * @return void
+     */    
+    // public function testNewFilter()
+    // {
+    //     $shh = $this->shh;
+    //     $toIdentity = '';
+
+    //     // create fromIdentity and toIdentity to prevent unknown identity error
+    //     $shh->newIdentity(function ($err, $identity) use (&$toIdentity) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $toIdentity = $identity;
+
+    //         $this->assertEquals(mb_strlen($identity), 132);
+    //     });
+
+    //     $shh->newFilter([
+    //         'to' => $toIdentity,
+    //         'topics' => ["0x776869737065722d636861742d636c69656e74", "0x4d5a695276454c39425154466b61693532"],
+    //     ], function ($err, $filterId) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue(is_string($filterId));
+    //     });
+
+    //     $shh->newFilter([
+    //         'to' => $toIdentity,
+    //         'topics' => [null, "0x776869737065722d636861742d636c69656e74", "0x4d5a695276454c39425154466b61693532"],
+    //     ], function ($err, $filterId) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue(is_string($filterId));
+    //     });
+
+    //     $shh->newFilter([
+    //         'to' => $toIdentity,
+    //         'topics' => ["0x776869737065722d636861742d636c69656e74", ["0x776869737065722d636861742d636c69656e74", "0x4d5a695276454c39425154466b61693532"]],
+    //     ], function ($err, $filterId) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue(is_string($filterId));
+    //     });
+    // }
+
+    /**
      * testWrongParam
      * We transform data and throw invalid argument exception
      * instead of runtime exception.
