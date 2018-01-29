@@ -38,7 +38,7 @@ class Shh
      * @var array
      */
     private $allowedMethods = [
-        'shh_version', 'shh_newIdentity', 'shh_hasIdentity', 'shh_post', 'shh_newFilter', 'shh_uninstallFilter', 'shh_getFilterChanges'
+        'shh_version', 'shh_newIdentity', 'shh_hasIdentity', 'shh_post', 'shh_newFilter', 'shh_uninstallFilter', 'shh_getFilterChanges', 'shh_getMessages'
         // doesn't exist: 'shh_newGroup', 'shh_addToGroup'
     ];
 

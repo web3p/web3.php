@@ -368,6 +368,82 @@ class ShhApiTest extends TestCase
     // }
 
     /**
+     * testGetMessages
+     * Comment because ganache-cli only implement shh_version.
+     * 
+     * @return void
+     */    
+    // public function testGetMessages()
+    // {
+    //     $shh = $this->shh;
+    //     $fromIdentity = '';
+    //     $toIdentity = '';
+    //     $filter = '';
+
+    //     // create fromIdentity and toIdentity to prevent unknown identity error
+    //     $shh->newIdentity(function ($err, $identity) use (&$toIdentity) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $toIdentity = $identity;
+
+    //         $this->assertEquals(mb_strlen($identity), 132);
+    //     });
+
+    //     $shh->newIdentity(function ($err, $identity) use (&$fromIdentity) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $fromIdentity = $identity;
+
+    //         $this->assertEquals(mb_strlen($identity), 132);
+    //     });
+
+    //     $shh->newFilter([
+    //         'to' => $toIdentity,
+    //         'topics' => ["0x776869737065722d636861742d636c69656e74", "0x4d5a695276454c39425154466b61693532"],
+    //     ], function ($err, $filterId) use (&$filter) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $filter = $filterId;
+
+    //         $this->assertTrue(is_string($filterId));
+    //     });
+
+    //     $shh->getMessages($filter, function ($err, $messages) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue(is_array($messages));
+    //     });
+
+    //     $shh->post([
+    //         'from' => $fromIdentity,
+    //         'to' => $toIdentity,
+    //         'topics' => ["0x776869737065722d636861742d636c69656e74", "0x4d5a695276454c39425154466b61693532"],
+    //         'payload' => "0x7b2274797065223a226d6",
+    //         'priority' => "0x64",
+    //         'ttl' => "0x64",
+    //     ], function ($err, $isSent) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue($isSent);
+    //     });
+
+    //     $shh->getMessages($filter, function ($err, $messages) use ($fromIdentity, $toIdentity) {
+    //         if ($err !== null) {
+    //             return $this->fail($err->getMessage());
+    //         }
+    //         $this->assertTrue(is_array($messages));
+    //         $this->assertEquals($fromIdentity, $messages[0]->from);
+    //         $this->assertEquals($toIdentity, $messages[0]->to);
+    //         $this->assertEquals('0x07b2274797065223a226d6', $messages[0]->payload);
+    //     });
+    // }
+
+    /**
      * testWrongParam
      * We transform data and throw invalid argument exception
      * instead of runtime exception.
