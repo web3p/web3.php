@@ -147,21 +147,9 @@ class EthMethod extends JSONRPC implements IMethod
         if (!is_array($rules)) {
             throw new InvalidArgumentException('Please use array rules when call transform.');
         }
-        // $defaultValues = $this->defaultValues;
-
         foreach ($params as $key => $param) {
             if (isset($rules[$key])) {
                 $formatted = call_user_func([$rules[$key], 'format'], $param);
-
-                // if (is_int($formatted)) {
-                //     if ($formatted >= 0) {
-                //         $params[$key] = $formatted;
-                //     } elseif (isset($defaultValues[$key])) {
-                //         $params[$key] = $defaultValues[$key];
-                //     }
-                // } else {
-                //     $params[$key] = $formatted;
-                // }
                 $params[$key] = $formatted;
             }
         }
