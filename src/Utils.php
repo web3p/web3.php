@@ -74,7 +74,7 @@ class Utils
 
     /**
      * toHex
-     * Encoding string or integer or numeric string(is not zero prefixed) or bug number to hex.
+     * Encoding string or integer or numeric string(is not zero prefixed) or big number to hex.
      * 
      * @param string|int|BigNumber $value
      * @param bool $isPrefix
