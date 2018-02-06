@@ -86,6 +86,9 @@ class UtilsTest extends TestCase
         $this->assertEquals('0x', Utils::toHex('0', true));
         $this->assertEquals('0x', Utils::toHex(0, true));
         $this->assertEquals('0x', Utils::toHex(new BigNumber(0), true));
+
+        $this->expectException(InvalidArgumentException::class);
+        $hex = Utils::toHex(new stdClass);
     }
 
     /**
@@ -96,16 +99,16 @@ class UtilsTest extends TestCase
     public function testHexToBin()
     {
         $str = Utils::hexToBin($this->testHex);
-
         $this->assertEquals($str, 'hello world');
 
         $str = Utils::hexToBin('0x' . $this->testHex);
-
         $this->assertEquals($str, 'hello world');
 
         $str = Utils::hexToBin('0xe4b883e5bda9e7a59ee4bb99e9b1bc');
-
         $this->assertEquals($str, '七彩神仙鱼');
+
+        $this->expectException(InvalidArgumentException::class);
+        $str = Utils::hexToBin(new stdClass);
     }
 
     /**
@@ -116,12 +119,13 @@ class UtilsTest extends TestCase
     public function testIsZeroPrefixed()
     {
         $isPrefixed = Utils::isZeroPrefixed($this->testHex);
-
         $this->assertEquals($isPrefixed, false);
 
         $isPrefixed = Utils::isZeroPrefixed('0x' . $this->testHex);
-
         $this->assertEquals($isPrefixed, true);
+
+        $this->expectException(InvalidArgumentException::class);
+        $isPrefixed = Utils::isZeroPrefixed(new stdClass);
     }
 
     /**
@@ -132,24 +136,22 @@ class UtilsTest extends TestCase
     public function testIsAddress()
     {
         $isAddress = Utils::isAddress('ca35b7d915458ef540ade6068dfe2f44e8fa733c');
-
         $this->assertEquals($isAddress, true);
 
         $isAddress = Utils::isAddress('0xca35b7d915458ef540ade6068dfe2f44e8fa733c');
-
         $this->assertEquals($isAddress, true);
 
         $isAddress = Utils::isAddress('0Xca35b7d915458ef540ade6068dfe2f44e8fa733c');
-
         $this->assertEquals($isAddress, true);
 
         $isAddress = Utils::isAddress('0XCA35B7D915458EF540ADE6068DFE2F44E8FA733C');
-
         $this->assertEquals($isAddress, true);
 
         $isAddress = Utils::isAddress('0xCA35B7D915458EF540ADE6068DFE2F44E8FA733C');
-
         $this->assertEquals($isAddress, true);
+
+        $this->expectException(InvalidArgumentException::class);
+        $isAddress = Utils::isAddress(new stdClass);
     }
 
     /**
@@ -160,48 +162,40 @@ class UtilsTest extends TestCase
     public function testIsAddressChecksum()
     {
         $isAddressChecksum = Utils::isAddressChecksum('0x52908400098527886E0F7030069857D2E4169EE7');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x8617E340B3D01FA5F11F306F4090FD50E238070D');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xde709f2102306220921060314715629080e2fb77');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x27b1fdb04752bbc536007a920d24acb045561c26');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb');
-
         $this->assertEquals($isAddressChecksum, true);
 
         $isAddressChecksum = Utils::isAddressChecksum('0XD1220A0CF47C7B9BE7A2E6BA89F429762E7B9ADB');
-
         $this->assertEquals($isAddressChecksum, false);
 
         $isAddressChecksum = Utils::isAddressChecksum('0xd1220a0cf47c7b9be7a2e6ba89f429762e7b9adb');
-
         $this->assertEquals($isAddressChecksum, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $isAddressChecksum = Utils::isAddress(new stdClass);
     }
 
     /**

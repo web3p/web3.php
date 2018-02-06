@@ -87,12 +87,12 @@ class Utils
             $bn = self::toBn($value);
             $hex = $bn->toHex(true);
             $hex = preg_replace('/^0+(?!$)/', '', $hex);
-        } elseif ($value instanceof BigNumber) {
-            $hex = $value->toHex(true);
-            $hex = preg_replace('/^0+(?!$)/', '', $hex);
         } elseif (is_string($value)) {
             $value = self::stripZero($value);
             $hex = implode('', unpack('H*', $value));
+        } elseif ($value instanceof BigNumber) {
+            $hex = $value->toHex(true);
+            $hex = preg_replace('/^0+(?!$)/', '', $hex);
         } else {
             throw new InvalidArgumentException('The value to toHex function is not support.');
         }
