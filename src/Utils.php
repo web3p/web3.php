@@ -235,11 +235,8 @@ class Utils
      */
     public static function toString($value)
     {
-        try {
-            $value = (string) $value;
-        } catch (\Exception $e) {
-            throw new RuntimeException('Cannot transform value to string!');
-        }
+        $value = (string) $value;
+
         return $value;
     }
 
@@ -436,7 +433,9 @@ class Utils
             } else {
                 $bn = new BigNumber($number);
             }
-        } elseif (!$number instanceof BigNumber){
+        } elseif ($number instanceof BigNumber){
+            $bn = $number;
+        } else {
             throw new InvalidArgumentException('toBn number must be BigNumber, string or int.');
         }
         return $bn;

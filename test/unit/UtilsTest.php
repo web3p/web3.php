@@ -3,6 +3,7 @@
 namespace Test\Unit;
 
 use InvalidArgumentException;
+use stdClass;
 use Test\TestCase;
 use phpseclib\Math\BigInteger as BigNumber;
 use Web3\Utils;
@@ -410,19 +411,21 @@ class UtilsTest extends TestCase
     public function testToBn()
     {
         $bn = Utils::toBn(11);
-
         $this->assertEquals($bn->toString(), '11');
 
         $bn = Utils::toBn('0x12');
-
         $this->assertEquals($bn->toString(), '18');
 
         $bn = Utils::toBn(0x12);
-
         $this->assertEquals($bn->toString(), '18');
 
         $bn = Utils::toBn('ae');
-
         $this->assertEquals($bn->toString(), '174');
+
+        $bn = Utils::toBn(new BigNumber(1));
+        $this->assertEquals($bn->toString(), '1');
+
+        $this->expectException(InvalidArgumentException::class);
+        $bn = Utils::toBn(new stdClass);
     }
 }
