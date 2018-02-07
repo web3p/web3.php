@@ -3,6 +3,7 @@
 namespace Test\Unit;
 
 use RuntimeException;
+use InvalidArgumentException;
 use Test\TestCase;
 
 class PersonalApiTest extends TestCase
@@ -199,5 +200,19 @@ class PersonalApiTest extends TestCase
             }
             $this->assertTrue(is_string($account));
         });
+    }
+
+    /**
+     * testWrongCallback
+     * 
+     * @return void
+     */
+    public function testWrongCallback()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $personal = $this->personal;
+
+        $personal->newAccount('123456');
     }
 }

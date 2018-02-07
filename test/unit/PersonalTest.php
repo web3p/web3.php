@@ -7,6 +7,7 @@ use Test\TestCase;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
+use Web3\Personal;
 
 class PersonalTest extends TestCase
 {
@@ -36,7 +37,7 @@ class PersonalTest extends TestCase
      */
     public function testInstance()
     {
-        $personal = $this->personal;
+        $personal = new Personal($this->testHost);
 
         $this->assertTrue($personal->provider instanceof HttpProvider);
         $this->assertTrue($personal->provider->requestManager instanceof RequestManager);
@@ -54,5 +55,22 @@ class PersonalTest extends TestCase
         $personal->provider = new HttpProvider($requestManager);
 
         $this->assertEquals($personal->provider->requestManager->host, 'http://localhost:8545');
+
+        $personal->provider = null;
+
+        $this->assertEquals($personal->provider->requestManager->host, 'http://localhost:8545');
+    }
+
+    /**
+     * testCallThrowRuntimeException
+     * 
+     * @return void
+     */
+    public function testCallThrowRuntimeException()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $personal = new personal(null);
+        $personal->newAccount('');
     }
 }
