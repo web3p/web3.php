@@ -198,7 +198,7 @@ class UtilsTest extends TestCase
         $this->assertEquals($isAddressChecksum, false);
 
         $this->expectException(InvalidArgumentException::class);
-        $isAddressChecksum = Utils::isAddress(new stdClass);
+        $isAddressChecksum = Utils::isAddressChecksum(new stdClass);
     }
 
     /**
@@ -225,12 +225,13 @@ class UtilsTest extends TestCase
     public function testSha3()
     {
         $str = Utils::sha3('');
-
         $this->assertNull($str);
 
         $str = Utils::sha3('baz(uint32,bool)');
-
         $this->assertEquals(mb_substr($str, 0, 10), '0xcdcd77c0');
+
+        $this->expectException(InvalidArgumentException::class);
+        $str = Utils::sha3(new stdClass);
     }
 
     /**
@@ -241,28 +242,34 @@ class UtilsTest extends TestCase
     public function testToWei()
     {
         $bn = Utils::toWei('0x1', 'wei');
-
         $this->assertEquals($bn->toString(), '1');
 
         $bn = Utils::toWei('18', 'wei');
-
         $this->assertEquals($bn->toString(), '18');
 
         $bn = Utils::toWei(1, 'wei');
-
         $this->assertEquals($bn->toString(), '1');
 
         $bn = Utils::toWei(0x11, 'wei');
-
         $this->assertEquals($bn->toString(), '17');
 
         $bn = Utils::toWei('1', 'ether');
-
         $this->assertEquals($bn->toString(), '1000000000000000000');
 
         $bn = Utils::toWei('0x5218', 'wei');
-
         $this->assertEquals($bn->toString(), '21016');
+
+        try {
+            $toWei = Utils::toWei('0x5218', new stdClass);
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
+
+        try {
+            $toWei = Utils::toWei('0x5218', 'test');
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
     }
 
     /**
@@ -301,6 +308,11 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($bnq->toString(), '0');
         $this->assertEquals($bnr->toString(), '21016');
+
+        list($bnq, $bnr) = Utils::toEther('0x5218', 'ether');
+
+        $this->assertEquals($bnq->toString(), '21016');
+        $this->assertEquals($bnr->toString(), '0');
     }
 
     /**
@@ -334,6 +346,18 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($bnq->toString(), '21');
         $this->assertEquals($bnr->toString(), '16');
+
+        try {
+            list($bnq, $bnr) = Utils::fromWei('0x5218', new stdClass);
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
+
+        try {
+            list($bnq, $bnr) = Utils::fromWei('0x5218', 'test');
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
     }
 
     /**
@@ -352,6 +376,14 @@ class UtilsTest extends TestCase
         $methodString = Utils::jsonMethodToString($json);
 
         $this->assertEquals($methodString, 'approve(address,uint256)');
+
+        $methodString = Utils::jsonMethodToString([
+            'name' => 'approve(address,uint256)'
+        ]);
+        $this->assertEquals($methodString, 'approve(address,uint256)');
+
+        $this->expectException(InvalidArgumentException::class);
+        $methodString = Utils::jsonMethodToString('test');
     }
 
     /**
@@ -372,12 +404,28 @@ class UtilsTest extends TestCase
         $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
 
         $jsonArrayDepth2 = Utils::jsonToArray($jsonArrayDepth1, 2);
-
         $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
 
         $jsonArray = Utils::jsonToArray($this->testJsonMethodString);
-
         $this->assertEquals($jsonArray, $jsonAssoc);
+
+        try {
+            $jsonArray = Utils::jsonToArray($json, 0);
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
+
+        try {
+            $jsonArray = Utils::jsonToArray(mb_substr($this->testJsonMethodString, 0, 50), 1);
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
+
+        try {
+            $jsonArray = Utils::jsonToArray(0, 1);
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
     }
 
     /**

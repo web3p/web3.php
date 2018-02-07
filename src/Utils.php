@@ -279,9 +279,9 @@ class Utils
      */
     public static function toEther($number, $unit)
     {
-        if ($unit === 'ether') {
-            throw new InvalidArgumentException('Please use another unit.');
-        }
+        // if ($unit === 'ether') {
+        //     throw new InvalidArgumentException('Please use another unit.');
+        // }
         $wei = self::toWei($number, $unit);
         $bnt = new BigNumber(self::UNITS['ether']);
 
@@ -347,7 +347,7 @@ class Utils
         } elseif (!is_array($json)) {
             throw new InvalidArgumentException('jsonMethodToString json must be array or stdClass.');
         }
-        if (isset($json['name']) && (bool) strpos('(', $json['name']) === true) {
+        if (isset($json['name']) && strpos($json['name'], '(') > 0) {
             return $json['name'];
         }
         $typeName = [];
