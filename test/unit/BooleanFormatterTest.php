@@ -10,7 +10,7 @@ class BooleanFormatterTest extends TestCase
     /**
      * formatter
      * 
-     * @var \Web3\Formatters\Boolean
+     * @var \Web3\Formatters\BooleanFormatter
      */
     protected $formatter;
 
@@ -35,11 +35,9 @@ class BooleanFormatterTest extends TestCase
         $formatter = $this->formatter;
 
         $boolean = $formatter->format(true);
-
         $this->assertEquals($boolean, 1);
 
         $boolean = $formatter->format(false);
-
         $this->assertEquals($boolean, 0);
     }
 }
