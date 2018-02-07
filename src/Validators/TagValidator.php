@@ -12,8 +12,9 @@
 namespace Web3\Validators;
 
 use Web3\Validators\IValidator;
+use Web3\Utils;
 
-class TagValidator
+class TagValidator implements IValidator
 {
     /**
      * validate
@@ -23,6 +24,7 @@ class TagValidator
      */
     public static function validate($value)
     {
+        $value = Utils::toString($value);
         $tags = [
             'latest', 'earliest', 'pending'
         ];

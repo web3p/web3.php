@@ -11,7 +11,7 @@
 
 namespace Web3\Validators;
 
-interface IValidators
+interface IValidator
 {
     /**
      * validate
