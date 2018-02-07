@@ -3,6 +3,7 @@
 namespace Test\Unit;
 
 use RuntimeException;
+use InvalidArgumentException;
 use Test\TestCase;
 use phpseclib\Math\BigInteger as BigNumber;
 
@@ -95,5 +96,19 @@ class NetApiTest extends TestCase
             }
             $this->assertTrue(true);
         });
+    }
+
+    /**
+     * testWrongCallback
+     * 
+     * @return void
+     */
+    public function testWrongCallback()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $net = $this->net;
+
+        $net->version();
     }
 }

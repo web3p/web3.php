@@ -70,7 +70,7 @@ class PersonalTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $personal = new personal(null);
+        $personal = new Personal(null);
         $personal->newAccount('');
     }
 }
