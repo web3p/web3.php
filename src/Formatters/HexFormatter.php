@@ -30,8 +30,6 @@ class HexFormatter implements IFormatter
 
         if (Utils::isZeroPrefixed($value)) {
             return $value;
-        } elseif (Utils::isHex($value)) {
-            $value = '0x' . $value;
         } else {
             $value = Utils::toHex($value, true);
         }
