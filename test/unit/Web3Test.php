@@ -49,7 +49,8 @@ class Web3Test extends TestCase
      */
     public function testInstance()
     {
-        $web3 = $this->web3;
+        $requestManager = new HttpRequestManager('http://localhost:8545');
+        $web3 = new Web3(new HttpProvider($requestManager));
 
         $this->assertTrue($web3->provider instanceof HttpProvider);
         $this->assertTrue($web3->provider->requestManager instanceof RequestManager);
@@ -72,5 +73,21 @@ class Web3Test extends TestCase
         $web3->provider = new HttpProvider($requestManager);
 
         $this->assertEquals($web3->provider->requestManager->host, 'http://localhost:8545');
+
+        $web3->provider = null;
+        $this->assertEquals($web3->provider->requestManager->host, 'http://localhost:8545');
+    }
+
+    /**
+     * testCallThrowRuntimeException
+     * 
+     * @return void
+     */
+    public function testCallThrowRuntimeException()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $web3 = new Web3(null);
+        $web3->sha3('hello world');
     }
 }

@@ -3,6 +3,7 @@
 namespace Test\Unit;
 
 use RuntimeException;
+use InvalidArgumentException;
 use Test\TestCase;
 
 class Web3ApiTest extends TestCase
@@ -112,5 +113,19 @@ class Web3ApiTest extends TestCase
             }
             $this->assertTrue(true);
         });
+    }
+
+    /**
+     * testWrongCallback
+     * 
+     * @return void
+     */
+    public function testWrongCallback()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $web3 = $this->web3;
+
+        $web3->sha3('hello world');
     }
 }
