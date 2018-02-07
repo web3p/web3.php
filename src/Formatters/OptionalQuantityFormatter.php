@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use Web3\Utils;
 use Web3\Formatters\IFormatter;
 use Web3\Validators\TagValidator;
+use Web3\Formatters\QuantityFormatter;
 
 class OptionalQuantityFormatter implements IFormatter
 {
@@ -29,9 +30,6 @@ class OptionalQuantityFormatter implements IFormatter
         if (TagValidator::validate($value)) {
             return $value;
         }
-        $value = Utils::toString($value);
-        $bn = Utils::toBn($value);
-
-        return '0x' . $bn->toHex(true);
+        return QuantityFormatter::format($value);
     }
 }
