@@ -3,7 +3,7 @@
 namespace Test\Unit;
 
 use Test\TestCase;
-use Web3\Formatters\Integer;
+use Web3\Formatters\IntegerFormatter;
 
 class IntegerFormatterTest extends TestCase
 {
@@ -22,7 +22,7 @@ class IntegerFormatterTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->formatter = new Integer;
+        $this->formatter = new IntegerFormatter;
     }
 
     /**

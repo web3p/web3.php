@@ -12,7 +12,7 @@
 namespace Web3\Contracts;
 
 use Web3\Utils;
-use Web3\Formatters\Integer as IntegerFormatter;
+use Web3\Formatters\IntegerFormatter;
 
 class SolidityType
 {

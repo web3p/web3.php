@@ -15,7 +15,7 @@ use InvalidArgumentException;
 use Web3\Utils;
 use Web3\Formatters\IFormatter;
 
-class Integer implements IFormatter
+class IntegerFormatter implements IFormatter
 {
     /**
      * format

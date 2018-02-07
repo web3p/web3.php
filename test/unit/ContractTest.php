@@ -9,7 +9,7 @@ use Web3\RequestManagers\HttpRequestManager;
 use Web3\Contract;
 use Web3\Utils;
 use Web3\Contracts\Ethabi;
-use Web3\Formatters\Integer as IntegerFormatter;
+use Web3\Formatters\IntegerFormatter;
 
 class ContractTest extends TestCase
 {

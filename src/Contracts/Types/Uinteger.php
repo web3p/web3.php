@@ -14,7 +14,7 @@ namespace Web3\Contracts\Types;
 use Web3\Utils;
 use Web3\Contracts\SolidityType;
 use Web3\Contracts\Types\IType;
-use Web3\Formatters\Integer as IntegerFormatter;
+use Web3\Formatters\IntegerFormatter;
 use Web3\Formatters\BigNumberFormatter;
 
 class Uinteger extends SolidityType implements IType

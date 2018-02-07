@@ -15,7 +15,7 @@ use InvalidArgumentException;
 use Web3\Contracts\SolidityType;
 use Web3\Contracts\Types\IType;
 use Web3\Utils;
-use Web3\Formatters\Integer as IntegerFormatter;
+use Web3\Formatters\IntegerFormatter;
 
 class Address extends SolidityType implements IType
 {
