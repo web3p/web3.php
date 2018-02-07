@@ -150,6 +150,9 @@ class UtilsTest extends TestCase
         $isAddress = Utils::isAddress('0xCA35B7D915458EF540ADE6068DFE2F44E8FA733C');
         $this->assertEquals($isAddress, true);
 
+        $isAddress = Utils::isAddress('0xCA35B7D915458EF540ADE6068DFE2F44E8FA73cc');
+        $this->assertEquals($isAddress, false);
+
         $this->expectException(InvalidArgumentException::class);
         $isAddress = Utils::isAddress(new stdClass);
     }

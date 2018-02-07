@@ -152,7 +152,7 @@ class Utils
     /**
      * isAddress
      * 
-     * @param string
+     * @param string $value
      * @return bool
      */
     public static function isAddress($value)
@@ -171,7 +171,7 @@ class Utils
     /**
      * isAddressChecksum
      * 
-     * @param string
+     * @param string $value
      * @return bool
      */
     public static function isAddressChecksum($value)
@@ -196,7 +196,7 @@ class Utils
     /**
      * isHex
      * 
-     * @param string
+     * @param string $value
      * @return bool
      */
     public static function isHex($value)
