@@ -2,6 +2,7 @@
 
 namespace Test\Unit;
 
+use InvalidArgumentException;
 use Test\TestCase;
 use Web3\Formatters\BooleanFormatter;
 
@@ -39,5 +40,8 @@ class BooleanFormatterTest extends TestCase
 
         $boolean = $formatter->format(false);
         $this->assertEquals($boolean, 0);
+
+        $this->expectException(InvalidArgumentException::class);
+        $boolean = $formatter->format('boolean');
     }
 }
