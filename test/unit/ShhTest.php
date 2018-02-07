@@ -7,6 +7,7 @@ use Test\TestCase;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
+use Web3\Shh;
 
 class ShhTest extends TestCase
 {
@@ -36,7 +37,7 @@ class ShhTest extends TestCase
      */
     public function testInstance()
     {
-        $shh = $this->shh;
+        $shh = new Shh($this->testHost);
 
         $this->assertTrue($shh->provider instanceof HttpProvider);
         $this->assertTrue($shh->provider->requestManager instanceof RequestManager);
@@ -54,5 +55,22 @@ class ShhTest extends TestCase
         $shh->provider = new HttpProvider($requestManager);
 
         $this->assertEquals($shh->provider->requestManager->host, 'http://localhost:8545');
+
+        $shh->provider = null;
+
+        $this->assertEquals($shh->provider->requestManager->host, 'http://localhost:8545');
+    }
+
+    /**
+     * testCallThrowRuntimeException
+     * 
+     * @return void
+     */
+    public function testCallThrowRuntimeException()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $shh = new Shh(null);
+        $shh->post([]);
     }
 }

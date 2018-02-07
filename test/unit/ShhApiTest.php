@@ -3,7 +3,9 @@
 namespace Test\Unit;
 
 use RuntimeException;
+use InvalidArgumentException;
 use Test\TestCase;
+use Web3\Shh;
 
 class ShhApiTest extends TestCase
 {
@@ -463,4 +465,36 @@ class ShhApiTest extends TestCase
     //         $this->assertTrue(true);
     //     });
     // }
+    /**
+     * testUnallowedMethod
+     * 
+     * @return void
+     */
+    public function testUnallowedMethod()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $shh = $this->shh;
+
+        $shh->hello(function ($err, $hello) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue(true);
+        });
+    }
+
+    /**
+     * testWrongCallback
+     * 
+     * @return void
+     */
+    public function testWrongCallback()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $shh = $this->shh;
+
+        $shh->version();
+    }
 }
