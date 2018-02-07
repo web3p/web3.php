@@ -70,6 +70,7 @@ class JSONRPC implements IRPC
         if (method_exists($this, $method)) {
             return call_user_func_array([$this, $method], []);
         }
+        return false;
     }
 
     /**
@@ -77,7 +78,7 @@ class JSONRPC implements IRPC
      * 
      * @param string $name
      * @param mixed $value
-     * @return bool
+     * @return mixed
      */
     public function __set($name, $value)
     {
@@ -92,7 +93,7 @@ class JSONRPC implements IRPC
     /**
      * __toString
      * 
-     * @return array
+     * @return string
      */
     public function __toString()
     {
@@ -151,7 +152,7 @@ class JSONRPC implements IRPC
      * setArguments
      * 
      * @param array $arguments
-     * @return array
+     * @return bool
      */
     public function setArguments($arguments)
     {
@@ -159,6 +160,8 @@ class JSONRPC implements IRPC
             throw new InvalidArgumentException('Please use array when call setArguments.');
         }
         $this->arguments = $arguments;
+
+        return true;
     }
 
     /**

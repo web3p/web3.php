@@ -52,6 +52,7 @@ class Ethabi
         if (method_exists($this, $method)) {
             return call_user_func_array([$this, $method], []);
         }
+        return false;
     }
 
     /**
@@ -59,7 +60,7 @@ class Ethabi
      * 
      * @param string $name
      * @param mixed $value
-     * @return bool
+     * @return mixed
      */
     public function __set($name, $value)
     {

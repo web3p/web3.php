@@ -21,10 +21,7 @@ class SolidityType
      * 
      * @return void
      */
-    public function  __construct()
-    {
-        // 
-    }
+    // public function  __construct() {}
 
     /**
      * get
@@ -39,6 +36,7 @@ class SolidityType
         if (method_exists($this, $method)) {
             return call_user_func_array([$this, $method], []);
         }
+        return false;
     }
 
     /**
@@ -46,7 +44,7 @@ class SolidityType
      * 
      * @param string $name
      * @param mixed $value
-     * @return bool
+     * @return mixed;
      */
     public function __set($name, $value)
     {
@@ -65,10 +63,7 @@ class SolidityType
      * @param array $arguments
      * @return void
      */
-    public static function __callStatic($name, $arguments)
-    {
-        // 
-    }
+    // public static function __callStatic($name, $arguments) {}
 
     /**
      * nestedTypes

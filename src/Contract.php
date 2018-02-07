@@ -98,8 +98,8 @@ class Contract
     /**
      * construct
      *
-     * @param mixed string | Web3\Providers\Provider $provider
-     * @param mixed string | stdClass | array $abi
+     * @param string|\Web3\Providers\Provider $provider
+     * @param string|\stdClass|array $abi
      * @return void
      */
     public function __construct($provider, $abi)
@@ -202,7 +202,7 @@ class Contract
     /**
      * setProvider
      * 
-     * @param $provider
+     * @param \Web3\Providers\Provider $provider
      * @return $this
      */
     public function setProvider($provider)

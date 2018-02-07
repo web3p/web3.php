@@ -44,7 +44,7 @@ class Personal
     /**
      * construct
      *
-     * @param mixed string | Web3\Providers\Provider $provider
+     * @param string|\Web3\Providers\Provider $provider
      * @return void
      */
     public function __construct($provider)
@@ -120,6 +120,7 @@ class Personal
         if (method_exists($this, $method)) {
             return call_user_func_array([$this, $method], []);
         }
+        return false;
     }
 
     /**
@@ -127,7 +128,7 @@ class Personal
      * 
      * @param string $name
      * @param mixed $value
-     * @return bool
+     * @return mixed
      */
     public function __set($name, $value)
     {
@@ -152,7 +153,7 @@ class Personal
     /**
      * setProvider
      * 
-     * @param $provider
+     * @param \Web3\Providers\Provider $provider
      * @return bool
      */
     public function setProvider($provider)
