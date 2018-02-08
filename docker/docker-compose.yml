@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+
+    php:
+        build:
+            context: ./php
+            dockerfile: Dockerfile-72
+        volumes:
+            - ./app:/app
+        tty: true

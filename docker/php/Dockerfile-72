@@ -1,0 +1,17 @@
+FROM php:7.2.2-alpine
+
+MAINTAINER Peter Lai <alk03073135@gmail.com>
+
+ADD composer-setup.php composer-setup.php
+
+RUN apk update && \
+    apk add git
+
+# Install nodejs
+# Run apk add --update nodejs nodejs-npm
+
+# Install composer
+RUN php composer-setup.php && \
+    php composer-setup.php --install-dir=/usr/bin --filename=composer
+
+WORKDIR /app
