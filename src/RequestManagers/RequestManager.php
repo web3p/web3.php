@@ -19,17 +19,25 @@ class RequestManager
      * @var string
      */
     protected $host;
+
+    /**
+     * timeout
+     * 
+     * @var float
+     */
+    protected $timeout;
     
     /**
      * construct
      * 
      * @param string $host
+     * @param float $timeout
      * @return void
      */
-    public function __construct($host)
+    public function __construct($host, $timeout=1)
     {
         $this->host = $host;
-
+        $this->timeout = (float) $timeout;
     }
 
     /**
@@ -73,5 +81,15 @@ class RequestManager
     public function getHost()
     {
         return $this->host;
+    }
+
+    /**
+     * getTimeout
+     * 
+     * @return float
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
     }
 }

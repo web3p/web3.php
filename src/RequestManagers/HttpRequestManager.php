@@ -73,7 +73,9 @@ class HttpRequestManager extends RequestManager implements IRequestManager
                 'headers' => [
                     'content-type' => 'application/json'
                 ],
-                'body' => $payload
+                'body' => $payload,
+                'timeout' => $this->timeout,
+                'connect_timeout' => $this->timeout
             ]);
             $json = json_decode($res->getBody());
 
