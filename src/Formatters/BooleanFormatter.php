@@ -21,13 +21,10 @@ class BooleanFormatter implements IFormatter
      * format
      * 
      * @param mixed $value
-     * @return int
+     * @return bool
      */
     public static function format($value)
     {
-        if (!is_bool($value)) {
-            throw new InvalidArgumentException('The value to inputFormat function must be boolean.');
-        }
-        return (int) $value;
+        return (bool) $value;
     }
 }
