@@ -76,7 +76,7 @@ class RequestManager
     /**
      * getHost
      * 
-     * @return void
+     * @return string
      */
     public function getHost()
     {
