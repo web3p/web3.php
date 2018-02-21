@@ -36,12 +36,15 @@ class BooleanFormatterTest extends TestCase
         $formatter = $this->formatter;
 
         $boolean = $formatter->format(true);
-        $this->assertEquals($boolean, 1);
+        $this->assertEquals($boolean, true);
+
+        $boolean = $formatter->format(1);
+        $this->assertEquals($boolean, true);
 
         $boolean = $formatter->format(false);
-        $this->assertEquals($boolean, 0);
+        $this->assertEquals($boolean, false);
 
-        $this->expectException(InvalidArgumentException::class);
-        $boolean = $formatter->format('boolean');
+        $boolean = $formatter->format(0);
+        $this->assertEquals($boolean, false);
     }
 }
