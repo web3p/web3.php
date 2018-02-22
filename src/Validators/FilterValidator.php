@@ -46,16 +46,10 @@ class FilterValidator
         }
         if (isset($value['address'])) {
             if (is_array($value['address'])) {
-                $isError = false;
-
                 foreach ($value['address'] as $address) {
                     if (AddressValidator::validate($address) === false) {
-                        $isError = true;
-                        break;
+                        return false;
                     }
-                }
-                if ($isError === true) {
-                    return false;
                 }
             } elseif (AddressValidator::validate($value['address']) === false) {
                 return false;
