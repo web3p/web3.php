@@ -44,8 +44,22 @@ class FilterValidator
             ) {
             return false;
         }
-        if (isset($value['address']) && AddressValidator::validate($value['address']) === false) {
-             return false;
+        if (isset($value['address'])) {
+            if (is_array($value['address'])) {
+                $isError = false;
+
+                foreach ($value['address'] as $address) {
+                    if (AddressValidator::validate($address) === false) {
+                        $isError = true;
+                        break;
+                    }
+                }
+                if ($isError === true) {
+                    return false;
+                }
+            } elseif (AddressValidator::validate($value['address']) === false) {
+                return false;
+            }
         }
         if (isset($value['topics']) && is_array($value['topics'])) {
             foreach ($value['topics'] as $topic) {
