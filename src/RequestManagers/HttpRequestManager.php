@@ -32,11 +32,12 @@ class HttpRequestManager extends RequestManager implements IRequestManager
      * construct
      * 
      * @param string $host
+     * @param int $timeout
      * @return void
      */
-    public function __construct($host)
+    public function __construct($host, $timeout = 1)
     {
-        parent::__construct($host);
+        parent::__construct($host, $timeout);
         $this->client = new Client;
     }
 
