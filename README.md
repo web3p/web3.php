@@ -30,14 +30,14 @@ Or you can add this line in composer.json
 # Usage
 
 ### New instance
-```
+```php
 use Web3\Web3;
 
 $web3 = new Web3('http://localhost:8545');
 ```
 
 ### Using provider
-```
+```php
 use Web3\Web3;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\HttpRequestManager;
@@ -49,7 +49,7 @@ $web3 = new Web3(new HttpProvider(new HttpRequestManager('http://localhost:8545'
 ```
 
 ### You can use callback to each rpc call:
-```
+```php
 $web3->clientVersion(function ($err, $version) {
     if ($err !== null) {
         // do something
@@ -62,7 +62,7 @@ $web3->clientVersion(function ($err, $version) {
 ```
 
 ### Eth
-```
+```php
 use Web3\Web3;
 
 $web3 = new Web3('http://localhost:8545');
@@ -71,14 +71,14 @@ $eth = $web3->eth;
 
 Or
 
-```
+```php
 use Web3\Eth;
 
 $eth = new Eth('http://localhost:8545');
 ```
 
 ### Net
-```
+```php
 use Web3\Web3;
 
 $web3 = new Web3('http://localhost:8545');
@@ -87,7 +87,7 @@ $net = $web3->net;
 
 Or
 
-```
+```php
 use Web3\Net;
 
 $net = new Net('http://localhost:8545');
@@ -96,7 +96,7 @@ $net = new Net('http://localhost:8545');
 ### Batch
 
 web3
-```
+```php
 $web3->batch(true);
 $web3->clientVersion();
 $web3->hash('0x1234');
@@ -114,7 +114,7 @@ $web3->execute(function ($err, $data) {
 
 eth
 
-```
+```php
 $eth->batch(true);
 $eth->protocolVersion();
 $eth->syncing();
@@ -129,7 +129,7 @@ $eth->provider->execute(function ($err, $data) {
 ```
 
 net
-```
+```php
 $net->batch(true);
 $net->version();
 $net->listening();
@@ -144,7 +144,7 @@ $net->provider->execute(function ($err, $data) {
 ```
 
 personal
-```
+```php
 $personal->batch(true);
 $personal->listAccounts();
 $personal->newAccount('123456');
@@ -160,7 +160,7 @@ $personal->provider->execute(function ($err, $data) {
 
 ### Contract
 
-```
+```php
 use Web3\Contract;
 
 $contract = new Contract('http://localhost:8545', $abi);
@@ -185,14 +185,13 @@ $constructorData = $contract->bytecode($bytecode)->getData($params);
 
 // get function data
 $functionData = $contract->at($contractAddress)->getData($functionName, $params);
-
 ```
 
 # Assign value to outside scope(from callback scope to outside scope)
 Due to callback is not like javascript callback, 
 if we need to assign value to outside scope, 
 we need to assign reference to callback.
-```
+```php
 $newAccount = '';
 
 $web3->personal->newAccount('123456', function ($err, $account) use (&$newAccount) {
