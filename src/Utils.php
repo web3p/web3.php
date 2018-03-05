@@ -470,7 +470,6 @@ class Utils
             } else {
                 $bn = new BigNumber($number);
             }
-
             if (isset($negative1)) {
                 $bn = $bn->multiply($negative1);
             }
@@ -485,12 +484,16 @@ class Utils
             if (self::isZeroPrefixed($number) || preg_match('/[a-f]+/', $number) === 1) {
                 $number = self::stripZero($number);
                 $bn = new BigNumber($number, 16);
+            } elseif (empty($number)) {
+                $bn = new BigNumber(0);
+            } else {
+                throw new InvalidArgumentException('toBn number must be valid hex string.');
             }
             if (isset($negative1)) {
                 $bn = $bn->multiply($negative1);
             }
         } else {
-            throw new InvalidArgumentException('toBn number must be BigNumber, numeric string or int.');
+            throw new InvalidArgumentException('toBn number must be BigNumber, string or int.');
         }
         return $bn;
     }

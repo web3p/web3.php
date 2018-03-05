@@ -469,6 +469,9 @@ class UtilsTest extends TestCase
      */
     public function testToBn()
     {
+        $bn = Utils::toBn('');
+        $this->assertEquals($bn->toString(), '0');
+
         $bn = Utils::toBn(11);
         $this->assertEquals($bn->toString(), '11');
 
