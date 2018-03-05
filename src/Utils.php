@@ -63,6 +63,14 @@ class Utils
     ];
 
     /**
+     * NEGATIVE1
+     * Cannot work, see: http://php.net/manual/en/language.constants.syntax.php
+     * 
+     * @const
+     */
+    // const NEGATIVE1 = new BigNumber(-1);
+
+    /**
      * construct
      *
      * @return void
@@ -126,7 +134,7 @@ class Utils
     public static function isZeroPrefixed($value)
     {
         if (!is_string($value)) {
-            throw new InvalidArgumentException('The value to zeroPrefixed function must be string.');
+            throw new InvalidArgumentException('The value to isZeroPrefixed function must be string.');
         }
         return (strpos($value, '0x') === 0);
     }
@@ -144,6 +152,20 @@ class Utils
             return str_replace('0x', '', $value, $count);
         }
         return $value;
+    }
+
+    /**
+     * isNegative
+     * 
+     * @param string
+     * @return bool
+     */
+    public static function isNegative($value)
+    {
+        if (!is_string($value)) {
+            throw new InvalidArgumentException('The value to isNegative function must be string.');
+        }
+        return (strpos($value, '-') === 0);
     }
 
     /**
@@ -415,25 +437,44 @@ class Utils
      * Change number or number string to bignumber.
      * 
      * @param BigNumber|string|int $number
-     * @return \phpseclib\Math\BigInteger
+     * @return array|\phpseclib\Math\BigInteger
      */
     public static function toBn($number)
     {
-        if (is_numeric($number)) {
+        if ($number instanceof BigNumber){
+            $bn = $number;
+        } elseif (is_int($number)) {
             $bn = new BigNumber($number);
+        } elseif (is_numeric($number)) {
+            $number = (string) $number;
+
+            if (self::isNegative($number)) {
+                $count = 1;
+                $number = str_replace('-', '', $number, $count);
+                $negative1 = new BigNumber(-1);
+            }
+            $bn = new BigNumber($number);
+
+            if (isset($negative1)) {
+                $bn = $bn->multiply($negative1);
+            }
         } elseif (is_string($number)) {
             $number = mb_strtolower($number);
 
+            if (self::isNegative($number)) {
+                $count = 1;
+                $number = str_replace('-', '', $number, $count);
+                $negative1 = new BigNumber(-1);
+            }
             if (self::isZeroPrefixed($number) || preg_match('/[a-f]+/', $number) === 1) {
                 $number = self::stripZero($number);
                 $bn = new BigNumber($number, 16);
-            } else {
-                $bn = new BigNumber($number);
             }
-        } elseif ($number instanceof BigNumber){
-            $bn = $number;
+            if (isset($negative1)) {
+                $bn = $bn->multiply($negative1);
+            }
         } else {
-            throw new InvalidArgumentException('toBn number must be BigNumber, string or int.');
+            throw new InvalidArgumentException('toBn number must be BigNumber, numeric string or int.');
         }
         return $bn;
     }

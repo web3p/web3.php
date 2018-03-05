@@ -449,6 +449,20 @@ class UtilsTest extends TestCase
     }
 
     /**
+     * testIsNegative
+     * 
+     * @return void
+     */
+    public function testIsNegative()
+    {
+        $isNegative = Utils::isNegative('-1');
+        $this->assertTrue($isNegative);
+
+        $isNegative = Utils::isNegative('1');
+        $this->assertFalse($isNegative);
+    }
+
+    /**
      * testToBn
      * 
      * @return void
@@ -461,11 +475,26 @@ class UtilsTest extends TestCase
         $bn = Utils::toBn('0x12');
         $this->assertEquals($bn->toString(), '18');
 
+        $bn = Utils::toBn('-0x12');
+        $this->assertEquals($bn->toString(), '-18');
+
         $bn = Utils::toBn(0x12);
         $this->assertEquals($bn->toString(), '18');
 
         $bn = Utils::toBn('ae');
         $this->assertEquals($bn->toString(), '174');
+
+        $bn = Utils::toBn('-ae');
+        $this->assertEquals($bn->toString(), '-174');
+
+        $bn = Utils::toBn('-1');
+        $this->assertEquals($bn->toString(), '-1');
+
+        // $bn = Utils::toBn('-0.1');
+        // $this->assertEquals($bn->toString(), '-0.1');
+
+        // $bn = Utils::toBn(-0.1);
+        // $this->assertEquals($bn->toString(), -0.1);
 
         $bn = Utils::toBn(new BigNumber(1));
         $this->assertEquals($bn->toString(), '1');
