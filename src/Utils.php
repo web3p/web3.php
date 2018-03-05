@@ -453,7 +453,23 @@ class Utils
                 $number = str_replace('-', '', $number, $count);
                 $negative1 = new BigNumber(-1);
             }
-            $bn = new BigNumber($number);
+            if (strpos($number, '.') > 0) {
+                $comps = explode('.', $number);
+
+                if (count($comps) > 2) {
+                    throw new InvalidArgumentException('toBn number must be a valid number.');
+                }
+                $whole = $comps[0];
+                $fraction = $comps[1];
+
+                return [
+                    new BigNumber($whole),
+                    new BigNumber($fraction),
+                    isset($negative1) ? $negative1 : false
+                ];
+            } else {
+                $bn = new BigNumber($number);
+            }
 
             if (isset($negative1)) {
                 $bn = $bn->multiply($negative1);

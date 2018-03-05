@@ -490,11 +490,40 @@ class UtilsTest extends TestCase
         $bn = Utils::toBn('-1');
         $this->assertEquals($bn->toString(), '-1');
 
-        // $bn = Utils::toBn('-0.1');
-        // $this->assertEquals($bn->toString(), '-0.1');
+        $bn = Utils::toBn('-0.1');
+        $this->assertEquals(count($bn), 3);
+        $this->assertEquals($bn[0]->toString(), '0');
+        $this->assertEquals($bn[1]->toString(), '1');
+        $this->assertEquals($bn[2]->toString(), '-1');
 
-        // $bn = Utils::toBn(-0.1);
-        // $this->assertEquals($bn->toString(), -0.1);
+        $bn = Utils::toBn(-0.1);
+        $this->assertEquals(count($bn), 3);
+        $this->assertEquals($bn[0]->toString(), '0');
+        $this->assertEquals($bn[1]->toString(), '1');
+        $this->assertEquals($bn[2]->toString(), '-1');
+
+        $bn = Utils::toBn('0.1');
+        $this->assertEquals(count($bn), 3);
+        $this->assertEquals($bn[0]->toString(), '0');
+        $this->assertEquals($bn[1]->toString(), '1');
+        $this->assertEquals($bn[2], false);
+
+        $bn = Utils::toBn('-1.69');
+        $this->assertEquals(count($bn), 3);
+        $this->assertEquals($bn[0]->toString(), '1');
+        $this->assertEquals($bn[1]->toString(), '69');
+        $this->assertEquals($bn[2]->toString(), '-1');
+
+        $bn = Utils::toBn(-1.69);
+        $this->assertEquals($bn[0]->toString(), '1');
+        $this->assertEquals($bn[1]->toString(), '69');
+        $this->assertEquals($bn[2]->toString(), '-1');
+
+        $bn = Utils::toBn('1.69');
+        $this->assertEquals(count($bn), 3);
+        $this->assertEquals($bn[0]->toString(), '1');
+        $this->assertEquals($bn[1]->toString(), '69');
+        $this->assertEquals($bn[2], false);
 
         $bn = Utils::toBn(new BigNumber(1));
         $this->assertEquals($bn->toString(), '1');
