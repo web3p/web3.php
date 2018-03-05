@@ -259,14 +259,51 @@ class UtilsTest extends TestCase
         $bn = Utils::toWei('0x5218', 'wei');
         $this->assertEquals($bn->toString(), '21016');
 
+        $bn = Utils::toWei('0.1', 'ether');
+        $this->assertEquals($bn->toString(), '100000000000000000');
+
+        $bn = Utils::toWei('1.69', 'ether');
+        $this->assertEquals($bn->toString(), '1690000000000000000');
+
+        $bn = Utils::toWei(0.1, 'ether');
+        $this->assertEquals($bn->toString(), '100000000000000000');
+
+        $bn = Utils::toWei(1.69, 'ether');
+        $this->assertEquals($bn->toString(), '1690000000000000000');
+
+        $bn = Utils::toWei('-0.1', 'ether');
+        $this->assertEquals($bn->toString(), '-100000000000000000');
+
+        $bn = Utils::toWei('-1.69', 'ether');
+        $this->assertEquals($bn->toString(), '-1690000000000000000');
+
+        $bn = Utils::toWei(-0.1, 'ether');
+        $this->assertEquals($bn->toString(), '-100000000000000000');
+
+        $bn = Utils::toWei(-1.69, 'ether');
+        $this->assertEquals($bn->toString(), '-1690000000000000000');
+
+        $bn = Utils::toWei('', 'ether');
+        $this->assertEquals($bn->toString(), '0');
+
+        $bn = Utils::toWei(-1.697, 'kwei');
+        $this->assertEquals($bn->toString(), '-1697');
+
         try {
-            $toWei = Utils::toWei('0x5218', new stdClass);
+            $bn = Utils::toWei('0x5218', new stdClass);
         } catch (InvalidArgumentException $e) {
             $this->assertTrue($e !== null);
         }
 
         try {
-            $toWei = Utils::toWei('0x5218', 'test');
+            $bn = Utils::toWei('0x5218', 'test');
+        } catch (InvalidArgumentException $e) {
+            $this->assertTrue($e !== null);
+        }
+
+        try {
+            // out of limit
+            $bn = Utils::toWei(-1.6977, 'kwei');
         } catch (InvalidArgumentException $e) {
             $this->assertTrue($e !== null);
         }

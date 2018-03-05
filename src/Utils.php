@@ -282,6 +282,25 @@ class Utils
         }
         $bnt = new BigNumber(self::UNITS[$unit]);
 
+        if (is_array($bn)) {
+            // fraction number
+            list($whole, $fraction, $negative1) = $bn;
+
+            $fractionLength = strlen($fraction->toString());
+
+            if ($fractionLength > strlen(self::UNITS[$unit])) {
+                throw new InvalidArgumentException('toWei fraction part is out of limit.');
+            }
+            $whole = $whole->multiply($bnt);
+            $base = (new BigNumber(10))->pow(new BigNumber($fractionLength));
+            $fraction = $fraction->multiply($bnt)->divide($base)[0];
+
+            if ($negative1 !== false) {
+                return $whole->add($fraction)->multiply($negative1);
+            }
+            return $whole->add($fraction);
+        }
+
         return $bn->multiply($bnt);
     }
 
