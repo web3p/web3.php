@@ -2,7 +2,9 @@
 
 ganache-cli -g 0 -l 0 > /dev/null & 
 ganachecli_pid=$!
-echo "Start ganache-cli pid: $ganachecli_pid"
+echo "Start ganache-cli pid: $ganachecli_pid and sleep 3 seconds"
+
+sleep 3
 
 vendor/bin/phpunit --coverage-clover=coverage.xml
 
