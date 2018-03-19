@@ -7,6 +7,9 @@ echo "Start ganache-cli pid: $ganachecli_pid and sleep 3 seconds"
 sleep 3
 
 vendor/bin/phpunit --coverage-clover=coverage.xml
+ret=$?
 
 kill -9 $ganachecli_pid
 echo "Kill ganache-cli"
+
+return $ret
