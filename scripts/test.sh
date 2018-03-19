@@ -12,4 +12,4 @@ ret=$?
 kill -9 $ganachecli_pid
 echo "Kill ganache-cli"
 
-return $ret
+exit $ret
