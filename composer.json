@@ -9,12 +9,11 @@
             "email": "alk03073135@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "guzzlehttp/guzzle": "~6.0",
         "PHP": "^7.1",
-        "kornrunner/keccak": "dev-master",
-        "phpseclib/phpseclib": "dev-master"
+        "kornrunner/keccak": "~1.0",
+        "phpseclib/phpseclib": "~2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0"
