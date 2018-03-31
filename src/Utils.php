@@ -292,7 +292,27 @@ class Utils
                 throw new InvalidArgumentException('toWei fraction part is out of limit.');
             }
             $whole = $whole->multiply($bnt);
-            $base = (new BigNumber(10))->pow(new BigNumber($fractionLength));
+
+            // There is no pow function in phpseclib 2.0, only can see in dev-master
+            // Maybe implement own biginteger in the future
+            // See 2.0 BigInteger: https://github.com/phpseclib/phpseclib/blob/2.0/phpseclib/Math/BigInteger.php
+            // See dev-master BigInteger: https://github.com/phpseclib/phpseclib/blob/master/phpseclib/Math/BigInteger.php#L700
+            // $base = (new BigNumber(10))->pow(new BigNumber($fractionLength));
+
+            // So we switch phpseclib special global param, change in the future
+            switch (MATH_BIGINTEGER_MODE) {
+                case $whole::MODE_GMP:
+                    static $two;
+                    $powerBase = gmp_pow(gmp_init(10), (int) $fractionLength);
+                    break;
+                case $whole::MODE_BCMATH:
+                    $powerBase = bcpow('10', (string) $fractionLength, 0);
+                    break;
+                default:
+                    $powerBase = pow(10, (int) $fractionLength);
+                    break;
+            }
+            $base = new BigNumber($powerBase);
             $fraction = $fraction->multiply($bnt)->divide($base)[0];
 
             if ($negative1 !== false) {
