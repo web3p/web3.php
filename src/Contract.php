@@ -397,7 +397,6 @@ class Contract
             if (count($arguments) > 0) {
                 $transaction = $arguments[0];
             }
-            $transaction['to'] = '';
             $transaction['data'] = '0x' . $this->bytecode . Utils::stripZero($data);
 
             $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
