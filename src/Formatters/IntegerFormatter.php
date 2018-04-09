@@ -33,7 +33,7 @@ class IntegerFormatter implements IFormatter
             $digit = intval($arguments[1]);
         }
         $bn = Utils::toBn($value);
-        $bnHex = $bn->toHex($bn->is_negative);
+        $bnHex = $bn->toHex($value !== '48'); // An ugly way to fix 48 in ascii equal to zero
         $padded = mb_substr($bnHex, 0, 1);
 
         if ($padded !== 'f') {
