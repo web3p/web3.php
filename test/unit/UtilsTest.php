@@ -87,6 +87,16 @@ class UtilsTest extends TestCase
         $this->assertEquals('0x', Utils::toHex(0, true));
         $this->assertEquals('0x', Utils::toHex(new BigNumber(0), true));
 
+        $this->assertEquals('0x30', Utils::toHex(48, true));
+        $this->assertEquals('0x30', Utils::toHex('48', true));
+        $this->assertEquals('30', Utils::toHex(48));
+        $this->assertEquals('30', Utils::toHex('48'));
+
+        $this->assertEquals('0x30', Utils::toHex(new BigNumber(48), true));
+        $this->assertEquals('0x30', Utils::toHex(new BigNumber('48'), true));
+        $this->assertEquals('30', Utils::toHex(new BigNumber(48)));
+        $this->assertEquals('30', Utils::toHex(new BigNumber('48')));
+
         $this->expectException(InvalidArgumentException::class);
         $hex = Utils::toHex(new stdClass);
     }
