@@ -246,6 +246,29 @@ docker-compose exec php ash
 vendor/bin/phpunit
 ```
 
+###### Install packages
+Enter container first
+```
+docker-compose exec php ash
+```
+
+1. gmp
+```
+apk add gmp-dev
+docker-php-ext-install gmp
+```
+
+2. bcmath
+```
+docker-php-ext-install bcmath
+```
+
+###### Remove extension
+Move the extension config from `/usr/local/etc/php/conf.d/`
+```
+mv /usr/local/etc/php/conf.d/extension-config-name to/directory
+```
+
 # API
 
 Todo.
