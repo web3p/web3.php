@@ -45,5 +45,11 @@ class IntegerFormatterTest extends TestCase
 
         $hex = $formatter->format('1', 20);
         $this->assertEquals($hex, implode('', array_fill(0, 19, '0')) . '1');
+
+        $hex = $formatter->format(48);
+        $this->assertEquals($hex, implode('', array_fill(0, 62, '0')) . '30');
+
+        $hex = $formatter->format('48');
+        $this->assertEquals($hex, implode('', array_fill(0, 62, '0')) . '30');
     }
 }
