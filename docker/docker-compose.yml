@@ -9,3 +9,10 @@ services:
         volumes:
             - ./app:/app
         tty: true
+
+    ganache:
+        build:
+            context: ./ganache
+            dockerfile: Dockerfile
+        ports:
+            - "8545"
