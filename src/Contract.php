@@ -234,6 +234,14 @@ class Contract
     }
 
     /**
+     * @return string
+     */
+    public function getToAddress()
+    {
+        return $this->toAddress;
+    }
+
+    /**
      * getConstructor
      * 
      * @return array
