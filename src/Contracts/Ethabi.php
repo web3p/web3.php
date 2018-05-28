@@ -249,7 +249,7 @@ class Ethabi
         $param = mb_strtolower(Utils::stripZero($param));
 
         for ($i=0; $i<$typesLength; $i++) {
-            if (isset($outputTypes['outputs'][$i]['name'])) {
+            if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
                 $result[$outputTypes['outputs'][$i]['name']] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
             } else {
                 $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
