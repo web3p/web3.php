@@ -23,9 +23,6 @@ class HexValidator
      */
     public static function validate($value)
     {
-        if (!is_string($value)) {
-            return false;
-        }
-        return (preg_match('/^0x[a-fA-F0-9]*$/', $value) >= 1);
+        return is_string($value) && ctype_xdigit($value);
     }
 }
