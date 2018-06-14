@@ -422,8 +422,8 @@ class Contract
             $method = array_splice($arguments, 0, 1)[0];
             $callback = array_pop($arguments);
 
-            if (!is_string($method) && !isset($this->functions[$method])) {
-                throw new InvalidArgumentException('Please make sure the method is existed.');
+            if (!is_string($method) || !isset($this->functions[$method])) {
+                throw new InvalidArgumentException('Please make sure the method exists.');
             }
             $function = $this->functions[$method];
 
@@ -468,8 +468,8 @@ class Contract
             $method = array_splice($arguments, 0, 1)[0];
             $callback = array_pop($arguments);
 
-            if (!is_string($method) && !isset($this->functions[$method])) {
-                throw new InvalidArgumentException('Please make sure the method is existed.');
+            if (!is_string($method) || !isset($this->functions[$method])) {
+                throw new InvalidArgumentException('Please make sure the method exists.');
             }
             $function = $this->functions[$method];
 
