@@ -37,7 +37,7 @@ class Str extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/string(\[([0-9]*)\])*/', $name) === 1);
+        return (preg_match('/^string(\[([0-9]*)\])*/', $name) === 1);
     }
 
     /**
