@@ -36,7 +36,7 @@ class Bytes extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/^bytes([0-9]{1,})?(\[([0-9]*)\])*/', $name) === 1);
+        return (preg_match('/^bytes([0-9]{1,})(\[([0-9]*)\])*$/', $name) === 1);
     }
 
     /**
@@ -89,6 +89,11 @@ class Bytes extends SolidityType implements IType
 
         if (empty($checkZero)) {
             return '0';
+        }
+        if (preg_match('/^bytes([0-9]*)/', $name, $match) === 1) {
+            $size = intval($match[1]);
+            $length = 2 * $size;
+            $value = mb_substr($value, 0, $length);
         }
         return '0x' . $value;
     }
