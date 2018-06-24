@@ -34,10 +34,10 @@ class DynamicBytesTypeTest extends TestCase
             'result' => true
         ], [
             'value' => 'bytes32',
-            'result' => true
+            'result' => false
         ], [
             'value' => 'bytes8[4]',
-            'result' => true
+            'result' => false
         ],
     ];
 

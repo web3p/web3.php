@@ -10,6 +10,7 @@ use Web3\Contract;
 use Web3\Utils;
 use Web3\Contracts\Ethabi;
 use Web3\Formatters\IntegerFormatter;
+use phpseclib\Math\BigInteger as BigNumber;
 
 class ContractTest extends TestCase
 {
@@ -852,5 +853,288 @@ class ContractTest extends TestCase
                 $this->assertEquals($result['age']->toString(), '18');
             }
         });
+    }
+
+    /**
+     * testIssue85
+     *
+     * @return void
+     */
+    public function testIssue85()
+    {
+        $bytecode = '0x608060405234801561001057600080fd5b50610a36806100206000396000f3006080604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630bcd3b33146100b45780631f9030371461014457806325f35c36146101775780632d1be94d146102735780638b84925b146102a2578063a15e05fd146102cd578063a5f807cc1461030f578063d07326681461039f578063ded516d21461043e578063f1d0876a146104ad578063f5c2e88a1461054c575b600080fd5b3480156100c057600080fd5b506100c96105dc565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156101095780820151818401526020810190506100ee565b50505050905090810190601f1680156101365780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561015057600080fd5b5061015961061e565b60405180826000191660001916815260200191505060405180910390f35b34801561018357600080fd5b5061018c61064b565b604051808060200180602001838103835285818151815260200191508051906020019080838360005b838110156101d05780820151818401526020810190506101b5565b50505050905090810190601f1680156101fd5780820380516001836020036101000a031916815260200191505b50838103825284818151815260200191508051906020019080838360005b8381101561023657808201518184015260208101905061021b565b50505050905090810190601f1680156102635780820380516001836020036101000a031916815260200191505b5094505050505060405180910390f35b34801561027f57600080fd5b506102886106cd565b604051808215151515815260200191505060405180910390f35b3480156102ae57600080fd5b506102b76106db565b6040518082815260200191505060405180910390f35b3480156102d957600080fd5b506102e26106e9565b60405180836000191660001916815260200182600019166000191681526020019250505060405180910390f35b34801561031b57600080fd5b50610324610741565b6040518080602001828103825283818151815260200191508051906020019080838360005b83811015610364578082015181840152602081019050610349565b50505050905090810190601f1680156103915780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156103ab57600080fd5b506103b461076a565b60405180806020018360001916600019168152602001828103825284818151815260200191508051906020019080838360005b838110156104025780820151818401526020810190506103e7565b50505050905090810190601f16801561042f5780820380516001836020036101000a031916815260200191505b50935050505060405180910390f35b34801561044a57600080fd5b506104536107d9565b60405180827effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff19167effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1916815260200191505060405180910390f35b3480156104b957600080fd5b506104c2610806565b60405180836000191660001916815260200180602001828103825283818151815260200191508051906020019080838360005b838110156105105780820151818401526020810190506104f5565b50505050905090810190601f16801561053d5780820380516001836020036101000a031916815260200191505b50935050505060405180910390f35b34801561055857600080fd5b50610561610875565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156105a1578082015181840152602081019050610586565b50505050905090810190601f1680156105ce5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6060806040805190810160405280600381526020017f616263000000000000000000000000000000000000000000000000000000000081525090508091505090565b6000807f616263000000000000000000000000000000000000000000000000000000000090508091505090565b6060806060806040805190810160405280600381526020017f616263000000000000000000000000000000000000000000000000000000000081525091506040805190810160405280600381526020017f78797a0000000000000000000000000000000000000000000000000000000000815250905081819350935050509091565b600080600190508091505090565b600080606390508091505090565b6000806000807f616263000000000000000000000000000000000000000000000000000000000091507f78797a0000000000000000000000000000000000000000000000000000000000905081819350935050509091565b6060806101606040519081016040528061012c81526020016108df61012c913990508091505090565b60606000606060006040805190810160405280600381526020017f616263000000000000000000000000000000000000000000000000000000000081525091507f78797a0000000000000000000000000000000000000000000000000000000000905081819350935050509091565b6000807f610000000000000000000000000000000000000000000000000000000000000090508091505090565b60006060600060607f78797a000000000000000000000000000000000000000000000000000000000091506040805190810160405280600381526020017f6162630000000000000000000000000000000000000000000000000000000000815250905081819350935050509091565b606080606060405190810160405280603c81526020017f616263616263616263636162636162636162636361626361626361626363616281526020017f6361626361626363616263616263616263636162636162636162636300000000815250905080915050905600616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363616263616263616263636162636162636162636361626361626361626363a165627a7a7230582020ee9e6b05918d0df987776ee24808f4dd1c522806bf9fa8f4336c93f6b0ec050029';
+        $abi = '[
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getBytes",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getBytes32",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes32"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getDynamicData",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    },
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getBoolean",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getInteger",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "int256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getTwoBytes32",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes32"
+                    },
+                    {
+                        "name": "",
+                        "type": "bytes32"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getBytesVeryLong",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getDynamicDataMixedOne",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    },
+                    {
+                        "name": "",
+                        "type": "bytes32"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getBytes1",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes1"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getDynamicDataMixedTwo",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes32"
+                    },
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getBytesLong",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "pure",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+              }
+        ]';
+        $functions = [
+            [
+                'name' => 'getBoolean',
+                'test' => function ($value) {
+                    return is_bool($value);
+                }
+            ], [
+                'name' => 'getInteger',
+                'test' => function ($value) {
+                    return ($value instanceof BigNumber);
+                }
+            ], [
+                'name' => 'getBytes1',
+                'test' => function ($value) {
+                    return Utils::isHex($value) && mb_strlen($value) === 4;
+                }
+            ], [
+                'name' => 'getBytes32',
+                'test' => function ($value) {
+                    return Utils::isHex($value) && mb_strlen($value) === 66;
+                }
+            ], [
+                'name' => 'getBytesLong',
+                'test' => function ($value) {
+                    return Utils::isHex($value);
+                }
+            ], [
+                'name' => 'getDynamicData',
+                'test' => function ($value) {
+                    return Utils::isHex($value);
+                }
+            ], [
+                'name' => 'getDynamicDataMixedOne',
+                'test' => function ($value) {
+                    return Utils::isHex($value);
+                }
+            ], [
+                'name' => 'getDynamicDataMixedTwo',
+                'test' => function ($value) {
+                    return Utils::isHex($value);
+                }
+            ], [
+                'name' => 'getTwoBytes32',
+                'test' => function ($value) {
+                    return Utils::isHex($value) && mb_strlen($value) === 66;
+                }
+            ]
+          ];
+        $contractAddress = "";
+
+        if (!isset($this->accounts[0])) {
+            $account = '0x407d73d8a49eeb85d32cf465507dd71d507100c1';
+        } else {
+            $account = $this->accounts[0];
+        }
+        $contract = new Contract($this->web3->provider, $abi);
+        $contract->bytecode($bytecode)->new([
+            'from' => $account,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract, &$contractAddress) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
+            }
+            $transactionId = $result;
+            $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
+
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use (&$contractAddress) {
+                if ($err !== null) {
+                    return $this->fail($err);
+                }
+                if ($transaction) {
+                    $contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
+                }
+            });
+        });
+        $contract->at($contractAddress);
+
+        foreach ($functions as $function) {
+            $contract->call($function['name'], [], function ($err, $res) use ($function) {
+                if ($err !== null) {
+                    echo 'Error when call ' . $function['name'] . '. Message: ' . $err->getMessage() . "\n";
+                    return;
+                }
+                foreach ($res as $r) {
+                    if (!call_user_func($function['test'], $r)) {
+                        var_dump($r);
+                    }
+                    $this->assertTrue(call_user_func($function['test'], $r));
+                }
+            });
+        }
     }
 }
