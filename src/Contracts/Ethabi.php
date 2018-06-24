@@ -280,7 +280,12 @@ class Ethabi
                     $className = $this->types[$match[0]];
 
                     if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
-                        throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+                        // check dynamic bytes
+                        if ($match[0] === 'bytes') {
+                            $className = $this->types['dynamicBytes'];
+                        } else {
+                            throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+                        }
                     }
                     $solidityTypes[$key] = $className;
                 }

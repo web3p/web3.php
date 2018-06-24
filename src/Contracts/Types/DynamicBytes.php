@@ -36,7 +36,7 @@ class DynamicBytes extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/^bytes(\[([0-9]*)\])*/', $name) === 1);
+        return (preg_match('/^bytes(\[([0-9]*)\])*$/', $name) === 1);
     }
 
     /**
@@ -89,6 +89,9 @@ class DynamicBytes extends SolidityType implements IType
         if (empty($checkZero)) {
             return '0';
         }
-        return '0x' . $value;
+        $size = intval(Utils::toBn(mb_substr($value, 0, 64))->toString());
+        $length = 2 * $size;
+        
+        return '0x' . mb_substr($value, 64, $length);
     }
 }

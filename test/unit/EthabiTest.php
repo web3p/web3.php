@@ -9,6 +9,7 @@ use Web3\Contracts\Ethabi;
 use Web3\Contracts\Types\Address;
 use Web3\Contracts\Types\Boolean;
 use Web3\Contracts\Types\Bytes;
+use Web3\Contracts\Types\DynamicBytes;
 use Web3\Contracts\Types\Integer;
 use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
@@ -179,9 +180,10 @@ class EthabiTest extends TestCase
             'address' => new Address,
             'bool' => new Boolean,
             'bytes' => new Bytes,
+            'dynamicBytes' => new DynamicBytes,
             'int' => new Integer,
             'string' => new Str,
-            'uint' => new Uinteger,
+            'uint' => new Uinteger
         ]);
     }
 
