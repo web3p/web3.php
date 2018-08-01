@@ -38,7 +38,7 @@ class Personal
      * @var array
      */
     private $allowedMethods = [
-        'personal_listAccounts', 'personal_newAccount', 'personal_unlockAccount', 'personal_sendTransaction'
+        'personal_listAccounts', 'personal_newAccount', 'personal_unlockAccount', 'personal_lockAccount', 'personal_sendTransaction'
     ];
 
     /**
