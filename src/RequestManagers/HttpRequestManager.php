@@ -89,7 +89,7 @@ class HttpRequestManager extends RequestManager implements IRequestManager
                 $errors = [];
 
                 foreach ($json as $result) {
-                    if (isset($result->result)) {
+                    if (property_exists($result,'result')) {
                         $results[] = $result->result;
                     } else {
                         if (isset($json->error)) {
