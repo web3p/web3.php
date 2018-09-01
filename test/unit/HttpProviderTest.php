@@ -17,7 +17,7 @@ class HttpProviderTest extends TestCase
      */
     public function testSend()
     {
-        $requestManager = new HttpRequestManager('http://localhost:8545');
+        $requestManager = new HttpRequestManager($this->testHost);
         $provider = new HttpProvider($requestManager);
         $method = new ClientVersion('web3_clientVersion', []);
 
@@ -36,7 +36,7 @@ class HttpProviderTest extends TestCase
      */
     public function testBatch()
     {
-        $requestManager = new HttpRequestManager('http://localhost:8545');
+        $requestManager = new HttpRequestManager($this->testHost);
         $provider = new HttpProvider($requestManager);
         $method = new ClientVersion('web3_clientVersion', []);
         $callback = function ($err, $data) {

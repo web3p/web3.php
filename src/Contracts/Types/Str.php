@@ -37,7 +37,7 @@ class Str extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/string(\[([0-9]*)\])*/', $name) === 1);
+        return (preg_match('/^string(\[([0-9]*)\])*$/', $name) === 1);
     }
 
     /**
@@ -77,7 +77,7 @@ class Str extends SolidityType implements IType
     public function outputFormat($value, $name)
     {
         $strLen = mb_substr($value, 0, 64);
-        $strValue = mb_substr($value, 64, 64);
+        $strValue = mb_substr($value, 64);
         $match = [];
 
         if (preg_match('/^[0]+([a-f0-9]+)$/', $strLen, $match) === 1) {

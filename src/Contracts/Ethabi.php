@@ -249,7 +249,7 @@ class Ethabi
         $param = mb_strtolower(Utils::stripZero($param));
 
         for ($i=0; $i<$typesLength; $i++) {
-            if (isset($outputTypes['outputs'][$i]['name'])) {
+            if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
                 $result[$outputTypes['outputs'][$i]['name']] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
             } else {
                 $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
@@ -280,7 +280,12 @@ class Ethabi
                     $className = $this->types[$match[0]];
 
                     if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
-                        throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+                        // check dynamic bytes
+                        if ($match[0] === 'bytes') {
+                            $className = $this->types['dynamicBytes'];
+                        } else {
+                            throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+                        }
                     }
                     $solidityTypes[$key] = $className;
                 }

@@ -9,6 +9,7 @@ use Web3\Contracts\Ethabi;
 use Web3\Contracts\Types\Address;
 use Web3\Contracts\Types\Boolean;
 use Web3\Contracts\Types\Bytes;
+use Web3\Contracts\Types\DynamicBytes;
 use Web3\Contracts\Types\Integer;
 use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
@@ -179,9 +180,10 @@ class EthabiTest extends TestCase
             'address' => new Address,
             'bool' => new Boolean,
             'bytes' => new Bytes,
+            'dynamicBytes' => new DynamicBytes,
             'int' => new Integer,
             'string' => new Str,
-            'uint' => new Uinteger,
+            'uint' => new Uinteger
         ]);
     }
 
@@ -292,5 +294,24 @@ class EthabiTest extends TestCase
                 }
             }
         }
+    }
+
+    /**
+     * testIssue71
+     * test 33 bytes and 128 bytes string, see: https://github.com/sc0Vu/web3.php/issues/71
+     * string generated from: https://www.lipsum.com/
+     * 
+     * @return void
+     */
+    public function testIssue71()
+    {
+        $abi = $this->abi;
+        $specialString = 'Lorem ipsum dolor sit amet metus.';
+        $encodedString = $abi->encodeParameter('string', $specialString);
+        $this->assertEquals($specialString, $abi->decodeParameter('string', $encodedString));
+
+        $specialString = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce pulvinar quam felis, suscipit posuere neque aliquam in cras amet.';
+        $encodedString = $abi->encodeParameter('string', $specialString);
+        $this->assertEquals($specialString, $abi->decodeParameter('string', $encodedString));
     }
 }

@@ -63,7 +63,7 @@ class PersonalApiTest extends TestCase
 
         $personal->newAccount('123456', function ($err, $account) {
             if ($err !== null) {
-                return $this->fail($e->getMessage());
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_string($account));
         });
@@ -81,7 +81,7 @@ class PersonalApiTest extends TestCase
         // create account
         $personal->newAccount('123456', function ($err, $account) {
             if ($err !== null) {
-                return $this->fail($e->getMessage());
+                return $this->fail($err->getMessage());
             }
             $this->newAccount = $account;
             $this->assertTrue(is_string($account));
@@ -107,7 +107,7 @@ class PersonalApiTest extends TestCase
         // create account
         $personal->newAccount('123456', function ($err, $account) {
             if ($err !== null) {
-                return $this->fail($e->getMessage());
+                return $this->fail($err->getMessage());
             }
             $this->newAccount = $account;
             $this->assertTrue(is_string($account));
@@ -133,7 +133,7 @@ class PersonalApiTest extends TestCase
         // create account
         $personal->newAccount('123456', function ($err, $account) {
             if ($err !== null) {
-                return $this->fail($e->getMessage());
+                return $this->fail($err->getMessage());
             }
             $this->newAccount = $account;
             $this->assertTrue(is_string($account));

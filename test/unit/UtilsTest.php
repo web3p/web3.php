@@ -87,6 +87,16 @@ class UtilsTest extends TestCase
         $this->assertEquals('0x', Utils::toHex(0, true));
         $this->assertEquals('0x', Utils::toHex(new BigNumber(0), true));
 
+        $this->assertEquals('0x30', Utils::toHex(48, true));
+        $this->assertEquals('0x30', Utils::toHex('48', true));
+        $this->assertEquals('30', Utils::toHex(48));
+        $this->assertEquals('30', Utils::toHex('48'));
+
+        $this->assertEquals('0x30', Utils::toHex(new BigNumber(48), true));
+        $this->assertEquals('0x30', Utils::toHex(new BigNumber('48'), true));
+        $this->assertEquals('30', Utils::toHex(new BigNumber(48)));
+        $this->assertEquals('30', Utils::toHex(new BigNumber('48')));
+
         $this->expectException(InvalidArgumentException::class);
         $hex = Utils::toHex(new stdClass);
     }
@@ -265,11 +275,23 @@ class UtilsTest extends TestCase
         $bn = Utils::toWei('1.69', 'ether');
         $this->assertEquals($bn->toString(), '1690000000000000000');
 
+        $bn = Utils::toWei('0.01', 'ether');
+        $this->assertEquals($bn->toString(), '10000000000000000');
+
+        $bn = Utils::toWei('0.002', 'ether');
+        $this->assertEquals($bn->toString(), '2000000000000000');
+
         $bn = Utils::toWei(0.1, 'ether');
         $this->assertEquals($bn->toString(), '100000000000000000');
 
         $bn = Utils::toWei(1.69, 'ether');
         $this->assertEquals($bn->toString(), '1690000000000000000');
+
+        $bn = Utils::toWei(0.01, 'ether');
+        $this->assertEquals($bn->toString(), '10000000000000000');
+
+        $bn = Utils::toWei(0.002, 'ether');
+        $this->assertEquals($bn->toString(), '2000000000000000');
 
         $bn = Utils::toWei('-0.1', 'ether');
         $this->assertEquals($bn->toString(), '-100000000000000000');
@@ -531,39 +553,45 @@ class UtilsTest extends TestCase
         $this->assertEquals($bn->toString(), '-1');
 
         $bn = Utils::toBn('-0.1');
-        $this->assertEquals(count($bn), 3);
+        $this->assertEquals(count($bn), 4);
         $this->assertEquals($bn[0]->toString(), '0');
         $this->assertEquals($bn[1]->toString(), '1');
-        $this->assertEquals($bn[2]->toString(), '-1');
+        $this->assertEquals($bn[2], 1);
+        $this->assertEquals($bn[3]->toString(), '-1');
 
         $bn = Utils::toBn(-0.1);
-        $this->assertEquals(count($bn), 3);
+        $this->assertEquals(count($bn), 4);
         $this->assertEquals($bn[0]->toString(), '0');
         $this->assertEquals($bn[1]->toString(), '1');
-        $this->assertEquals($bn[2]->toString(), '-1');
+        $this->assertEquals($bn[2], 1);
+        $this->assertEquals($bn[3]->toString(), '-1');
 
         $bn = Utils::toBn('0.1');
-        $this->assertEquals(count($bn), 3);
+        $this->assertEquals(count($bn), 4);
         $this->assertEquals($bn[0]->toString(), '0');
         $this->assertEquals($bn[1]->toString(), '1');
-        $this->assertEquals($bn[2], false);
+        $this->assertEquals($bn[2], 1);
+        $this->assertEquals($bn[3], false);
 
         $bn = Utils::toBn('-1.69');
-        $this->assertEquals(count($bn), 3);
+        $this->assertEquals(count($bn), 4);
         $this->assertEquals($bn[0]->toString(), '1');
         $this->assertEquals($bn[1]->toString(), '69');
-        $this->assertEquals($bn[2]->toString(), '-1');
+        $this->assertEquals($bn[2], 2);
+        $this->assertEquals($bn[3]->toString(), '-1');
 
         $bn = Utils::toBn(-1.69);
         $this->assertEquals($bn[0]->toString(), '1');
         $this->assertEquals($bn[1]->toString(), '69');
-        $this->assertEquals($bn[2]->toString(), '-1');
+        $this->assertEquals($bn[2], 2);
+        $this->assertEquals($bn[3]->toString(), '-1');
 
         $bn = Utils::toBn('1.69');
-        $this->assertEquals(count($bn), 3);
+        $this->assertEquals(count($bn), 4);
         $this->assertEquals($bn[0]->toString(), '1');
         $this->assertEquals($bn[1]->toString(), '69');
-        $this->assertEquals($bn[2], false);
+        $this->assertEquals($bn[2], 2);
+        $this->assertEquals($bn[3], false);
 
         $bn = Utils::toBn(new BigNumber(1));
         $this->assertEquals($bn->toString(), '1');

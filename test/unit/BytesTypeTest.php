@@ -16,22 +16,22 @@ class BytesTypeTest extends TestCase
     protected $testTypes = [
         [
             'value' => 'bytes',
-            'result' => true
+            'result' => false
         ], [
             'value' => 'bytes[]',
-            'result' => true
+            'result' => false
         ], [
             'value' => 'bytes[4]',
-            'result' => true
+            'result' => false
         ], [
             'value' => 'bytes[][]',
-            'result' => true
+            'result' => false
         ], [
             'value' => 'bytes[3][]',
-            'result' => true
+            'result' => false
         ], [
             'value' => 'bytes[][6][]',
-            'result' => true
+            'result' => false
         ], [
             'value' => 'bytes32',
             'result' => true

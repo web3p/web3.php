@@ -233,7 +233,7 @@ git clone https://github.com/sc0Vu/web3.php.git
 
 2. Copy web3.php to web3.php/docker/app directory and start container.
 ```
-cp files docker/app && docker-compose up -d php
+cp files docker/app && docker-compose up -d php ganache
 ```
 
 3. Enter php container and install packages.
@@ -241,9 +241,42 @@ cp files docker/app && docker-compose up -d php
 docker-compose exec php ash
 ```
 
-4. Run test script
+4. Change testHost in `TestCase.php`
+```
+/**
+ * testHost
+ * 
+ * @var string
+ */
+protected $testHost = 'http://ganache:8545';
+```
+
+5. Run test script
 ```
 vendor/bin/phpunit
+```
+
+###### Install packages
+Enter container first
+```
+docker-compose exec php ash
+```
+
+1. gmp
+```
+apk add gmp-dev
+docker-php-ext-install gmp
+```
+
+2. bcmath
+```
+docker-php-ext-install bcmath
+```
+
+###### Remove extension
+Move the extension config from `/usr/local/etc/php/conf.d/`
+```
+mv /usr/local/etc/php/conf.d/extension-config-name to/directory
 ```
 
 # API

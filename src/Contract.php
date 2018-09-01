@@ -22,6 +22,7 @@ use Web3\Contracts\Ethabi;
 use Web3\Contracts\Types\Address;
 use Web3\Contracts\Types\Boolean;
 use Web3\Contracts\Types\Bytes;
+use Web3\Contracts\Types\DynamicBytes;
 use Web3\Contracts\Types\Integer;
 use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
@@ -133,6 +134,7 @@ class Contract
             'address' => new Address,
             'bool' => new Boolean,
             'bytes' => new Bytes,
+            'dynamicBytes' => new DynamicBytes,
             'int' => new Integer,
             'string' => new Str,
             'uint' => new Uinteger,
@@ -231,6 +233,14 @@ class Contract
     public function getEvents()
     {
         return $this->events;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToAddress()
+    {
+        return $this->toAddress;
     }
 
     /**
@@ -397,7 +407,6 @@ class Contract
             if (count($arguments) > 0) {
                 $transaction = $arguments[0];
             }
-            $transaction['to'] = '';
             $transaction['data'] = '0x' . $this->bytecode . Utils::stripZero($data);
 
             $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
@@ -423,8 +432,8 @@ class Contract
             $method = array_splice($arguments, 0, 1)[0];
             $callback = array_pop($arguments);
 
-            if (!is_string($method) && !isset($this->functions[$method])) {
-                throw new InvalidArgumentException('Please make sure the method is existed.');
+            if (!is_string($method) || !isset($this->functions[$method])) {
+                throw new InvalidArgumentException('Please make sure the method exists.');
             }
             $function = $this->functions[$method];
 
@@ -469,8 +478,8 @@ class Contract
             $method = array_splice($arguments, 0, 1)[0];
             $callback = array_pop($arguments);
 
-            if (!is_string($method) && !isset($this->functions[$method])) {
-                throw new InvalidArgumentException('Please make sure the method is existed.');
+            if (!is_string($method) || !isset($this->functions[$method])) {
+                throw new InvalidArgumentException('Please make sure the method exists.');
             }
             $function = $this->functions[$method];
 
