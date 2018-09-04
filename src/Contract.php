@@ -391,7 +391,8 @@ class Contract
             $arguments = func_get_args();
             $callback = array_pop($arguments);
 
-            if (count($arguments) < count($constructor['inputs'])) {
+            $input_count = isset($constructor['inputs']) ? count($constructor['inputs']) : 0;
+            if (count($arguments) < $input_count) {
                 throw new InvalidArgumentException('Please make sure you have put all constructor params and callback.');
             }
             if (is_callable($callback) !== true) {
@@ -400,7 +401,7 @@ class Contract
             if (!isset($this->bytecode)) {
                 throw new \InvalidArgumentException('Please call bytecode($bytecode) before new().');
             }
-            $params = array_splice($arguments, 0, count($constructor['inputs']));
+            $params = array_splice($arguments, 0, $input_count);
             $data = $this->ethabi->encodeParameters($constructor, $params);
             $transaction = [];
 
