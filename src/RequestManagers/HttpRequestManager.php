@@ -12,6 +12,7 @@
 namespace Web3\RequestManagers;
 
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 use RuntimeException as RPCException;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -53,22 +54,7 @@ class HttpRequestManager extends RequestManager implements IRequestManager
         if (!is_string($payload)) {
             throw new \InvalidArgumentException('Payload must be string.');
         }
-        // $promise = $this->client->postAsync($this->host, [
-        //     'headers' => [
-        //         'content-type' => 'application/json'
-        //     ],
-        //     'body' => $payload
-        // ]);
-        // $promise->then(
-        //     function (ResponseInterface $res) use ($callback) {
-        //         var_dump($res->body());
-        //         call_user_func($callback, null, $res);
-        //     },
-        //     function (RequestException $err) use ($callback) {
-        //         var_dump($err->getMessage());
-        //         call_user_func($callback, $err, null);
-        //     }
-        // );
+
         try {
             $res = $this->client->post($this->host, [
                 'headers' => [
@@ -78,7 +64,12 @@ class HttpRequestManager extends RequestManager implements IRequestManager
                 'timeout' => $this->timeout,
                 'connect_timeout' => $this->timeout
             ]);
-            $json = json_decode($res->getBody());
+	        /**
+	         * @var StreamInterface $result;
+	         */
+            $result = $res->getBody();
+            $json = json_decode($result);
+            $result->close();
 
             if (JSON_ERROR_NONE !== json_last_error()) {
                 call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
