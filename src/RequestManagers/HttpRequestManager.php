@@ -65,11 +65,11 @@ class HttpRequestManager extends RequestManager implements IRequestManager
                 'connect_timeout' => $this->timeout
             ]);
 	        /**
-	         * @var StreamInterface $result;
+	         * @var StreamInterface $stream;
 	         */
-            $result = $res->getBody();
-            $json = json_decode($result);
-            $result->close();
+            $stream = $res->getBody();
+            $json = json_decode($stream);
+            $stream->close();
 
             if (JSON_ERROR_NONE !== json_last_error()) {
                 call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
