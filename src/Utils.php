@@ -87,14 +87,14 @@ class Utils
      */
     public static function toHex($value, $isPrefix=false)
     {
-        if (is_numeric($value)) {
+        if (is_string($value)) {
+            $value = self::stripZero($value);
+            $hex = implode('', unpack('H*', $value));
+        } elseif (is_numeric($value)) {
             // turn to hex number
             $bn = self::toBn($value);
             $hex = $bn->toHex(true);
             $hex = preg_replace('/^0+(?!$)/', '', $hex);
-        } elseif (is_string($value)) {
-            $value = self::stripZero($value);
-            $hex = implode('', unpack('H*', $value));
         } elseif ($value instanceof BigNumber) {
             $hex = $value->toHex(true);
             $hex = preg_replace('/^0+(?!$)/', '', $hex);
