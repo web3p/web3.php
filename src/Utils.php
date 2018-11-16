@@ -90,7 +90,7 @@ class Utils
         if (is_string($value)) {
             $value = self::stripZero($value);
             $hex = implode('', unpack('H*', $value));
-        } esleif (is_numeric($value)) {
+        } elseif (is_numeric($value)) {
             // turn to hex number
             $bn = self::toBn($value);
             $hex = $bn->toHex(true);
