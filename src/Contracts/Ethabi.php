@@ -155,21 +155,6 @@ class Ethabi
         }
         $typesLength = count($types);
         $solidityTypes = $this->getSolidityTypes($types);
-
-        foreach ($types as $key => $type) {
-            $match = [];
-
-            if (preg_match('/^([a-zA-Z]+)/', $type, $match) === 1) {
-                if (isset($this->types[$match[0]])) {
-                    $className = $this->types[$match[0]];
-
-                    if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
-                        throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
-                    }
-                    $solidityTypes[$key] = $className;
-                }
-            }
-        }
         $encodes = array_fill(0, $typesLength, '');
 
         foreach ($solidityTypes as $key => $type) {
