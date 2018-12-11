@@ -544,7 +544,6 @@ class Contract
                 if (count($arguments) > 0) {
                     $transaction = $arguments[0];
                 }
-                $transaction['to'] = '';
                 $transaction['data'] = '0x' . $this->bytecode . Utils::stripZero($data);
             } else {
                 $method = array_splice($arguments, 0, 1)[0];
