@@ -547,24 +547,6 @@ class EthApiTest extends TestCase
     }
 
     /**
-     * testGetCompilers
-     * 
-     * @return void
-     */    
-    public function testGetCompilers()
-    {
-        $eth = $this->eth;
-
-        $eth->getCompilers(function ($err, $compilers) {
-            if ($err !== null) {
-                return $this->assertTrue($err !== null);
-            }
-            $this->assertTrue(is_array($compilers));
-            $this->assertEquals($compilers[0], 'solidity');
-        });
-    }
-
-    /**
      * testCompileSolidity
      * 
      * @return void
