@@ -122,6 +122,39 @@ class PersonalApiTest extends TestCase
     }
 
     /**
+     * testLockAccount
+     * 
+     * @return void
+     */
+    public function testLockAccount()
+    {
+        $personal = $this->personal;
+
+        // create account
+        $personal->newAccount('123456', function ($err, $account) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->newAccount = $account;
+            $this->assertTrue(is_string($account));
+        });
+
+        $personal->unlockAccount($this->newAccount, '123456', function ($err, $unlocked) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue($unlocked);
+        });
+
+        $personal->lockAccount($this->newAccount, function ($err, $locked) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue($locked);
+        });
+    }
+
+    /**
      * testSendTransaction
      * 
      * @return void

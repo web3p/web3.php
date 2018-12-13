@@ -38,3 +38,16 @@ $web3->eth->getBalance($newAccount, function ($err, $balance) {
 	}
 	echo 'Balance: ' . $balance->toString() . PHP_EOL;
 });
+
+// remember to lock account after transaction
+$personal->lockAccount($newAccount, function ($err, $locked) {
+	if ($err !== null) {
+		echo 'Error: ' . $err->getMessage();
+		return;
+	}
+	if ($locked) {
+        echo 'New account is locked!' . PHP_EOL;
+	} else {
+	    echo 'New account isn\'t locked' . PHP_EOL;
+	}
+});
