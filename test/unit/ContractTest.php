@@ -1137,4 +1137,126 @@ class ContractTest extends TestCase
             });
         }
     }
+
+    /**
+     * testIssue125
+     *
+     * @return void
+     */
+    public function testIssue125()
+    {
+        $bytecode = '0x608060405234801561001057600080fd5b506103bb806100206000396000f3fe608060405260043610610046576000357c01000000000000000000000000000000000000000000000000000000009004806373d4a13a1461004b578063ab62f0e1146100db575b600080fd5b34801561005757600080fd5b506100606101a3565b6040518080602001828103825283818151815260200191508051906020019080838360005b838110156100a0578082015181840152602081019050610085565b50505050905090810190601f1680156100cd5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156100e757600080fd5b506101a1600480360360208110156100fe57600080fd5b810190808035906020019064010000000081111561011b57600080fd5b82018360208201111561012d57600080fd5b8035906020019184600183028401116401000000008311171561014f57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050509192919290505050610241565b005b60008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156102395780601f1061020e57610100808354040283529160200191610239565b820191906000526020600020905b81548152906001019060200180831161021c57829003601f168201915b505050505081565b80600090805190602001906102579291906102ea565b50806040518082805190602001908083835b60208310151561028e5780518252602082019150602081019050602083039250610269565b6001836020036101000a03801982511681845116808217855250505050505090500191505060405180910390207fae08ae866f3211e692b7cdd30e8b6ec658a153397150437cb873f95239953a5460405160405180910390a250565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061032b57805160ff1916838001178555610359565b82800160010185558215610359579182015b8281111561035857825182559160200191906001019061033d565b5b509050610366919061036a565b5090565b61038c91905b80821115610388576000816000905550600101610370565b5090565b9056fea165627a7a72305820bb836a29a397513a3f2e2199520262ef5978d3a3d7e3d3532da41064d39177e30029';
+        $abi = '[
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "_data",
+                        "type": "bytes"
+                    }
+                ],
+                "name": "setData",
+                "outputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "name": "_data",
+                        "type": "bytes"
+                    }
+                ],
+                "name": "SetData",
+                "type": "event"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "data",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bytes"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ]';
+        $contractAddress = "";
+
+        if (!isset($this->accounts[0])) {
+            $account = '0x407d73d8a49eeb85d32cf465507dd71d507100c1';
+        } else {
+            $account = $this->accounts[0];
+        }
+        $contract = new Contract($this->web3->provider, $abi);
+        $contract->bytecode($bytecode)->new([
+            'from' => $account,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract, &$contractAddress) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
+            }
+            $transactionId = $result;
+            $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
+
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use (&$contractAddress) {
+                if ($err !== null) {
+                    return $this->fail($err);
+                }
+                if ($transaction) {
+                    $contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mind:) block number: " . $transaction->blockNumber . "\n";
+                }
+            });
+        });
+        $contract->at($contractAddress);
+
+        $contract->call('data', [], function ($err, $res) {
+            if ($err !== null) {
+                echo 'Error when call ' . $function['name'] . '. Message: ' . $err->getMessage() . "\n";
+                return;
+            }
+            $this->assertEquals('0', $res[0]);
+        });
+
+        $contract->send('setData', '0x44aec9b900000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000021000000000000000000000000000000000000000000000000000000000000000b', [
+            'from' => $account,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                var_dump('Error' . $err->getMessage());
+                return $this->fail($err->getMessage());
+            }
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
+            }
+            $transactionId = $result;
+            $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
+
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
+                if ($err !== null) {
+                    return $this->fail($err);
+                }
+                $this->assertTrue($transaction !== null);
+            });
+        });
+
+        $contract->call('data', [], function ($err, $res) {
+            if ($err !== null) {
+                echo 'Error when call ' . $function['name'] . '. Message: ' . $err->getMessage() . "\n";
+                return;
+            }
+            $this->assertEquals('0x44aec9b900000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000021000000000000000000000000000000000000000000000000000000000000000b', $res[0]);
+        });
+    }
 }
