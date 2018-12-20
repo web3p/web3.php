@@ -69,6 +69,10 @@ class DynamicBytes extends SolidityType implements IType
         $bn = Utils::toBn(mb_strlen($value) / 2);
         $bnHex = $bn->toHex(true);
         $padded = mb_substr($bnHex, 0, 1);
+
+        if ($padded !== '0' && $padded !== 'f') {
+            $padded = '0';
+        }
         $l = floor((mb_strlen($value) + 63) / 64);
         $padding = (($l * 64 - mb_strlen($value) + 1) >= 0) ? $l * 64 - mb_strlen($value) : 0;
 
@@ -89,7 +93,7 @@ class DynamicBytes extends SolidityType implements IType
         if (empty($checkZero)) {
             return '0';
         }
-        $size = intval(Utils::toBn(mb_substr($value, 0, 64))->toString());
+        $size = intval(Utils::toBn('0x' . mb_substr($value, 0, 64))->toString());
         $length = 2 * $size;
         
         return '0x' . mb_substr($value, 64, $length);
