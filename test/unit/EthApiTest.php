@@ -457,7 +457,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue($transaction !== null);
+            $this->assertTrue($transaction == null);
         });
     }
 
@@ -474,7 +474,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue($transaction !== null);
+            $this->assertTrue($transaction == null);
         });
     }
 
@@ -508,7 +508,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            $this->assertTrue($transaction !== null);
+            $this->assertTrue($transaction == null);
         });
     }
 
