@@ -15,14 +15,7 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
-/**
- * Class Personal
- * @package Web3
- * @method array        listAccounts($callback)
- * @method array        newAccount(...$paramsAndcallback)
- * @method boolean      unlockAccount(...$paramsAndcallback)
- * @method string       sendTransaction(...$paramsAndcallback)
- */
+
 class Personal
 {
     /**

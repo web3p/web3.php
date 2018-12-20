@@ -16,52 +16,6 @@ use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
 
-/**
- * Class Eth
- * @package Web3
- * @method int           protocolVersion($callback)
- * @method object|false  eth_syncing($callback)
- * @method string        coinbase($callback)
- * @method boolean       mining($callback)
- * @method string        hashrate($callback)
- * @method string        gasPrice($callback)
- * @method array         accounts($callback)
- * @method string        blockNumber($callback)
- * @method string        getBalance(...$paramsAndcallback)
- * @method string        getStorageAt(...$paramsAndcallback)
- * @method string        getTransactionCount(...$paramsAndcallback)
- * @method string        getBlockTransactionCountByHash(...$paramsAndcallback)
- * @method string        getBlockTransactionCountByNumber(...$paramsAndcallback)
- * @method string        getUncleCountByBlockHash(...$paramsAndcallback)
- * @method string        getUncleCountByBlockNumber(...$paramsAndcallback)
- * @method string        getUncleByBlockHashAndIndex(...$paramsAndcallback)
- * @method string        getUncleByBlockNumberAndIndex(...$paramsAndcallback)
- * @method string        getCode(...$paramsAndcallback)
- * @method string        sign(...$paramsAndcallback)
- * @method string        sendTransaction(...$paramsAndcallback)
- * @method string        sendRawTransaction(...$paramsAndcallback)
- * @method string        call(...$paramsAndcallback)
- * @method string        estimateGas(...$paramsAndcallback)
- * @method string        getBlockByHash(...$paramsAndcallback)
- * @method string        getBlockByNumber(...$paramsAndcallback)
- * @method string        getTransactionByHash(...$paramsAndcallback)
- * @method string        getTransactionByBlockHashAndIndex(...$paramsAndcallback)
- * @method string        getTransactionReceipt(...$paramsAndcallback)
- * @method string        getCompilers(...$paramsAndcallback)
- * @method string        compileSolidity(...$paramsAndcallback)
- * @method string        compileLLL(...$paramsAndcallback)
- * @method string        compileSerpent(...$paramsAndcallback)
- * @method string        getWork(...$paramsAndcallback)
- * @method string        newFilter(...$paramsAndcallback)
- * @method string        newBlockFilter(...$paramsAndcallback)
- * @method string        newPendingTransactionFilter(...$paramsAndcallback)
- * @method string        uninstallFilter(...$paramsAndcallback)
- * @method string        getFilterChanges(...$paramsAndcallback)
- * @method string        getFilterLogs(...$paramsAndcallback)
- * @method string        getLogs(...$paramsAndcallback)
- * @method string        submitWork(...$paramsAndcallback)
- * @method string        submitHashrate(...$paramsAndcallback)
- */
 class Eth
 {
     /**
