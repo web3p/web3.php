@@ -266,12 +266,15 @@ class Utils
      * $wei = Utils::toWei('1', 'kwei'); 
      * $wei->toString(); // 1000
      * 
-     * @param BigNumber|string|int $number
+     * @param BigNumber|string $number
      * @param string $unit
      * @return \phpseclib\Math\BigInteger
      */
     public static function toWei($number, $unit)
     {
+        if (!is_string($number) && !($number instanceof BigNumber)) {
+            throw new InvalidArgumentException('toWei number must be string or bignumber.');
+        }
         $bn = self::toBn($number);
 
         if (!is_string($unit)) {

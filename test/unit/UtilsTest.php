@@ -252,82 +252,58 @@ class UtilsTest extends TestCase
     public function testToWei()
     {
         $bn = Utils::toWei('0x1', 'wei');
-        $this->assertEquals($bn->toString(), '1');
+        $this->assertEquals('1', $bn->toString());
 
         $bn = Utils::toWei('18', 'wei');
-        $this->assertEquals($bn->toString(), '18');
-
-        $bn = Utils::toWei(1, 'wei');
-        $this->assertEquals($bn->toString(), '1');
-
-        $bn = Utils::toWei(0x11, 'wei');
-        $this->assertEquals($bn->toString(), '17');
+        $this->assertEquals('18', $bn->toString());
 
         $bn = Utils::toWei('1', 'ether');
-        $this->assertEquals($bn->toString(), '1000000000000000000');
+        $this->assertEquals('1000000000000000000', $bn->toString());
 
         $bn = Utils::toWei('0x5218', 'wei');
-        $this->assertEquals($bn->toString(), '21016');
+        $this->assertEquals('21016', $bn->toString());
+
+        $bn = Utils::toWei('0.000012', 'ether');
+        $this->assertEquals('12000000000000', $bn->toString());
 
         $bn = Utils::toWei('0.1', 'ether');
-        $this->assertEquals($bn->toString(), '100000000000000000');
+        $this->assertEquals('100000000000000000', $bn->toString());
 
         $bn = Utils::toWei('1.69', 'ether');
-        $this->assertEquals($bn->toString(), '1690000000000000000');
+        $this->assertEquals('1690000000000000000', $bn->toString());
 
         $bn = Utils::toWei('0.01', 'ether');
-        $this->assertEquals($bn->toString(), '10000000000000000');
+        $this->assertEquals('10000000000000000', $bn->toString());
 
         $bn = Utils::toWei('0.002', 'ether');
-        $this->assertEquals($bn->toString(), '2000000000000000');
-
-        $bn = Utils::toWei(0.1, 'ether');
-        $this->assertEquals($bn->toString(), '100000000000000000');
-
-        $bn = Utils::toWei(1.69, 'ether');
-        $this->assertEquals($bn->toString(), '1690000000000000000');
-
-        $bn = Utils::toWei(0.01, 'ether');
-        $this->assertEquals($bn->toString(), '10000000000000000');
-
-        $bn = Utils::toWei(0.002, 'ether');
-        $this->assertEquals($bn->toString(), '2000000000000000');
+        $this->assertEquals('2000000000000000', $bn->toString());
 
         $bn = Utils::toWei('-0.1', 'ether');
-        $this->assertEquals($bn->toString(), '-100000000000000000');
+        $this->assertEquals('-100000000000000000', $bn->toString());
 
         $bn = Utils::toWei('-1.69', 'ether');
-        $this->assertEquals($bn->toString(), '-1690000000000000000');
-
-        $bn = Utils::toWei(-0.1, 'ether');
-        $this->assertEquals($bn->toString(), '-100000000000000000');
-
-        $bn = Utils::toWei(-1.69, 'ether');
-        $this->assertEquals($bn->toString(), '-1690000000000000000');
+        $this->assertEquals('-1690000000000000000', $bn->toString());
 
         $bn = Utils::toWei('', 'ether');
-        $this->assertEquals($bn->toString(), '0');
-
-        $bn = Utils::toWei(-1.697, 'kwei');
-        $this->assertEquals($bn->toString(), '-1697');
+        $this->assertEquals('0', $bn->toString());
 
         try {
             $bn = Utils::toWei('0x5218', new stdClass);
         } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
+            $this->assertEquals('toWei unit must be string.', $e->getMessage());
         }
 
         try {
             $bn = Utils::toWei('0x5218', 'test');
         } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
+            $this->assertEquals('toWei doesn\'t support test unit.', $e->getMessage());
         }
 
         try {
             // out of limit
             $bn = Utils::toWei(-1.6977, 'kwei');
         } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
+            $this->assertEquals('toWei number must be string or bignumber.', $e->getMessage());
         }
     }
 
@@ -347,16 +323,6 @@ class UtilsTest extends TestCase
 
         $this->assertEquals($bnq->toString(), '0');
         $this->assertEquals($bnr->toString(), '18');
-
-        list($bnq, $bnr) = Utils::toEther(1, 'wei');
-
-        $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '1');
-
-        list($bnq, $bnr) = Utils::toEther(0x11, 'wei');
-
-        $this->assertEquals($bnq->toString(), '0');
-        $this->assertEquals($bnr->toString(), '17');
 
         list($bnq, $bnr) = Utils::toEther('1', 'kether');
 
