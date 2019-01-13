@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -24,14 +24,14 @@ class HttpRequestManager extends RequestManager implements IRequestManager
 {
     /**
      * client
-     * 
+     *
      * @var \GuzzleHttp
      */
     protected $client;
 
     /**
      * construct
-     * 
+     *
      * @param string $host
      * @param int $timeout
      * @return void
@@ -44,7 +44,7 @@ class HttpRequestManager extends RequestManager implements IRequestManager
 
     /**
      * sendPayload
-     * 
+     *
      * @param string $payload
      * @param callable $callback
      * @return void
@@ -64,9 +64,9 @@ class HttpRequestManager extends RequestManager implements IRequestManager
                 'timeout' => $this->timeout,
                 'connect_timeout' => $this->timeout
             ]);
-	        /**
-	         * @var StreamInterface $stream;
-	         */
+            /**
+             * @var StreamInterface $stream ;
+             */
             $stream = $res->getBody();
             $json = json_decode($stream);
             $stream->close();
