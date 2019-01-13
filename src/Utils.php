@@ -422,52 +422,34 @@ class Utils
     /**
      * jsonToArray
      * 
-     * @param stdClass|array|string $json
-     * @param int $depth
+     * @param stdClass|array $json
      * @return array
      */
-    public static function jsonToArray($json, $depth=1)
+    public static function jsonToArray($json)
     {
-        if (!is_int($depth) || $depth <= 0) {
-            throw new InvalidArgumentException('jsonToArray depth must be int and depth must bigger than 0.');
-        }
         if ($json instanceof stdClass) {
             $json = (array) $json;
             $typeName = [];
 
-            if ($depth > 1) {
-                foreach ($json as $key => $param) {
-                    if (is_array($param)) {
-                        foreach ($param as $subKey => $subParam) {
-                            $json[$key][$subKey] = self::jsonToArray($subParam, $depth-1);
-                        }
-                    } elseif ($param instanceof stdClass) {
-                        $json[$key] = self::jsonToArray($param, $depth-1);
+            foreach ($json as $key => $param) {
+                if (is_array($param)) {
+                    foreach ($param as $subKey => $subParam) {
+                        $json[$key][$subKey] = self::jsonToArray($subParam);
                     }
+                } elseif ($param instanceof stdClass) {
+                    $json[$key] = self::jsonToArray($param);
                 }
             }
-            return $json;
         } elseif (is_array($json)) {
-            if ($depth > 1) {
-                foreach ($json as $key => $param) {
-                    if (is_array($param)) {
-                        foreach ($param as $subKey => $subParam) {
-                            $json[$key][$subKey] = self::jsonToArray($subParam, $depth-1);
-                        }
-                    } elseif ($param instanceof stdClass) {
-                        $json[$key] = self::jsonToArray($param, $depth-1);
+            foreach ($json as $key => $param) {
+                if (is_array($param)) {
+                    foreach ($param as $subKey => $subParam) {
+                        $json[$key][$subKey] = self::jsonToArray($subParam);
                     }
+                } elseif ($param instanceof stdClass) {
+                    $json[$key] = self::jsonToArray($param);
                 }
             }
-        } elseif (is_string($json)) {
-            $json = json_decode($json, true);
-
-            if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new InvalidArgumentException('json_decode error: ' . json_last_error_msg());
-            }
-            return $json;
-        } else {
-            throw new InvalidArgumentException('The json param to jsonToArray must be array or stdClass or string.');
         }
         return $json;
     }

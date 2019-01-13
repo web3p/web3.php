@@ -115,9 +115,18 @@ class Contract
         } else if ($provider instanceof Provider) {
             $this->provider = $provider;
         }
-        $abi = Utils::jsonToArray($abi, 5);
 
-        foreach ($abi as $item) {
+        $abiArray = [];
+        if (is_string($abi)) {
+            $abiArray = json_decode($abi, true);
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new InvalidArgumentException('abi decode error: ' . json_last_error_msg());
+            }
+        } else {
+            $abiArray = Utils::jsonToArray($abi);
+        }
+        foreach ($abiArray as $item) {
             if (isset($item['type'])) {
                 if ($item['type'] === 'function') {
                     $this->functions[$item['name']] = $item;
@@ -128,7 +137,7 @@ class Contract
                 }
             }
         }
-        $this->abi = $abi;
+        $this->abi = $abiArray;
         $this->eth = new Eth($this->provider);
         $this->ethabi = new Ethabi([
             'address' => new Address,
@@ -359,9 +368,18 @@ class Contract
         if (StringValidator::validate($abi) === false) {
             throw new InvalidArgumentException('Please make sure abi is valid.');
         }
-        $abi = Utils::jsonToArray($abi, 5);
+        $abiArray = [];
+        if (is_string($abi)) {
+            $abiArray = json_decode($abi, true);
 
-        foreach ($abi as $item) {
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                throw new InvalidArgumentException('abi decode error: ' . json_last_error_msg());
+            }
+        } else {
+            $abiArray = Utils::jsonToArray($abi);
+        }
+
+        foreach ($abiArray as $item) {
             if (isset($item['type'])) {
                 if ($item['type'] === 'function') {
                     $this->functions[$item['name']] = $item;
@@ -372,7 +390,7 @@ class Contract
                 }
             }
         }
-        $this->abi = $abi;
+        $this->abi = $abiArray;
 
         return $this;
     }

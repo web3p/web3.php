@@ -7,6 +7,7 @@ use stdClass;
 use Test\TestCase;
 use phpseclib\Math\BigInteger as BigNumber;
 use Web3\Utils;
+use Web3\Contract;
 
 class UtilsTest extends TestCase
 {
@@ -51,6 +52,85 @@ class UtilsTest extends TestCase
         "name": "testObject"
       }
     }';
+
+    /**
+     * testIssue112Json
+     * see: https://github.com/sc0Vu/web3.php/issues/112
+     * 
+     * @var string
+     */
+    protected $testIssue112Json = '[
+        {
+          "constant": true,
+          "inputs": [],
+          "name": "name",
+          "outputs": [
+            {
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "constant": true,
+          "inputs": [],
+          "name": "decimals",
+          "outputs": [
+            {
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "constant": true,
+          "inputs": [
+            {
+              "name": "tokenOwner",
+              "type": "address"
+            }
+          ],
+          "name": "balanceOf",
+          "outputs": [
+            {
+              "name": "balance",
+              "type": "uint256"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "constant": false,
+          "inputs": [
+            {
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "name": "tokens",
+              "type": "uint256"
+            }
+          ],
+          "name": "transfer",
+          "outputs": [
+            {
+              "name": "success",
+              "type": "bool"
+            }
+          ],
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+    ]';
 
     /**
      * setUp
@@ -418,39 +498,16 @@ class UtilsTest extends TestCase
      */
     public function testJsonToArray()
     {
-        $json = json_decode($this->testJsonMethodString);
-        $jsonArrayDepth1 = Utils::jsonToArray($json);
-
-        $this->assertEquals($jsonArrayDepth1, (array) $json);
-
+        $decodedJson = json_decode($this->testJsonMethodString);
+        $jsonArray = Utils::jsonToArray($decodedJson);
         $jsonAssoc = json_decode($this->testJsonMethodString, true);
-        $jsonArrayDepth2 = Utils::jsonToArray($json, 2);
+        $jsonArray2 = Utils::jsonToArray($jsonAssoc);
+        $this->assertEquals($jsonAssoc, $jsonArray);
+        $this->assertEquals($jsonAssoc, $jsonArray2);
 
-        $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
-
-        $jsonArrayDepth2 = Utils::jsonToArray($jsonArrayDepth1, 2);
-        $this->assertEquals($jsonArrayDepth2, $jsonAssoc);
-
-        $jsonArray = Utils::jsonToArray($this->testJsonMethodString);
-        $this->assertEquals($jsonArray, $jsonAssoc);
-
-        try {
-            $jsonArray = Utils::jsonToArray($json, 0);
-        } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
-        }
-
-        try {
-            $jsonArray = Utils::jsonToArray(mb_substr($this->testJsonMethodString, 0, 50), 1);
-        } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
-        }
-
-        try {
-            $jsonArray = Utils::jsonToArray(0, 1);
-        } catch (InvalidArgumentException $e) {
-            $this->assertTrue($e !== null);
-        }
+        $jsonAssoc = json_decode($this->testIssue112Json, true);
+        $jsonArray = Utils::jsonToArray($jsonAssoc);
+        $this->assertEquals($jsonAssoc, $jsonArray);
     }
 
     /**
