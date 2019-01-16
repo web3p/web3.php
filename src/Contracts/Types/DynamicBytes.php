@@ -66,7 +66,7 @@ class DynamicBytes extends SolidityType implements IType
         // if (mb_strlen($value) % 2 !== 0) {
         //     throw new InvalidArgumentException('The value to inputFormat has invalid length.');
         // }
-        $bn = Utils::toBn(mb_strlen($value) / 2);
+        $bn = Utils::toBn(floor(mb_strlen($value) / 2));
         $bnHex = $bn->toHex(true);
         $padded = mb_substr($bnHex, 0, 1);
 
