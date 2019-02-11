@@ -100,6 +100,7 @@ class Ethabi
 
     /**
      * encodeEventSignature
+     * TODO: Fix same event name with different params
      * 
      * @param string|stdClass|array $functionName
      * @return string

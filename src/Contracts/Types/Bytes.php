@@ -63,9 +63,10 @@ class Bytes extends SolidityType implements IType
         }
         $value = Utils::stripZero($value);
 
-        // if (mb_strlen($value) % 2 !== 0) {
-        //     throw new InvalidArgumentException('The value to inputFormat has invalid length. Value: ' . $value);
-        // }
+        if (mb_strlen($value) % 2 !== 0) {
+            $value = "0" . $value;
+            // throw new InvalidArgumentException('The value to inputFormat has invalid length. Value: ' . $value);
+        }
 
         if (mb_strlen($value) > 64) {
             throw new InvalidArgumentException('The value to inputFormat is too long.');
