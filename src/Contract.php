@@ -504,7 +504,7 @@ class Contract
                     if ($argsLen !== count($function['inputs'])) {
                         continue;
                     } else {
-                        $paramsLen = $argsLen - 1;
+                        $paramsLen = $argsLen;
                     }
                 }
                 try {
@@ -599,7 +599,7 @@ class Contract
                     if ($argsLen !== count($function['inputs'])) {
                         continue;
                     } else {
-                        $paramsLen = $argsLen - 1;
+                        $paramsLen = $argsLen;
                     }
                 }
                 try {
@@ -718,7 +718,7 @@ class Contract
                         if ($argsLen !== count($function['inputs'])) {
                             continue;
                         } else {
-                            $paramsLen = $argsLen - 1;
+                            $paramsLen = $argsLen;
                         }
                     }
                     try {
