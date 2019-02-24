@@ -631,6 +631,17 @@ class ContractTest extends TestCase
                 $this->assertTrue($result !== null);
             }
         });
+        // test issue 143
+        $contract->at($this->contractAddress)->call('balanceOf', $fromAccount, function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($result)) {
+                // $bn = Utils::toBn($result);
+                // $this->assertEquals($bn->toString(), '10000', 'Balance should be 10000.');
+                $this->assertTrue($result !== null);
+            }
+        });
     }
 
     /**
