@@ -12,9 +12,10 @@
 namespace Web3\Validators;
 
 use Web3\Validators\IValidator;
+use Web3\Validators\Validator;
 use Web3\Utils;
 
-class TagValidator implements IValidator
+class TagValidator extends Validator implements IValidator
 {
     /**
      * validate

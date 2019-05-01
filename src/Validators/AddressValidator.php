@@ -12,8 +12,9 @@
 namespace Web3\Validators;
 
 use Web3\Validators\IValidator;
+use Web3\Validators\Validator;
 
-class AddressValidator
+class AddressValidator extends Validator implements IValidator
 {
     /**
      * validate
