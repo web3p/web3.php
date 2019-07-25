@@ -629,7 +629,7 @@ class EthApiTest extends TestCase
     {
         $eth = $this->eth;
 
-        $eth->newBlockFilter('0x01', function ($err, $filter) {
+        $eth->newBlockFilter(function ($err, $filter) {
             if ($err !== null) {
                 // infura banned us to new block filter
                 return $this->assertTrue($err !== null);
