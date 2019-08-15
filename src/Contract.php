@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -12,12 +12,6 @@
 namespace Web3;
 
 use InvalidArgumentException;
-use Web3\Providers\Provider;
-use Web3\Providers\HttpProvider;
-use Web3\RequestManagers\RequestManager;
-use Web3\RequestManagers\HttpRequestManager;
-use Web3\Utils;
-use Web3\Eth;
 use Web3\Contracts\Ethabi;
 use Web3\Contracts\Types\Address;
 use Web3\Contracts\Types\Boolean;
@@ -26,9 +20,14 @@ use Web3\Contracts\Types\DynamicBytes;
 use Web3\Contracts\Types\Integer;
 use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
+use Web3\Eth;
+use Web3\Formatters\AddressFormatter;
+use Web3\Providers\HttpProvider;
+use Web3\Providers\Provider;
+use Web3\RequestManagers\HttpRequestManager;
+use Web3\Utils;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\HexValidator;
-use Web3\Formatters\AddressFormatter;
 use Web3\Validators\StringValidator;
 
 class Contract
@@ -42,56 +41,63 @@ class Contract
 
     /**
      * abi
-     * 
+     *
      * @var array
      */
     protected $abi;
 
     /**
      * constructor
-     * 
+     *
      * @var array
      */
     protected $constructor = [];
 
     /**
      * functions
-     * 
+     *
      * @var array
      */
     protected $functions = [];
 
     /**
      * events
-     * 
+     *
      * @var array
      */
     protected $events = [];
 
     /**
      * toAddress
-     * 
+     *
      * @var string
      */
     protected $toAddress;
 
     /**
      * bytecode
-     * 
+     *
      * @var string
      */
     protected $bytecode;
 
     /**
+     * defaultBlock
+     *
+     * @var string|int
+     */
+    protected $defaultBlock;
+
+    /**
      * eth
-     * 
+     *
      * @var \Web3\Eth
      */
     protected $eth;
 
     /**
      * ethabi
-     * 
+     *
      * @var \Web3\Contracts\Ethabi
      */
     protected $ethabi;
@@ -103,7 +109,7 @@ class Contract
      * @param string|\stdClass|array $abi
      * @return void
      */
-    public function __construct($provider, $abi)
+    public function __construct($provider, $abi, $defaultBlock = 'pending')
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
@@ -148,11 +154,12 @@ class Contract
             'string' => new Str,
             'uint' => new Uinteger,
         ]);
+        $this->defaultBlock = $defaultBlock;
     }
 
     /**
      * call
-     * 
+     *
      * @param string $name
      * @param array $arguments
      * @return void
@@ -169,7 +176,7 @@ class Contract
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @return mixed
      */
@@ -185,7 +192,7 @@ class Contract
 
     /**
      * set
-     * 
+     *
      * @param string $name
      * @param mixed $value
      * @return mixed
@@ -202,7 +209,7 @@ class Contract
 
     /**
      * getProvider
-     * 
+     *
      * @return \Web3\Providers\Provider
      */
     public function getProvider()
@@ -212,7 +219,7 @@ class Contract
 
     /**
      * setProvider
-     * 
+     *
      * @param \Web3\Providers\Provider $provider
      * @return $this
      */
@@ -226,7 +233,7 @@ class Contract
 
     /**
      * getFunctions
-     * 
+     *
      * @return array
      */
     public function getFunctions()
@@ -236,7 +243,7 @@ class Contract
 
     /**
      * getEvents
-     * 
+     *
      * @return array
      */
     public function getEvents()
@@ -254,7 +261,7 @@ class Contract
 
     /**
      * getConstructor
-     * 
+     *
      * @return array
      */
     public function getConstructor()
@@ -264,7 +271,7 @@ class Contract
 
     /**
      * getAbi
-     * 
+     *
      * @return array
      */
     public function getAbi()
@@ -274,7 +281,7 @@ class Contract
 
     /**
      * setAbi
-     * 
+     *
      * @param string $abi
      * @return $this
      */
@@ -285,7 +292,7 @@ class Contract
 
     /**
      * getEthabi
-     * 
+     *
      * @return array
      */
     public function getEthabi()
@@ -295,7 +302,7 @@ class Contract
 
     /**
      * getEth
-     * 
+     *
      * @return \Web3\Eth
      */
     public function getEth()
@@ -305,7 +312,7 @@ class Contract
 
     /**
      * setBytecode
-     * 
+     *
      * @param string $bytecode
      * @return $this
      */
@@ -316,7 +323,7 @@ class Contract
 
     /**
      * setToAddress
-     * 
+     *
      * @param string $bytecode
      * @return $this
      */
@@ -327,7 +334,7 @@ class Contract
 
     /**
      * at
-     * 
+     *
      * @param string $address
      * @return $this
      */
@@ -343,7 +350,7 @@ class Contract
 
     /**
      * bytecode
-     * 
+     *
      * @param string $bytecode
      * @return $this
      */
@@ -359,7 +366,7 @@ class Contract
 
     /**
      * abi
-     * 
+     *
      * @param string $abi
      * @return $this
      */
@@ -398,12 +405,11 @@ class Contract
     /**
      * new
      * Deploy a contruct with params.
-     * 
+     *
      * @param mixed
      * @return void
      */
-    public function new()
-    {
+    function new () {
         if (isset($this->constructor)) {
             $constructor = $this->constructor;
             $arguments = func_get_args();
@@ -428,7 +434,7 @@ class Contract
             }
             $transaction['data'] = '0x' . $this->bytecode . Utils::stripZero($data);
 
-            $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
+            $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback) {
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -440,7 +446,7 @@ class Contract
     /**
      * send
      * Send function method.
-     * 
+     *
      * @param mixed
      * @return void
      */
@@ -523,7 +529,7 @@ class Contract
             $transaction['to'] = $this->toAddress;
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
-            $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
+            $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback) {
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -535,7 +541,7 @@ class Contract
     /**
      * call
      * Call function method.
-     * 
+     *
      * @param mixed
      * @return void
      */
@@ -618,7 +624,7 @@ class Contract
             $transaction['to'] = $this->toAddress;
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
-            $this->eth->call($transaction, function ($err, $transaction) use ($callback, $function){
+            $this->eth->call($transaction, $this->defaultBlock, function ($err, $transaction) use ($callback, $function) {
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -632,7 +638,7 @@ class Contract
     /**
      * estimateGas
      * Estimate function gas.
-     * 
+     *
      * @param mixed
      * @return void
      */
@@ -668,7 +674,7 @@ class Contract
                 if (!is_string($method)) {
                     throw new InvalidArgumentException('Please make sure the method is string.');
                 }
-    
+
                 $functions = [];
                 foreach ($this->functions as $function) {
                     if ($function["name"] === $method) {
@@ -681,7 +687,7 @@ class Contract
                 if (is_callable($callback) !== true) {
                     throw new \InvalidArgumentException('The last param must be callback function.');
                 }
-    
+
                 // check the last one in arguments is transaction object
                 $argsLen = count($arguments);
                 $transaction = [];
@@ -738,7 +744,7 @@ class Contract
                 $transaction['data'] = $functionSignature . Utils::stripZero($data);
             }
 
-            $this->eth->estimateGas($transaction, function ($err, $gas) use ($callback){
+            $this->eth->estimateGas($transaction, function ($err, $gas) use ($callback) {
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -754,7 +760,7 @@ class Contract
      * 1. Get the funtion data with params.
      * 2. Sign the data with user private key.
      * 3. Call sendRawTransaction.
-     * 
+     *
      * @param mixed
      * @return void
      */
@@ -782,7 +788,7 @@ class Contract
                 if (!is_string($method)) {
                     throw new InvalidArgumentException('Please make sure the method is string.');
                 }
-    
+
                 $functions = [];
                 foreach ($this->functions as $function) {
                     if ($function["name"] === $method) {
@@ -792,7 +798,7 @@ class Contract
                 if (count($functions) < 1) {
                     throw new InvalidArgumentException('Please make sure the method exists.');
                 }
-    
+
                 $params = $arguments;
                 $data = "";
                 $functionName = "";
