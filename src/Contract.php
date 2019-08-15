@@ -109,7 +109,7 @@ class Contract
      * @param string|\stdClass|array $abi
      * @return void
      */
-    public function __construct($provider, $abi, $defaultBlock = 'pending')
+    public function __construct($provider, $abi, $defaultBlock = 'latest')
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
