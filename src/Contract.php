@@ -28,8 +28,10 @@ use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\HexValidator;
-use Web3\Formatters\AddressFormatter;
 use Web3\Validators\StringValidator;
+use Web3\Validators\TagValidator;
+use Web3\Validators\QuantityValidator;
+use Web3\Formatters\AddressFormatter;
 
 class Contract
 {
@@ -97,13 +99,21 @@ class Contract
     protected $ethabi;
 
     /**
+     * defaultBlock
+     *
+     * @var mixed
+     */
+    protected $defaultBlock;
+
+    /**
      * construct
      *
      * @param string|\Web3\Providers\Provider $provider
      * @param string|\stdClass|array $abi
+     * @param mixed $defaultBlock
      * @return void
      */
-    public function __construct($provider, $abi)
+    public function __construct($provider, $abi, $defaultBlock = 'latest')
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
@@ -136,6 +146,11 @@ class Contract
                     $this->events[$item['name']] = $item;
                 }
             }
+        }
+        if (TagValidator::validate($defaultBlock) || QuantityValidator::validate($defaultBlock)) {
+            $this->defaultBlock = $defaultBlock;
+        } else {
+            $this->$defaultBlock = 'latest';
         }
         $this->abi = $abiArray;
         $this->eth = new Eth($this->provider);
@@ -212,7 +227,7 @@ class Contract
 
     /**
      * setProvider
-     * 
+     *
      * @param \Web3\Providers\Provider $provider
      * @return $this
      */
@@ -225,8 +240,34 @@ class Contract
     }
 
     /**
-     * getFunctions
+     * getDefaultBlock
      * 
+     * @return string
+     */
+    public function getDefaultBlock()
+    {
+        return $this->defaultBlock;
+    }
+
+    /**
+     * setDefaultBlock
+     *
+     * @param mixed $defaultBlock
+     * @return $this
+     */
+    public function setDefaultBlock($defaultBlock)
+    {
+        if (TagValidator::validate($defaultBlock) || QuantityValidator::validate($defaultBlock)) {
+            $this->defaultBlock = $defaultBlock;
+        } else {
+            $this->$defaultBlock = 'latest';
+        }
+        return $this;
+    }
+
+    /**
+     * getFunctions
+     *
      * @return array
      */
     public function getFunctions()
@@ -236,7 +277,7 @@ class Contract
 
     /**
      * getEvents
-     * 
+     *
      * @return array
      */
     public function getEvents()
@@ -254,7 +295,7 @@ class Contract
 
     /**
      * getConstructor
-     * 
+     *
      * @return array
      */
     public function getConstructor()
@@ -264,7 +305,7 @@ class Contract
 
     /**
      * getAbi
-     * 
+     *
      * @return array
      */
     public function getAbi()
@@ -535,7 +576,7 @@ class Contract
     /**
      * call
      * Call function method.
-     * 
+     *
      * @param mixed
      * @return void
      */
@@ -563,47 +604,17 @@ class Contract
                 throw new \InvalidArgumentException('The last param must be callback function.');
             }
 
-            // check the last one in arguments is transaction object
+            // check the arguments
             $argsLen = count($arguments);
             $transaction = [];
-            $hasTransaction = false;
-
-            if ($argsLen > 0) {
-                $transaction = $arguments[$argsLen - 1];
-            }
-            if (
-                isset($transaction["from"]) ||
-                isset($transaction["to"]) ||
-                isset($transaction["gas"]) ||
-                isset($transaction["gasPrice"]) ||
-                isset($transaction["value"]) ||
-                isset($transaction["data"]) ||
-                isset($transaction["nonce"])
-            ) {
-                $hasTransaction = true;
-            } else {
-                $transaction = [];
-            }
-
+            $defaultBlock = $this->defaultBlock;
             $params = [];
             $data = "";
             $functionName = "";
             foreach ($functions as $function) {
-                if ($hasTransaction) {
-                    if ($argsLen - 1 !== count($function['inputs'])) {
-                        continue;
-                    } else {
-                        $paramsLen = $argsLen - 1;
-                    }
-                } else {
-                    if ($argsLen !== count($function['inputs'])) {
-                        continue;
-                    } else {
-                        $paramsLen = $argsLen;
-                    }
-                }
                 try {
-                    $params = array_splice($arguments, 0, $paramsLen);
+                    $paramsLen = count($function['inputs']);
+                    $params = array_slice($arguments, 0, $paramsLen);
                     $data = $this->ethabi->encodeParameters($function, $params);
                     $functionName = Utils::jsonMethodToString($function);
                 } catch (InvalidArgumentException $e) {
@@ -614,11 +625,40 @@ class Contract
             if (empty($data) || empty($functionName)) {
                 throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
             }
+            // remove arguments
+            array_splice($arguments, 0, $paramsLen);
+            $argsLen -= $paramsLen;
+
+            if ($argsLen > 1) {
+                $defaultBlock = $arguments[$argsLen - 1];
+                $transaction = $arguments[$argsLen - 2];
+            } else if ($argsLen > 0) {
+                if (is_array($arguments[$argsLen - 1])) {
+                    $transaction = $arguments[$argsLen - 1];
+                } else {
+                    $defaultBlock = $arguments[$argsLen - 1];
+                }
+            }
+            if (!TagValidator::validate($defaultBlock) && !QuantityValidator::validate($defaultBlock)) {
+                $defaultBlock = $this->defaultBlock;
+            }
+            if (
+                !is_array($transaction) &&
+                !isset($transaction["from"]) &&
+                !isset($transaction["to"]) &&
+                !isset($transaction["gas"]) &&
+                !isset($transaction["gasPrice"]) &&
+                !isset($transaction["value"]) &&
+                !isset($transaction["data"]) &&
+                !isset($transaction["nonce"])
+            ) {
+                $transaction = [];
+            }
             $functionSignature = $this->ethabi->encodeFunctionSignature($functionName);
             $transaction['to'] = $this->toAddress;
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
-            $this->eth->call($transaction, function ($err, $transaction) use ($callback, $function){
+            $this->eth->call($transaction, $defaultBlock, function ($err, $transaction) use ($callback, $function){
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -738,7 +778,7 @@ class Contract
                 $transaction['data'] = $functionSignature . Utils::stripZero($data);
             }
 
-            $this->eth->estimateGas($transaction, function ($err, $gas) use ($callback){
+            $this->eth->estimateGas($transaction, function ($err, $gas) use ($callback) {
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }

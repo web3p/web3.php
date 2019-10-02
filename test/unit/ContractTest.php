@@ -1134,7 +1134,7 @@ class ContractTest extends TestCase
         $contract->at($contractAddress);
 
         foreach ($functions as $function) {
-            $contract->call($function['name'], function ($err, $res) use ($function) {
+            $contract->call($function['name'], [], 'latest', function ($err, $res) use ($function) {
                 if ($err !== null) {
                     echo 'Error when call ' . $function['name'] . '. Message: ' . $err->getMessage() . "\n";
                     return;
@@ -1468,12 +1468,21 @@ class ContractTest extends TestCase
                     // $this->assertEquals($contract->ethabi->encodeEventSignature($contract->events['Say']), $topics[0]);
                     $this->assertEquals('0x' . IntegerFormatter::format($testNumber), $topics[1]);
                 }
-                $contract->call('number', function ($err, $res) use ($testNumber) {
+                $blockNumber = Utils::toBn($transaction->blockNumber);
+                $contract->call('number', Utils::toHex($blockNumber, true), function ($err, $res) use ($testNumber) {
                     if ($err !== null) {
                         echo 'Error when call ' . $function['name'] . '. Message: ' . $err->getMessage() . "\n";
                         return;
                     }
                     $this->assertEquals((string) $testNumber, $res[0]->toString());
+                });
+                $blockNumber = $blockNumber->subtract(Utils::toBn(1));
+                $contract->call('number', Utils::toHex($blockNumber, true), function ($err, $res) use ($testNumber) {
+                    if ($err !== null) {
+                        echo 'Error when call ' . $function['name'] . '. Message: ' . $err->getMessage() . "\n";
+                        return;
+                    }
+                    $this->assertEquals((string) $testNumber-1, $res[0]->toString());
                 });
             });
         });
