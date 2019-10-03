@@ -189,7 +189,7 @@ class Utils
 
     /**
      * isAddressChecksum
-     * 
+     *
      * @param string $value
      * @return bool
      */
@@ -210,6 +210,31 @@ class Utils
             }
         }
         return true;
+    }
+
+    /**
+     * toChecksumAddress
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function toChecksumAddress($value)
+    {
+        if (!is_string($value)) {
+            throw new InvalidArgumentException('The value to toChecksumAddress function must be string.');
+        }
+        $value = self::stripZero(strtolower($value));
+        $hash = self::stripZero(self::sha3($value));
+        $ret = '0x';
+
+        for ($i = 0; $i < 40; $i++) {
+            if (intval($hash[$i], 16) >= 8) {
+                $ret .= strtoupper($value[$i]);
+            } else {
+                $ret .= $value[$i];
+            }
+        }
+        return $ret;
     }
 
     /**
