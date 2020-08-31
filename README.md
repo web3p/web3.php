@@ -157,6 +157,20 @@ $personal->provider->execute(function ($err, $data) {
     // do something
 });
 ```
+contract
+```php
+$contract->batch(true);
+foreach ($accounts as $account) {
+    $contract->call('balanceOf', $account);
+}
+
+$contract->eth->provider->execute(function ($err, $data) use ($accounts) {
+    if ($err !== null) {
+        throw new $err;
+    }
+    print_r($data);
+});
+```
 
 ### Contract
 
