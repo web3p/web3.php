@@ -597,7 +597,6 @@ class Contract
         if (isset($this->functions)) {
             $arguments = func_get_args();
             $method = array_splice($arguments, 0, 1)[0];
-            $callback = array_pop($arguments);
 
             if (!is_string($method)) {
                 throw new InvalidArgumentException('Please make sure the method is string.');
@@ -612,8 +611,17 @@ class Contract
             if (count($functions) < 1) {
                 throw new InvalidArgumentException('Please make sure the method exists.');
             }
-            if (is_callable($callback) !== true) {
+/*            if (is_callable($callback) !== true) {
                 throw new \InvalidArgumentException('The last param must be callback function.');
+            }*/
+            if ($this->eth->provider->isBatch) {
+                $callback = null;
+            } else {
+                $callback = array_pop($arguments);
+
+                if (is_callable($callback) !== true) {
+                    throw new \InvalidArgumentException('The last param must be callback function.');
+                }
             }
 
             // check the arguments
@@ -670,14 +678,18 @@ class Contract
             $transaction['to'] = $this->toAddress;
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
-            $this->eth->call($transaction, $defaultBlock, function ($err, $transaction) use ($callback, $function){
-                if ($err !== null) {
-                    return call_user_func($callback, $err, null);
-                }
-                $decodedTransaction = $this->ethabi->decodeParameters($function, $transaction);
+            if ($this->eth->provider->isBatch) {
+                $this->eth->call($transaction, $defaultBlock);
+            } else {
+                $this->eth->call($transaction, $defaultBlock, function ($err, $transaction) use ($callback, $function){
+                    if ($err !== null) {
+                        return call_user_func($callback, $err, null);
+                    }
+                    $decodedTransaction = $this->ethabi->decodeParameters($function, $transaction);
 
-                return call_user_func($callback, null, $decodedTransaction);
-            });
+                    return call_user_func($callback, null, $decodedTransaction);
+                });
+            }
         }
     }
 
@@ -868,5 +880,19 @@ class Contract
             }
             return $functionData;
         }
+    }
+    /**
+     * batch
+     *
+     * @param bool $status
+     * @return void
+     */
+    public function batch($status)
+    {
+        $status = is_bool($status);
+
+        $this->eth->batch($status);
+        echo "isbat:" . $this->eth->getProvider()->getIsBatch() . PHP_EOL;
+        exit();
     }
 }
