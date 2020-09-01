@@ -892,7 +892,5 @@ class Contract
         $status = is_bool($status);
 
         $this->eth->batch($status);
-        echo "isbat:" . $this->eth->getProvider()->getIsBatch() . PHP_EOL;
-        exit();
     }
 }
