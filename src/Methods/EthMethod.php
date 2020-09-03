@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -20,35 +20,35 @@ class EthMethod extends JSONRPC implements IMethod
 {
     /**
      * validators
-     * 
+     *
      * @var array
      */
     protected $validators = [];
 
     /**
      * inputFormatters
-     * 
+     *
      * @var array
      */
     protected $inputFormatters = [];
 
     /**
      * outputFormatters
-     * 
+     *
      * @var array
      */
     protected $outputFormatters = [];
 
     /**
      * defaultValues
-     * 
+     *
      * @var array
      */
     protected $defaultValues = [];
 
     /**
      * construct
-     * 
+     *
      * @param string $method
      * @param array $arguments
      * @return void
@@ -60,7 +60,7 @@ class EthMethod extends JSONRPC implements IMethod
 
     /**
      * getInputFormatters
-     * 
+     *
      * @return array
      */
     public function getInputFormatters()
@@ -70,7 +70,7 @@ class EthMethod extends JSONRPC implements IMethod
 
     /**
      * getOutputFormatters
-     * 
+     *
      * @return array
      */
     public function getOutputFormatters()
@@ -80,7 +80,7 @@ class EthMethod extends JSONRPC implements IMethod
 
     /**
      * validate
-     * 
+     *
      * @param array $params
      * @return bool
      */
@@ -134,7 +134,7 @@ class EthMethod extends JSONRPC implements IMethod
 
     /**
      * transform
-     * 
+     *
      * @param array $params
      * @param array $rules
      * @return array

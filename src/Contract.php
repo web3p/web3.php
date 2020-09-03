@@ -889,8 +889,6 @@ class Contract
      */
     public function batch($status)
     {
-        $status = is_bool($status);
-
         $this->eth->batch($status);
     }
 }
