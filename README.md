@@ -175,9 +175,11 @@ $contract = new Contract('http://localhost:8545', $abi);
 $contract->bytecode($bytecode)->new($params, $callback);
 
 // call contract function
+// parameters should resemble $params1, $params2, $params3 etc
 $contract->at($contractAddress)->call($functionName, $params, $callback);
 
 // change function state
+// parameters should resemble $params1, $params2, $params3 etc
 $contract->at($contractAddress)->send($functionName, $params, $callback);
 
 // estimate deploy contract gas
