@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -32,49 +32,49 @@ class Web3
 
     /**
      * eth
-     * 
+     *
      * @var \Web3\Eth
      */
     protected $eth;
 
     /**
      * net
-     * 
+     *
      * @var \Web3\Net
      */
     protected $net;
 
     /**
      * personal
-     * 
+     *
      * @var \Web3\Personal
      */
     protected $personal;
 
     /**
      * shh
-     * 
+     *
      * @var \Web3\Shh
      */
     protected $shh;
 
     /**
      * utils
-     * 
+     *
      * @var \Web3\Utils
      */
     protected $utils;
 
     /**
      * methods
-     * 
+     *
      * @var array
      */
     private $methods = [];
 
     /**
      * allowedMethods
-     * 
+     *
      * @var array
      */
     private $allowedMethods = [
@@ -87,12 +87,12 @@ class Web3
      * @param string|\Web3\Providers\Provider $provider
      * @return void
      */
-    public function __construct($provider)
+    public function __construct($provider, $timeout = 1, $authu = NULL, $authp = NULL)
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
             if (preg_match('/^https?:\/\//', $provider) === 1) {
-                $requestManager = new HttpRequestManager($provider);
+                $requestManager = new HttpRequestManager($provider, $timeout, $authu, $authp);
 
                 $this->provider = new HttpProvider($requestManager);
             }
@@ -103,7 +103,7 @@ class Web3
 
     /**
      * call
-     * 
+     *
      * @param string $name
      * @param array $arguments
      * @return void
@@ -149,7 +149,7 @@ class Web3
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @return mixed
      */
@@ -165,7 +165,7 @@ class Web3
 
     /**
      * set
-     * 
+     *
      * @param string $name
      * @param mixed $value
      * @return mixed
@@ -182,7 +182,7 @@ class Web3
 
     /**
      * getProvider
-     * 
+     *
      * @return \Web3\Providers\Provider
      */
     public function getProvider()
@@ -192,7 +192,7 @@ class Web3
 
     /**
      * setProvider
-     * 
+     *
      * @param \Web3\Providers\Provider $provider
      * @return bool
      */
@@ -207,7 +207,7 @@ class Web3
 
     /**
      * getEth
-     * 
+     *
      * @return \Web3\Eth
      */
     public function getEth()
@@ -221,7 +221,7 @@ class Web3
 
     /**
      * getNet
-     * 
+     *
      * @return \Web3\Net
      */
     public function getNet()
@@ -235,7 +235,7 @@ class Web3
 
     /**
      * getPersonal
-     * 
+     *
      * @return \Web3\Personal
      */
     public function getPersonal()
@@ -249,7 +249,7 @@ class Web3
 
     /**
      * getShh
-     * 
+     *
      * @return \Web3\Shh
      */
     public function getShh()
@@ -263,7 +263,7 @@ class Web3
 
     /**
      * getUtils
-     * 
+     *
      * @return \Web3\Utils
      */
     public function getUtils()
@@ -277,7 +277,7 @@ class Web3
 
     /**
      * batch
-     * 
+     *
      * @param bool $status
      * @return void
      */

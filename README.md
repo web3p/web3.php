@@ -34,6 +34,12 @@ Or you can add this line in composer.json
 use Web3\Web3;
 
 $web3 = new Web3('http://localhost:8545');
+
+// timeout
+$web3 = new Web3('http://localhost:8545', 0.1);
+
+// basic auth
+$web3 = new Web3('http://localhost:8545', 0.1, "AuthUser", "AuthPassword");
 ```
 
 ### Using provider
@@ -188,8 +194,8 @@ $functionData = $contract->at($contractAddress)->getData($functionName, $params)
 ```
 
 # Assign value to outside scope(from callback scope to outside scope)
-Due to callback is not like javascript callback, 
-if we need to assign value to outside scope, 
+Due to callback is not like javascript callback,
+if we need to assign value to outside scope,
 we need to assign reference to callback.
 ```php
 $newAccount = '';
@@ -245,7 +251,7 @@ docker-compose exec php ash
 ```
 /**
  * testHost
- * 
+ *
  * @var string
  */
 protected $testHost = 'http://ganache:8545';

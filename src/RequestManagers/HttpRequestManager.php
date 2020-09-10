@@ -36,9 +36,9 @@ class HttpRequestManager extends RequestManager implements IRequestManager
      * @param int $timeout
      * @return void
      */
-    public function __construct($host, $timeout = 1)
+    public function __construct($host, $timeout = 1, $authu = NULL, $authp = NULL)
     {
-        parent::__construct($host, $timeout);
+        parent::__construct($host, $timeout, $authu, $authp);
         $this->client = new Client;
     }
 
@@ -56,10 +56,20 @@ class HttpRequestManager extends RequestManager implements IRequestManager
         }
 
         try {
-            $res = $this->client->post($this->host, [
-                'headers' => [
+
+            if(!$this->authu):
+                $headers = [
                     'content-type' => 'application/json'
-                ],
+                ];
+            else:
+                $headers = [
+                    'content-type' => 'application/json',
+                    'Authorization' => 'Basic ' . base64_encode($this->authu . ":" . $this->authp)
+                ];
+            endif;
+
+            $res = $this->client->post($this->host, [
+                'headers' => $headers,
                 'body' => $payload,
                 'timeout' => $this->timeout,
                 'connect_timeout' => $this->timeout
