@@ -16,6 +16,7 @@ use Web3\Methods\EthMethod;
 use Web3\Validators\PrivateValidator;
 use Web3\Validators\StringValidator;
 use Web3\Formatters\StringFormatter;
+use Web3\Formatters\PrivateFormatter;
 
 class ImportRawKey extends EthMethod
 {
@@ -34,7 +35,7 @@ class ImportRawKey extends EthMethod
      * @var array
      */
     protected $inputFormatters = [
-        PrivateValidator::class, StringFormatter::class
+        PrivateFormatter::class, StringFormatter::class
     ];
 
     /**

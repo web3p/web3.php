@@ -26,6 +26,6 @@ class PrivateValidator
         if (!is_string($value)) {
             return false;
         }
-        return (preg_match('/^[a-fA-F0-9]{64}$/', $value) >= 1);
+        return (preg_match('/^(0x)?[a-fA-F0-9]{64}$/', $value) >= 1);
     }
 }
