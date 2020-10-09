@@ -10,21 +10,21 @@ class PersonalApiTest extends TestCase
 {
     /**
      * personal
-     * 
+     *
      * @var Web3\Personal
      */
     protected $personal;
 
     /**
      * newAccount
-     * 
+     *
      * @var string
      */
     protected $newAccount;
 
     /**
      * setUp
-     * 
+     *
      * @return void
      */
     public function setUp()
@@ -36,7 +36,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testListAccounts
-     * 
+     *
      * @return void
      */
     public function testListAccounts()
@@ -54,7 +54,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testNewAccount
-     * 
+     *
      * @return void
      */
     public function testNewAccount()
@@ -71,7 +71,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testUnlockAccount
-     * 
+     *
      * @return void
      */
     public function testUnlockAccount()
@@ -97,7 +97,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testUnlockAccountWithDuration
-     * 
+     *
      * @return void
      */
     public function testUnlockAccountWithDuration()
@@ -123,7 +123,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testLockAccount
-     * 
+     *
      * @return void
      */
     public function testLockAccount()
@@ -156,9 +156,9 @@ class PersonalApiTest extends TestCase
 
     /**
      * testSendTransaction
-     * 
+     *
      * @return void
-     */    
+     */
     public function testSendTransaction()
     {
         $personal = $this->personal;
@@ -175,7 +175,7 @@ class PersonalApiTest extends TestCase
         $this->web3->eth->sendTransaction([
             'from' => $this->coinbase,
             'to' => $this->newAccount,
-            'value' => '0xfffffffff',
+            'value' => '0xfffffffffffff',
         ], function ($err, $transaction) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
@@ -199,7 +199,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testUnallowedMethod
-     * 
+     *
      * @return void
      */
     public function testUnallowedMethod()
@@ -218,7 +218,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testWrongParam
-     * 
+     *
      * @return void
      */
     public function testWrongParam()
@@ -237,7 +237,7 @@ class PersonalApiTest extends TestCase
 
     /**
      * testWrongCallback
-     * 
+     *
      * @return void
      */
     public function testWrongCallback()
