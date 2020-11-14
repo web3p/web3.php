@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "~6.0",
+        "guzzlehttp/guzzle": "~7.0",
         "PHP": "^7.1",
         "kornrunner/keccak": "~1.0",
         "phpseclib/phpseclib": "~2.0.11",
