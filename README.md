@@ -23,7 +23,7 @@ composer require sc0vu/web3.php dev-master
 Or you can add this line in composer.json
 
 ```
-"nanolucas/web3.php": "dev-master"
+"sc0vu/web3.php": "dev-master"
 ```
 
 
