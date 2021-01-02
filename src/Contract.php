@@ -873,7 +873,7 @@ class Contract
     public function getEventLogs($eventName)
     {
         $eventSignature = $this->ethabi->encodeEventSignature($eventName);
-        $eventInputParametersStringArray = $this->ethabi->encodeParameters($this->events[$eventName]);
+        $eventInputParametersStringArray = array_column($this->events[$eventName]['inputs'], 'type');
 
         $this->eth->getLogs([
             'topics' => array($eventSignature),
