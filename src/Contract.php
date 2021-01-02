@@ -11,7 +11,8 @@
 
 namespace Web3;
 
-use InvalidArgumentException;
+use \InvalidArgumentException;
+use \RuntimeException;
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
@@ -175,7 +176,7 @@ class Contract
     // public function __call($name, $arguments)
     // {
     //     if (empty($this->provider)) {
-    //         throw new \RuntimeException('Please set provider first.');
+    //         throw new RuntimeException('Please set provider first.');
     //     }
     //     $class = explode('\\', get_class());
     //     if (preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
@@ -458,10 +459,10 @@ class Contract
                 throw new InvalidArgumentException('Please make sure you have included all constructor parameters and a callback function.');
             }
             if (is_callable($callback) !== true) {
-                throw new \InvalidArgumentException('The last parameter must be a callback function.');
+                throw new InvalidArgumentException('The last parameter must be a callback function.');
             }
             if (!isset($this->bytecode)) {
-                throw new \InvalidArgumentException('Please call bytecode($bytecode) before new().');
+                throw new InvalidArgumentException('Please call bytecode($bytecode) before new().');
             }
             $params = array_splice($arguments, 0, $input_count);
             $data = $this->ethabi->encodeParameters($constructor, $params);
@@ -510,7 +511,7 @@ class Contract
                 throw new InvalidArgumentException('Please make sure the named method exists in the contract.');
             }
             if (is_callable($callback) !== true) {
-                throw new \InvalidArgumentException('The last parameter must be a callback function.');
+                throw new InvalidArgumentException('The last parameter must be a callback function.');
             }
 
             // check the last one in arguments is transaction object
@@ -606,7 +607,7 @@ class Contract
                 throw new InvalidArgumentException('Please make sure the named method exists in the contract.');
             }
             if (is_callable($callback) !== true) {
-                throw new \InvalidArgumentException('The last parameter must be a callback function.');
+                throw new InvalidArgumentException('The last parameter must be a callback function.');
             }
 
             // check the arguments
@@ -694,10 +695,10 @@ class Contract
                     throw new InvalidArgumentException('Please make sure you have included all constructor parameters and a callback function.');
                 }
                 if (is_callable($callback) !== true) {
-                    throw new \InvalidArgumentException('The last parameter must be a callback function.');
+                    throw new InvalidArgumentException('The last parameter must be a callback function.');
                 }
                 if (!isset($this->bytecode)) {
-                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before estimateGas().');
+                    throw new InvalidArgumentException('Please call bytecode($bytecode) before estimateGas().');
                 }
                 $params = array_splice($arguments, 0, count($constructor['inputs']));
                 $data = $this->ethabi->encodeParameters($constructor, $params);
@@ -724,7 +725,7 @@ class Contract
                     throw new InvalidArgumentException('Please make sure the named method exists in the contract.');
                 }
                 if (is_callable($callback) !== true) {
-                    throw new \InvalidArgumentException('The last parameter must be a callback function.');
+                    throw new InvalidArgumentException('The last parameter must be a callback function.');
                 }
     
                 // check the last one in arguments is transaction object
@@ -816,7 +817,7 @@ class Contract
                     throw new InvalidArgumentException('Please make sure you have included all constructor parameters and a callback function.');
                 }
                 if (!isset($this->bytecode)) {
-                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before getData().');
+                    throw new InvalidArgumentException('Please call bytecode($bytecode) before getData().');
                 }
                 $params = array_splice($arguments, 0, count($constructor['inputs']));
                 $data = $this->ethabi->encodeParameters($constructor, $params);
