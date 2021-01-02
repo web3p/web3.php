@@ -863,4 +863,29 @@ class Contract
             return $functionData;
         }
     }
+
+    /**
+     * getEventLogs
+     * 
+     * @param string $eventName
+     * @return string
+     */
+    public function getEventLogs($eventName)
+    {
+        $eventSignature = $this->ethabi->encodeEventSignature($eventName);
+        $eventInputParametersStringArray = $this->ethabi->encodeParameters($this->events[$eventName]);
+
+        $this->eth->getLogs([
+            'topics' => array($eventSignature),
+            'address' => $this->toAddress
+        ],
+        function ($error, $result) use (&$output) {
+            if ($error !== null) {
+                throw new RuntimeException($error->getMessage());
+            }
+            $output = $result;
+        });
+
+        return $this->ethabi->decodeParameters($eventInputParametersStringArray, $output[0]->data);
+    }
 }
