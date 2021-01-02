@@ -863,4 +863,52 @@ class Contract
             return $functionData;
         }
     }
+
+    /**
+     * getEventLogs
+     * 
+     * @param string $eventName
+     * @param string|int $fromBlock
+     * @param string|int $toBlock
+     * @return string
+     */
+    public function getEventLogs(string $eventName, $fromBlock = 'latest', $toBlock = 'latest')
+    {
+        if ($fromBlock != 'latest') {
+            if (!is_int($fromBlock) || $fromBlock < 1) {
+                throw new InvalidArgumentException('Please make sure fromBlock is a valid block number');
+            } else if ($toBlock != 'latest' && $fromBlock > $toBlock) {
+                throw new InvalidArgumentException('Please make sure fromBlock is equal or less than toBlock');
+            }
+        }
+
+        if ($toBlock != 'latest') {
+            if (!is_int($toBlock) || $toBlock < 1) {
+                throw new InvalidArgumentException('Please make sure toBlock is a valid block number');
+            } else if ($fromBlock == 'latest') {
+                throw new InvalidArgumentException('Please make sure toBlock is equal or greater than fromBlock');
+            }
+        }
+
+        $eventSignature = $this->ethabi->encodeEventSignature($this->events[$eventName]);
+        $eventInputParametersStringArray = array_column($this->events[$eventName]['inputs'], 'type');
+
+        $this->eth->getLogs([
+            'fromBlock' => (is_int($fromBlock)) ? '0x' . dechex($fromBlock) : $fromBlock,
+            'toBlock' => (is_int($toBlock)) ? '0x' . dechex($toBlock) : $toBlock,
+            'topics' => [$eventSignature],
+            'address' => $this->toAddress
+        ],
+        function ($error, $result) use (&$output, $eventInputParametersStringArray) {
+            if ($error !== null) {
+                throw new RuntimeException($error->getMessage());
+            }
+
+            foreach ($result as $object) {
+                $output[] = $this->ethabi->decodeParameters($eventInputParametersStringArray, $object->data);
+            }
+        });
+
+        return $output;
+    }
 }
