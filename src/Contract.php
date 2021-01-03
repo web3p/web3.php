@@ -870,7 +870,7 @@ class Contract
      * @param string $eventName
      * @param string|int $fromBlock
      * @param string|int $toBlock
-     * @return string
+     * @return array
      */
     public function getEventLogs(string $eventName, $fromBlock = 'latest', $toBlock = 'latest')
     {
@@ -903,7 +903,7 @@ class Contract
             'topics' => [$this->ethabi->encodeEventSignature($this->events[$eventName])],
             'address' => $this->toAddress
         ],
-        function ($error, $result) use (&$output, $eventParameterTypes, $eventParameterNames) {
+        function ($error, $result) use (&$eventLogData, $eventParameterTypes, $eventParameterNames) {
             if ($error !== null) {
                 throw new RuntimeException($error->getMessage());
             }
@@ -912,11 +912,16 @@ class Contract
                 //decode the data from the log into the expected formats
                 $decodedData = $this->ethabi->decodeParameters($eventParameterTypes, $object->data);
 
-                //return the data with its named array keys
-                $output[] = array_combine($eventParameterNames, $decodedData);
+                //include block metadata for context, along with event data
+                $eventLogData[] = [
+                    'blockHash' => $object->blockHash,
+                    'blockNumber' => hexdec($object->blockNumber),
+                    //return the data with its named array keys
+                    'data' => array_combine($eventParameterNames, $decodedData)
+                ];
             }
         });
 
-        return $output;
+        return $eventLogData;
     }
 }
