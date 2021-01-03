@@ -874,6 +874,7 @@ class Contract
      */
     public function getEventLogs(string $eventName, $fromBlock = 'latest', $toBlock = 'latest')
     {
+        //try to ensure block numbers are valid together
         if ($fromBlock != 'latest') {
             if (!is_int($fromBlock) || $fromBlock < 1) {
                 throw new InvalidArgumentException('Please make sure fromBlock is a valid block number');
@@ -890,22 +891,29 @@ class Contract
             }
         }
 
-        $eventSignature = $this->ethabi->encodeEventSignature($this->events[$eventName]);
-        $eventInputParametersStringArray = array_column($this->events[$eventName]['inputs'], 'type');
+        //retrieve event input types and names from the contract abi
+        $eventParameterTypes = array_column($this->events[$eventName]['inputs'], 'type');
+        $eventParameterNames = array_column($this->events[$eventName]['inputs'], 'name');
 
+        //filter through log data to find any logs which match this event (topic) from
+        //this contract, between these specified blocks (defaulting to the latest block only)
         $this->eth->getLogs([
             'fromBlock' => (is_int($fromBlock)) ? '0x' . dechex($fromBlock) : $fromBlock,
             'toBlock' => (is_int($toBlock)) ? '0x' . dechex($toBlock) : $toBlock,
-            'topics' => [$eventSignature],
+            'topics' => [$this->ethabi->encodeEventSignature($this->events[$eventName])],
             'address' => $this->toAddress
         ],
-        function ($error, $result) use (&$output, $eventInputParametersStringArray) {
+        function ($error, $result) use (&$output, $eventParameterTypes, $eventParameterNames) {
             if ($error !== null) {
                 throw new RuntimeException($error->getMessage());
             }
 
             foreach ($result as $object) {
-                $output[] = $this->ethabi->decodeParameters($eventInputParametersStringArray, $object->data);
+                //decode the data from the log into the expected formats
+                $decodedData = $this->ethabi->decodeParameters($eventParameterTypes, $object->data);
+
+                //return the data with its named array keys
+                $output[] = array_combine($eventParameterNames, $decodedData);
             }
         });
 
