@@ -891,9 +891,23 @@ class Contract
             }
         }
 
-        //retrieve event input types and names from the contract abi
-        $eventParameterTypes = array_column($this->events[$eventName]['inputs'], 'type');
-        $eventParameterNames = array_column($this->events[$eventName]['inputs'], 'name');
+        //indexed and non-indexed event parameters must be treated separately
+        //indexed parameters are stored in the 'topics' array
+        //non-indexed parameters are stored in the 'data' value
+        $eventParameterNames = [];
+        $eventParameterTypes = [];
+        $eventIndexedParameterNames = [];
+        $eventIndexedParameterTypes = [];
+
+        foreach ($this->events[$eventName]['inputs'] as $input) {
+            if ($input['indexed']) {
+                $eventIndexedParameterNames[] = $input['name'];
+                $eventIndexedParameterTypes[] = $input['type'];
+            } else {
+                $eventParameterNames[] = $input['name'];
+                $eventParameterTypes[] = $input['type'];
+            }
+        }
 
         //filter through log data to find any logs which match this event (topic) from
         //this contract, between these specified blocks (defaulting to the latest block only)
@@ -903,21 +917,25 @@ class Contract
             'topics' => [$this->ethabi->encodeEventSignature($this->events[$eventName])],
             'address' => $this->toAddress
         ],
-        function ($error, $result) use (&$eventLogData, $eventParameterTypes, $eventParameterNames) {
+        function ($error, $result) use (&$eventLogData, $eventParameterTypes, $eventParameterNames, $eventIndexedParameterTypes, $eventIndexedParameterNames) {
             if ($error !== null) {
                 throw new RuntimeException($error->getMessage());
             }
 
             foreach ($result as $object) {
-                //decode the data from the log into the expected formats
-                $decodedData = $this->ethabi->decodeParameters($eventParameterTypes, $object->data);
+                //decode the data from the log into the expected formats, with its corresponding named key
+                $decodedData = array_combine($eventParameterNames, $this->ethabi->decodeParameters($eventParameterTypes, $object->data));
+
+                //decode the indexed parameter data
+                for ($i = 0; $i < count($eventIndexedParameterNames); $i++) {
+                    $decodedData[$eventIndexedParameterNames[$i]] = $this->ethabi->decodeParameters([$eventIndexedParameterTypes[$i]], $object->topics[$i + 1])[0];
+                }
 
                 //include block metadata for context, along with event data
                 $eventLogData[] = [
                     'blockHash' => $object->blockHash,
                     'blockNumber' => hexdec($object->blockNumber),
-                    //return the data with its named array keys
-                    'data' => array_combine($eventParameterNames, $decodedData)
+                    'data' => $decodedData
                 ];
             }
         });
