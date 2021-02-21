@@ -928,6 +928,7 @@ class Contract
 
                 //decode the indexed parameter data
                 for ($i = 0; $i < count($eventIndexedParameterNames); $i++) {
+                    //topics[0] is the event signature, so we start from $i + 1 for the indexed parameter data
                     $decodedData[$eventIndexedParameterNames[$i]] = $this->ethabi->decodeParameters([$eventIndexedParameterTypes[$i]], $object->topics[$i + 1])[0];
                 }
 
