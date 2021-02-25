@@ -18,13 +18,13 @@ Set minimum stability to dev
 
 Then
 ```
-composer require sc0vu/web3.php dev-master
+composer require haohetao/web3.php dev-master
 ```
 
 Or you can add this line in composer.json
 
 ```
-"sc0vu/web3.php": "dev-master"
+"haohetao/web3.php": "dev-master"
 ```
 
 
@@ -156,6 +156,20 @@ $personal->provider->execute(function ($err, $data) {
         return;
     }
     // do something
+});
+```
+contract
+```php
+$contract->batch(true);
+foreach ($accounts as $account) {
+    $contract->call('balanceOf', $account);
+}
+
+$contract->eth->provider->execute(function ($err, $data) use ($accounts) {
+    if ($err !== null) {
+        throw new $err;
+    }
+    print_r($data);
 });
 ```
 
