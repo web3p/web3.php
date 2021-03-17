@@ -891,6 +891,8 @@ class Contract
             }
         }
 
+        $eventLogData = [];
+
         //indexed and non-indexed event parameters must be treated separately
         //indexed parameters are stored in the 'topics' array
         //non-indexed parameters are stored in the 'data' value
