@@ -893,6 +893,11 @@ class Contract
 
         $eventLogData = [];
 
+        //if there's no data for this event, no need to proceed further
+        if (!array_key_exists($eventName, $this->events)) {
+            return $eventLogData;
+        }
+
         //indexed and non-indexed event parameters must be treated separately
         //indexed parameters are stored in the 'topics' array
         //non-indexed parameters are stored in the 'data' value
