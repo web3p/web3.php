@@ -893,9 +893,9 @@ class Contract
 
         $eventLogData = [];
 
-        //if there's no data for this event, no need to proceed further
+        //ensure the event actually exists before trying to filter for it
         if (!array_key_exists($eventName, $this->events)) {
-            return $eventLogData;
+            throw new InvalidArgumentException("'{$eventName}' does not exist in the ABI for this contract");
         }
 
         //indexed and non-indexed event parameters must be treated separately
