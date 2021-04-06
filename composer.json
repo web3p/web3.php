@@ -11,13 +11,13 @@
     ],
     "require": {
         "guzzlehttp/guzzle": "^6.3 | ^7.0",
-        "PHP": "^7.1",
+        "PHP": "^7.1 | ^8.0",
         "kornrunner/keccak": "~1.0",
         "phpseclib/phpseclib": "~2.0.11",
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~6.0"
+        "phpunit/phpunit": "~6.0 | ~8.0"
     },
     "autoload": {
         "psr-4": {
