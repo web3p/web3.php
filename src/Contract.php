@@ -941,6 +941,7 @@ class Contract
 
                 //include block metadata for context, along with event data
                 $eventLogData[] = [
+                    'transactionHash' => $object->transactionHash,
                     'blockHash' => $object->blockHash,
                     'blockNumber' => hexdec($object->blockNumber),
                     'data' => $decodedData
