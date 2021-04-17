@@ -102,15 +102,15 @@ class Ethabi
      * encodeEventSignature
      * TODO: Fix same event name with different params
      * 
-     * @param string|stdClass|array $functionName
+     * @param string|stdClass|array $eventName
      * @return string
      */
-    public function encodeEventSignature($functionName)
+    public function encodeEventSignature($eventName)
     {
-        if (!is_string($functionName)) {
-            $functionName = Utils::jsonMethodToString($functionName);
+        if (!is_string($eventName)) {
+            $eventName = Utils::jsonMethodToString($eventName);
         }
-        return Utils::sha3($functionName);
+        return Utils::sha3($eventName);
     }
 
     /**

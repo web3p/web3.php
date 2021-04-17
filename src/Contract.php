@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of web3.php package.
+ * This file is part of the web3.php package.
  * 
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
  * 
@@ -11,7 +11,8 @@
 
 namespace Web3;
 
-use InvalidArgumentException;
+use \InvalidArgumentException;
+use \RuntimeException;
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
@@ -175,7 +176,7 @@ class Contract
     // public function __call($name, $arguments)
     // {
     //     if (empty($this->provider)) {
-    //         throw new \RuntimeException('Please set provider first.');
+    //         throw new RuntimeException('Please set provider first.');
     //     }
     //     $class = explode('\\', get_class());
     //     if (preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
@@ -267,6 +268,7 @@ class Contract
 
     /**
      * getFunctions
+     * get an array of all methods in the loaded contract
      *
      * @return array
      */
@@ -277,6 +279,7 @@ class Contract
 
     /**
      * getEvents
+     * get an array of all events (and their inputs) in the loaded contract
      *
      * @return array
      */
@@ -368,6 +371,7 @@ class Contract
 
     /**
      * at
+     * set the address of the deployed contract to make calls to
      * 
      * @param string $address
      * @return $this
@@ -375,7 +379,7 @@ class Contract
     public function at($address)
     {
         if (AddressValidator::validate($address) === false) {
-            throw new InvalidArgumentException('Please make sure address is valid.');
+            throw new InvalidArgumentException('Please make sure the contract address is valid.');
         }
         $this->toAddress = AddressFormatter::format($address);
 
@@ -391,7 +395,7 @@ class Contract
     public function bytecode($bytecode)
     {
         if (HexValidator::validate($bytecode) === false) {
-            throw new InvalidArgumentException('Please make sure bytecode is valid.');
+            throw new InvalidArgumentException('Please make sure the bytecode input is valid.');
         }
         $this->bytecode = Utils::stripZero($bytecode);
 
@@ -407,7 +411,7 @@ class Contract
     public function abi($abi)
     {
         if (StringValidator::validate($abi) === false) {
-            throw new InvalidArgumentException('Please make sure abi is valid.');
+            throw new InvalidArgumentException('Please make sure the abi input is valid.');
         }
         $abiArray = [];
         if (is_string($abi)) {
@@ -438,7 +442,7 @@ class Contract
 
     /**
      * new
-     * Deploy a contruct with params.
+     * Deploy a new contract, along with any relevant parameters for its constructor.
      * 
      * @param mixed
      * @return void
@@ -452,13 +456,13 @@ class Contract
 
             $input_count = isset($constructor['inputs']) ? count($constructor['inputs']) : 0;
             if (count($arguments) < $input_count) {
-                throw new InvalidArgumentException('Please make sure you have put all constructor params and callback.');
+                throw new InvalidArgumentException('Please make sure you have included all constructor parameters and a callback function.');
             }
             if (is_callable($callback) !== true) {
-                throw new \InvalidArgumentException('The last param must be callback function.');
+                throw new InvalidArgumentException('The last parameter must be a callback function.');
             }
             if (!isset($this->bytecode)) {
-                throw new \InvalidArgumentException('Please call bytecode($bytecode) before new().');
+                throw new InvalidArgumentException('Please call bytecode($bytecode) before new().');
             }
             $params = array_splice($arguments, 0, $input_count);
             $data = $this->ethabi->encodeParameters($constructor, $params);
@@ -480,7 +484,8 @@ class Contract
 
     /**
      * send
-     * Send function method.
+     * Send inputs to a specific method of the deployed contract 
+     * (interacts with chain data and can alter it: costs gas)
      * 
      * @param mixed
      * @return void
@@ -493,7 +498,7 @@ class Contract
             $callback = array_pop($arguments);
 
             if (!is_string($method)) {
-                throw new InvalidArgumentException('Please make sure the method is string.');
+                throw new InvalidArgumentException('Please make sure the method name is supplied as a string as the first parameter.');
             }
 
             $functions = [];
@@ -503,10 +508,10 @@ class Contract
                 }
             };
             if (count($functions) < 1) {
-                throw new InvalidArgumentException('Please make sure the method exists.');
+                throw new InvalidArgumentException('Please make sure the named method exists in the contract.');
             }
             if (is_callable($callback) !== true) {
-                throw new \InvalidArgumentException('The last param must be callback function.');
+                throw new InvalidArgumentException('The last parameter must be a callback function.');
             }
 
             // check the last one in arguments is transaction object
@@ -558,7 +563,7 @@ class Contract
                 break;
             }
             if (empty($data) || empty($functionName)) {
-                throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+                throw new InvalidArgumentException('Please make sure you have included all parameters of the method and a callback function.');
             }
             $functionSignature = $this->ethabi->encodeFunctionSignature($functionName);
             $transaction['to'] = $this->toAddress;
@@ -575,7 +580,8 @@ class Contract
 
     /**
      * call
-     * Call function method.
+     * Call a specific method of the deployed contract 
+     * (read-only, cannot alter chain data: does not cost gas)
      *
      * @param mixed
      * @return void
@@ -588,7 +594,7 @@ class Contract
             $callback = array_pop($arguments);
 
             if (!is_string($method)) {
-                throw new InvalidArgumentException('Please make sure the method is string.');
+                throw new InvalidArgumentException('Please make sure the method name is supplied as a string as the first parameter.');
             }
 
             $functions = [];
@@ -598,10 +604,10 @@ class Contract
                 }
             };
             if (count($functions) < 1) {
-                throw new InvalidArgumentException('Please make sure the method exists.');
+                throw new InvalidArgumentException('Please make sure the named method exists in the contract.');
             }
             if (is_callable($callback) !== true) {
-                throw new \InvalidArgumentException('The last param must be callback function.');
+                throw new InvalidArgumentException('The last parameter must be a callback function.');
             }
 
             // check the arguments
@@ -623,7 +629,7 @@ class Contract
                 break;
             }
             if (empty($data) || empty($functionName)) {
-                throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+                throw new InvalidArgumentException('Please make sure you have included all parameters of the method and a callback function.');
             }
             // remove arguments
             array_splice($arguments, 0, $paramsLen);
@@ -686,13 +692,13 @@ class Contract
                 $constructor = $this->constructor;
 
                 if (count($arguments) < count($constructor['inputs'])) {
-                    throw new InvalidArgumentException('Please make sure you have put all constructor params and callback.');
+                    throw new InvalidArgumentException('Please make sure you have included all constructor parameters and a callback function.');
                 }
                 if (is_callable($callback) !== true) {
-                    throw new \InvalidArgumentException('The last param must be callback function.');
+                    throw new InvalidArgumentException('The last parameter must be a callback function.');
                 }
                 if (!isset($this->bytecode)) {
-                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before estimateGas().');
+                    throw new InvalidArgumentException('Please call bytecode($bytecode) before estimateGas().');
                 }
                 $params = array_splice($arguments, 0, count($constructor['inputs']));
                 $data = $this->ethabi->encodeParameters($constructor, $params);
@@ -706,7 +712,7 @@ class Contract
                 $method = array_splice($arguments, 0, 1)[0];
 
                 if (!is_string($method)) {
-                    throw new InvalidArgumentException('Please make sure the method is string.');
+                    throw new InvalidArgumentException('Please make sure the method name is supplied as a string as the first parameter.');
                 }
     
                 $functions = [];
@@ -716,10 +722,10 @@ class Contract
                     }
                 };
                 if (count($functions) < 1) {
-                    throw new InvalidArgumentException('Please make sure the method exists.');
+                    throw new InvalidArgumentException('Please make sure the named method exists in the contract.');
                 }
                 if (is_callable($callback) !== true) {
-                    throw new \InvalidArgumentException('The last param must be callback function.');
+                    throw new InvalidArgumentException('The last parameter must be a callback function.');
                 }
     
                 // check the last one in arguments is transaction object
@@ -771,7 +777,7 @@ class Contract
                     break;
                 }
                 if (empty($data) || empty($functionName)) {
-                    throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+                    throw new InvalidArgumentException('Please make sure you have included all parameters of the method and a callback function.');
                 }
                 $functionSignature = $this->ethabi->encodeFunctionSignature($functionName);
                 $transaction['to'] = $this->toAddress;
@@ -789,9 +795,9 @@ class Contract
 
     /**
      * getData
-     * Get the function method call data.
-     * With this function, you can send signed contract function transaction.
-     * 1. Get the funtion data with params.
+     * Get the contract method's call data.
+     * With this function, you can send signed contract method transactions.
+     * 1. Get the method data with parameters.
      * 2. Sign the data with user private key.
      * 3. Call sendRawTransaction.
      * 
@@ -808,10 +814,10 @@ class Contract
                 $constructor = $this->constructor;
 
                 if (count($arguments) < count($constructor['inputs'])) {
-                    throw new InvalidArgumentException('Please make sure you have put all constructor params and callback.');
+                    throw new InvalidArgumentException('Please make sure you have included all constructor parameters and a callback function.');
                 }
                 if (!isset($this->bytecode)) {
-                    throw new \InvalidArgumentException('Please call bytecode($bytecode) before getData().');
+                    throw new InvalidArgumentException('Please call bytecode($bytecode) before getData().');
                 }
                 $params = array_splice($arguments, 0, count($constructor['inputs']));
                 $data = $this->ethabi->encodeParameters($constructor, $params);
@@ -820,7 +826,7 @@ class Contract
                 $method = array_splice($arguments, 0, 1)[0];
 
                 if (!is_string($method)) {
-                    throw new InvalidArgumentException('Please make sure the method is string.');
+                    throw new InvalidArgumentException('Please make sure the method name is supplied as a string as the first parameter.');
                 }
     
                 $functions = [];
@@ -830,7 +836,7 @@ class Contract
                     }
                 };
                 if (count($functions) < 1) {
-                    throw new InvalidArgumentException('Please make sure the method exists.');
+                    throw new InvalidArgumentException('Please make sure the named method exists in the contract.');
                 }
     
                 $params = $arguments;
@@ -849,12 +855,102 @@ class Contract
                     break;
                 }
                 if (empty($data) || empty($functionName)) {
-                    throw new InvalidArgumentException('Please make sure you have put all function params and callback.');
+                    throw new InvalidArgumentException('Please make sure you have included all parameters of the method and a callback function.');
                 }
                 $functionSignature = $this->ethabi->encodeFunctionSignature($functionName);
                 $functionData = Utils::stripZero($functionSignature) . Utils::stripZero($data);
             }
             return $functionData;
         }
+    }
+
+    /**
+     * getEventLogs
+     * 
+     * @param string $eventName
+     * @param string|int $fromBlock
+     * @param string|int $toBlock
+     * @return array
+     */
+    public function getEventLogs(string $eventName, $fromBlock = 'latest', $toBlock = 'latest')
+    {
+        //try to ensure block numbers are valid together
+        if ($fromBlock !== 'latest') {
+            if (!is_int($fromBlock) || $fromBlock < 1) {
+                throw new InvalidArgumentException('Please make sure fromBlock is a valid block number');
+            } else if ($toBlock !== 'latest' && $fromBlock > $toBlock) {
+                throw new InvalidArgumentException('Please make sure fromBlock is equal or less than toBlock');
+            }
+        }
+
+        if ($toBlock !== 'latest') {
+            if (!is_int($toBlock) || $toBlock < 1) {
+                throw new InvalidArgumentException('Please make sure toBlock is a valid block number');
+            } else if ($fromBlock === 'latest') {
+                throw new InvalidArgumentException('Please make sure toBlock is equal or greater than fromBlock');
+            }
+        }
+
+        $eventLogData = [];
+
+        //ensure the event actually exists before trying to filter for it
+        if (!array_key_exists($eventName, $this->events)) {
+            throw new InvalidArgumentException("'{$eventName}' does not exist in the ABI for this contract");
+        }
+
+        //indexed and non-indexed event parameters must be treated separately
+        //indexed parameters are stored in the 'topics' array
+        //non-indexed parameters are stored in the 'data' value
+        $eventParameterNames = [];
+        $eventParameterTypes = [];
+        $eventIndexedParameterNames = [];
+        $eventIndexedParameterTypes = [];
+
+        foreach ($this->events[$eventName]['inputs'] as $input) {
+            if ($input['indexed']) {
+                $eventIndexedParameterNames[] = $input['name'];
+                $eventIndexedParameterTypes[] = $input['type'];
+            } else {
+                $eventParameterNames[] = $input['name'];
+                $eventParameterTypes[] = $input['type'];
+            }
+        }
+
+        $numEventIndexedParameterNames = count($eventIndexedParameterNames);
+
+        //filter through log data to find any logs which match this event (topic) from
+        //this contract, between these specified blocks (defaulting to the latest block only)
+        $this->eth->getLogs([
+            'fromBlock' => (is_int($fromBlock)) ? '0x' . dechex($fromBlock) : $fromBlock,
+            'toBlock' => (is_int($toBlock)) ? '0x' . dechex($toBlock) : $toBlock,
+            'topics' => [$this->ethabi->encodeEventSignature($this->events[$eventName])],
+            'address' => $this->toAddress
+        ],
+        function ($error, $result) use (&$eventLogData, $eventParameterTypes, $eventParameterNames, $eventIndexedParameterTypes, $eventIndexedParameterNames) {
+            if ($error !== null) {
+                throw new RuntimeException($error->getMessage());
+            }
+
+            foreach ($result as $object) {
+                //decode the data from the log into the expected formats, with its corresponding named key
+                $decodedData = array_combine($eventParameterNames, $this->ethabi->decodeParameters($eventParameterTypes, $object->data));
+
+                //decode the indexed parameter data
+                for ($i = 0; $i < $numEventIndexedParameterNames; $i++) {
+                    //topics[0] is the event signature, so we start from $i + 1 for the indexed parameter data
+                    $decodedData[$eventIndexedParameterNames[$i]] = $this->ethabi->decodeParameters([$eventIndexedParameterTypes[$i]], $object->topics[$i + 1])[0];
+                }
+
+                //include block metadata for context, along with event data
+                $eventLogData[] = [
+                    'transactionHash' => $object->transactionHash,
+                    'blockHash' => $object->blockHash,
+                    'blockNumber' => hexdec($object->blockNumber),
+                    'data' => $decodedData
+                ];
+            }
+        });
+
+        return $eventLogData;
     }
 }
