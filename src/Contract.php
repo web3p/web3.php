@@ -875,18 +875,18 @@ class Contract
     public function getEventLogs(string $eventName, $fromBlock = 'latest', $toBlock = 'latest')
     {
         //try to ensure block numbers are valid together
-        if ($fromBlock != 'latest') {
+        if ($fromBlock !== 'latest') {
             if (!is_int($fromBlock) || $fromBlock < 1) {
                 throw new InvalidArgumentException('Please make sure fromBlock is a valid block number');
-            } else if ($toBlock != 'latest' && $fromBlock > $toBlock) {
+            } else if ($toBlock !== 'latest' && $fromBlock > $toBlock) {
                 throw new InvalidArgumentException('Please make sure fromBlock is equal or less than toBlock');
             }
         }
 
-        if ($toBlock != 'latest') {
+        if ($toBlock !== 'latest') {
             if (!is_int($toBlock) || $toBlock < 1) {
                 throw new InvalidArgumentException('Please make sure toBlock is a valid block number');
-            } else if ($fromBlock == 'latest') {
+            } else if ($fromBlock === 'latest') {
                 throw new InvalidArgumentException('Please make sure toBlock is equal or greater than fromBlock');
             }
         }
@@ -916,6 +916,8 @@ class Contract
             }
         }
 
+        $numEventIndexedParameterNames = count($eventIndexedParameterNames);
+
         //filter through log data to find any logs which match this event (topic) from
         //this contract, between these specified blocks (defaulting to the latest block only)
         $this->eth->getLogs([
@@ -934,7 +936,7 @@ class Contract
                 $decodedData = array_combine($eventParameterNames, $this->ethabi->decodeParameters($eventParameterTypes, $object->data));
 
                 //decode the indexed parameter data
-                for ($i = 0; $i < count($eventIndexedParameterNames); $i++) {
+                for ($i = 0; $i < $numEventIndexedParameterNames; $i++) {
                     //topics[0] is the event signature, so we start from $i + 1 for the indexed parameter data
                     $decodedData[$eventIndexedParameterNames[$i]] = $this->ethabi->decodeParameters([$eventIndexedParameterTypes[$i]], $object->topics[$i + 1])[0];
                 }
