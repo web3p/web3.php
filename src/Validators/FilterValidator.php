@@ -12,12 +12,13 @@
 namespace Web3\Validators;
 
 use Web3\Validators\IValidator;
+use Web3\Validators\Validator;
 use Web3\Validators\QuantityValidator;
 use Web3\Validators\TagValidator;
 use Web3\Validators\HexValidator;
 use Web3\Validators\AddressValidator;
 
-class FilterValidator
+class FilterValidator extends Validator implements IValidator
 {
     /**
      * validate
@@ -28,6 +29,7 @@ class FilterValidator
     public static function validate($value)
     {
         if (!is_array($value)) {
+            self::$verifyMessage = 'filter must be array';
             return false;
         }
         if (
@@ -35,6 +37,7 @@ class FilterValidator
             QuantityValidator::validate($value['fromBlock']) === false &&
             TagValidator::validate($value['fromBlock']) === false
             ) {
+            self::$verifyMessage = 'fromBlock is not valid';
             return false;
         }
         if (
@@ -42,16 +45,19 @@ class FilterValidator
             QuantityValidator::validate($value['toBlock']) === false &&
             TagValidator::validate($value['toBlock']) === false
             ) {
+            self::$verifyMessage = 'toBlock is not valid';
             return false;
         }
         if (isset($value['address'])) {
             if (is_array($value['address'])) {
                 foreach ($value['address'] as $address) {
                     if (AddressValidator::validate($address) === false) {
+                        self::$verifyMessage = 'address is not valid';
                         return false;
                     }
                 }
             } elseif (AddressValidator::validate($value['address']) === false) {
+                self::$verifyMessage = 'address is not valid';
                 return false;
             }
         }
@@ -60,11 +66,13 @@ class FilterValidator
                 if (is_array($topic)) {
                     foreach ($topic as $v) {
                         if (isset($v) && HexValidator::validate($v) === false) {
+                            self::$verifyMessage = 'topics are not valid';
                             return false;
                         }
                     }
                 } else {
                     if (isset($topic) && HexValidator::validate($topic) === false) {
+                        self::$verifyMessage = 'topics are not valid';
                         return false;
                     }
                 }
