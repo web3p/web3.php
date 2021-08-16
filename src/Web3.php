@@ -283,8 +283,6 @@ class Web3
      */
     public function batch($status)
     {
-        $status = is_bool($status);
-
         $this->provider->batch($status);
     }
 }

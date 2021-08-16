@@ -1,12 +1,12 @@
 {
-    "name": "sc0vu/web3.php",
+    "name": "haohetao/web3.php",
     "description": "Ethereum web3 interface.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "sc0Vu",
-            "email": "alk03073135@gmail.com"
+            "name": "hetao",
+            "email": "haohetao@gmail.com"
         }
     ],
     "require": {
