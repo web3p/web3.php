@@ -1,5 +1,5 @@
 {
-    "name": "sc0vu/web3.php",
+    "name": "ravilushqa/web3.php",
     "description": "Ethereum web3 interface.",
     "type": "library",
     "license": "MIT",
@@ -7,6 +7,10 @@
         {
             "name": "sc0Vu",
             "email": "alk03073135@gmail.com"
+        },
+        {
+            "name": "ravilushqa",
+            "email": "galaktionov.r@gmail.com"
         }
     ],
     "require": {
