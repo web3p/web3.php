@@ -439,7 +439,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertTrue($err !== null);
             }
-            // weired behavior, see https://github.com/sc0Vu/web3.php/issues/16
+            // weird behavior, see https://github.com/web3p/web3.php/issues/16
             $this->assertTrue($block !== null);
         });
     }

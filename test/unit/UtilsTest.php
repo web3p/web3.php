@@ -55,7 +55,7 @@ class UtilsTest extends TestCase
 
     /**
      * testIssue112Json
-     * see: https://github.com/sc0Vu/web3.php/issues/112
+     * see: https://github.com/web3p/web3.php/issues/112
      * 
      * @var string
      */

@@ -298,7 +298,7 @@ class EthabiTest extends TestCase
 
     /**
      * testIssue71
-     * test 33 bytes and 128 bytes string, see: https://github.com/sc0Vu/web3.php/issues/71
+     * test 33 bytes and 128 bytes string, see: https://github.com/web3p/web3.php/issues/71
      * string generated from: https://www.lipsum.com/
      * 
      * @return void

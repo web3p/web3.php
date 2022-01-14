@@ -18,13 +18,13 @@ Set minimum stability to dev
 
 Then
 ```
-composer require sc0vu/web3.php dev-master
+composer require web3p/web3.php dev-master
 ```
 
 Or you can add this line in composer.json
 
 ```
-"sc0vu/web3.php": "dev-master"
+"web3p/web3.php": "dev-master"
 ```
 
 
@@ -217,7 +217,7 @@ If you are using docker as development machain, you can try [ethdock](https://gi
 
 1. Clone the repo and install packages.
 ```
-git clone https://github.com/sc0Vu/web3.php.git && cd web3.php && composer install
+git clone https://github.com/web3p/web3.php.git && cd web3.php && composer install
 ```
 
 2. Run test script.
@@ -229,7 +229,7 @@ vendor/bin/phpunit
 
 1. Clone the repo and run docker container.
 ```
-git clone https://github.com/sc0Vu/web3.php.git
+git clone https://github.com/web3p/web3.php.git
 ```
 
 2. Copy web3.php to web3.php/docker/app directory and start container.
