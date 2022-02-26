@@ -529,7 +529,7 @@ class Utils
                 $number = str_replace('-', '', $number, $count);
                 $negative1 = new BigNumber(-1);
             }
-            if (self::isZeroPrefixed($number) || preg_match('/[a-f]+/', $number) === 1) {
+            if (self::isZeroPrefixed($number) || preg_match('/^[0-9a-f]+$/i', $number) === 1) {
                 $number = self::stripZero($number);
                 $bn = new BigNumber($number, 16);
             } elseif (empty($number)) {

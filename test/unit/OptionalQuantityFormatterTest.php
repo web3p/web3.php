@@ -55,6 +55,8 @@ class OptionalQuantityFormatterTest extends TestCase
         $this->assertEquals('latest', $formatter->format('latest'));
         $this->assertEquals('earliest', $formatter->format('earliest'));
         $this->assertEquals('pending', $formatter->format('pending'));
-        $this->assertEquals('0x0', $formatter->format('hello'));
+
+        $this->expectExceptionMessage('toBn number must be valid hex string.');
+        $formatter->format('hello');
     }
 }
