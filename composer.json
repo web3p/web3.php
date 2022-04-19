@@ -14,7 +14,8 @@
         "PHP": "^7.2|^8.0",
         "kornrunner/keccak": "~1.0",
         "phpseclib/phpseclib": "~2.0.30",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~8.0|~9.0"
