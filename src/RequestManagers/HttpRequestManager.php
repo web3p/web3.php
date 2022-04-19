@@ -14,11 +14,8 @@ namespace Web3\RequestManagers;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException as RPCException;
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
-use Web3\RequestManagers\RequestManager;
-use Web3\RequestManagers\IRequestManager;
 
 class HttpRequestManager extends RequestManager implements IRequestManager
 {
@@ -48,6 +45,7 @@ class HttpRequestManager extends RequestManager implements IRequestManager
      * @param string $payload
      * @param callable $callback
      * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function sendPayload($payload, $callback)
     {
