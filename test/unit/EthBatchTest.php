@@ -4,7 +4,7 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
-use phpseclib\Math\BigInteger as BigNumber;
+use phpseclib3\Math\BigInteger as BigNumber;
 
 class EthBatchTest extends TestCase
 {
