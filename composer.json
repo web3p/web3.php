@@ -1,5 +1,5 @@
 {
-    "name": "emroc/web3.php",
+    "name": "emroc/openweb3.php",
     "description": "Ethereum web3 interface.",
     "type": "library",
     "license": "MIT",
