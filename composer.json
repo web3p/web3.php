@@ -1,9 +1,13 @@
 {
-    "name": "web3p/web3.php",
+    "name": "emroc/web3.php",
     "description": "Ethereum web3 interface.",
     "type": "library",
     "license": "MIT",
     "authors": [
+        {
+            "name": "emroc GmbH",
+            "email": "hi@emroc.gmbh"
+        },
         {
             "name": "sc0Vu",
             "email": "alk03073135@gmail.com"
