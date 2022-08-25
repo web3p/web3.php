@@ -13,15 +13,48 @@ namespace Web3\Contracts;
 
 use Web3\Utils;
 use Web3\Formatters\IntegerFormatter;
+use InvalidArgumentException;
+use Web3\Contracts\Types\Address;
+use Web3\Contracts\Types\Boolean;
+use Web3\Contracts\Types\Bytes;
+use Web3\Contracts\Types\DynamicBytes;
+use Web3\Contracts\Types\Integer;
+use Web3\Contracts\Types\Str;
+use Web3\Contracts\Types\Uinteger;
+use Web3\Contracts\Types\Tuple;
+
 
 class SolidityType
 {
+    private array $types = [];
+
     /**
      * construct
      * 
      * @return void
      */
     // public function  __construct() {}
+
+    /**
+     * set types
+     */
+    private function  setTypes() 
+    {
+        if(!empty($this->types)){
+            return $this->types;
+        }
+        $this->types = [
+            'address' => new Address,
+            'bool' => new Boolean,
+            'bytes' => new Bytes,
+            'dynamicBytes' => new DynamicBytes,
+            'int' => new Integer,
+            'string' => new Str,
+            'uint' => new Uinteger,
+            'tuple' => new Tuple,
+        ];
+        return $this->types;
+    }
 
     /**
      * get
@@ -270,4 +303,81 @@ class SolidityType
 
         return $this->outputFormat($param, $name);
     }
+
+    /**
+     * decode struct data
+     * 
+     * @author abaowu <abaowu@gmail.com>
+     * @param array $type tuple struct
+     * @param mix $value tuple value
+     * @return array
+     */
+    public function decodeTuple($type, $value) 
+    {
+        $outputTypes = $type["components"];
+        $typesLength = count($outputTypes);
+        $solidityTypes = $this->getSolidityTypes($outputTypes);
+        $offsets = array_fill(0, $typesLength, 0);
+        
+        for ($i=0; $i<$typesLength; $i++) {
+            $offsets[$i] = $solidityTypes[$i]->staticPartLength($outputTypes[$i]['type']);
+        }
+        for ($i=1; $i<$typesLength; $i++) {
+            $offsets[$i] += $offsets[$i - 1];
+        }
+        for ($i=0; $i<$typesLength; $i++) {
+            $offsets[$i] -= $solidityTypes[$i]->staticPartLength($outputTypes[$i]['type']);
+        }
+        $result = [];
+        $param = mb_strtolower(Utils::stripZero($value));
+        
+        for ($i=0; $i<$typesLength; $i++) {
+            if (isset($outputTypes[$i]['name']) && empty($outputTypes[$i]['name']) === false) {
+                $result[$outputTypes[$i]['name']] = $solidityTypes[$i]->decode($param, $offsets[$i], $outputTypes[$i]['type']);
+            } else {
+                $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $outputTypes[$i]['type']);
+            }
+        }
+
+        return $result;
+    
+    }
+
+
+    /**
+     * getSolidityTypes
+     * 
+     * @param array $types
+     * @return array
+     */
+    protected function getSolidityTypes($types)
+    {
+        if (!is_array($types)) {
+            throw new InvalidArgumentException('Types must be array');
+        }
+        $solidityTypes = array_fill(0, count($types), 0);
+        $this->setTypes();
+
+        foreach ($types as $key => $type) {
+            $match = [];
+            $type = $type['type'];
+            if (preg_match('/^([a-zA-Z]+)/', $type, $match) === 1) {
+                if (isset($this->types[$match[0]])) {
+                    $className = $this->types[$match[0]];
+
+                    if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
+                        // check dynamic bytes
+                        if ($match[0] === 'bytes') {
+                            $className = $this->types['dynamicBytes'];
+                        } else {
+                            throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+                        }
+                    }
+                    $solidityTypes[$key] = $className;
+                }
+            }
+        }
+        return $solidityTypes;
+    }
+
 }

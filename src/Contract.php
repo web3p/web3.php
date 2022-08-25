@@ -32,6 +32,7 @@ use Web3\Validators\StringValidator;
 use Web3\Validators\TagValidator;
 use Web3\Validators\QuantityValidator;
 use Web3\Formatters\AddressFormatter;
+use Web3\Contracts\Types\Tuple;
 
 class Contract
 {
@@ -162,6 +163,7 @@ class Contract
             'int' => new Integer,
             'string' => new Str,
             'uint' => new Uinteger,
+            'tuple' => new Tuple,
         ]);
     }
 
