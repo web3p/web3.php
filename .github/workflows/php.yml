@@ -1,13 +1,13 @@
 name: PHP
 
-on: ["push", "pull_request"]
+on: ["push", "pull_request", "workflow_dispatch"]
 
 jobs:
   build_and_test:
     name: Build and test web3.php with ${{ matrix.php-version }}
     strategy:
       matrix:
-        php-version: ["7.3", "7.4"]
+        php-version: ["7.3", "7.4", "8.0"]
 
     runs-on: ubuntu-latest
 
@@ -37,9 +37,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
-          ${{ runner.os }}-php-
+          ${{ runner.os }}-php-${{ matrix.php-version }}-
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
