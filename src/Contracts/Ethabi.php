@@ -13,6 +13,14 @@ namespace Web3\Contracts;
 
 use InvalidArgumentException;
 use stdClass;
+use Web3\Contracts\Types\Address;
+use Web3\Contracts\Types\Boolean;
+use Web3\Contracts\Types\Bytes;
+use Web3\Contracts\Types\DynamicBytes;
+use Web3\Contracts\Types\Integer;
+use Web3\Contracts\Types\Str;
+use Web3\Contracts\Types\Tuple;
+use Web3\Contracts\Types\Uinteger;
 use Web3\Utils;
 use Web3\Formatters\IntegerFormatter;
 
@@ -55,6 +63,20 @@ class Ethabi
         return false;
     }
 
+    public static function factory()
+	{
+		return new Ethabi([
+			'address' => new Address,
+			'bool' => new Boolean,
+			'bytes' => new Bytes,
+			'dynamicBytes' => new DynamicBytes,
+			'int' => new Integer,
+			'string' => new Str,
+			'uint' => new Uinteger,
+			'tuple' => new Tuple
+		]);
+	}
+    
     /**
      * set
      * 
@@ -235,11 +257,13 @@ class Ethabi
         $param = mb_strtolower(Utils::stripZero($param));
 
         for ($i=0; $i<$typesLength; $i++) {
-            if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
-                $result[$outputTypes['outputs'][$i]['name']] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
-            } else {
-                $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
-            }
+         
+        	$output_type_hint = $outputTypes['outputs'][$i] ?? false;
+        	$name = $outputTypes['outputs'][$i]['name'] ?? "";
+        	if (empty($name))
+        		$name = $i;
+			$result[$name] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i], $output_type_hint);
+			
         }
 
         return $result;
