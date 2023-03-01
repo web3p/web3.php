@@ -1,12 +1,11 @@
 {
-    "name": "web3p/web3.php",
+    "name": "ca-morfeusz2844/web3.php",
     "description": "Ethereum web3 interface.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "sc0Vu",
-            "email": "alk03073135@gmail.com"
+            "name": "ca-morfeusz2844"
         }
     ],
     "require": {
