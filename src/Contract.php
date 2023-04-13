@@ -26,6 +26,7 @@ use Web3\Contracts\Types\DynamicBytes;
 use Web3\Contracts\Types\Integer;
 use Web3\Contracts\Types\Str;
 use Web3\Contracts\Types\Uinteger;
+use Web3\Contracts\Types\Tuple;
 use Web3\Validators\AddressValidator;
 use Web3\Validators\HexValidator;
 use Web3\Validators\StringValidator;
@@ -154,15 +155,7 @@ class Contract
         }
         $this->abi = $abiArray;
         $this->eth = new Eth($this->provider);
-        $this->ethabi = new Ethabi([
-            'address' => new Address,
-            'bool' => new Boolean,
-            'bytes' => new Bytes,
-            'dynamicBytes' => new DynamicBytes,
-            'int' => new Integer,
-            'string' => new Str,
-            'uint' => new Uinteger,
-        ]);
+        $this->ethabi = Ethabi::factory();
     }
 
     /**
