@@ -46,14 +46,15 @@ class Shh
      * construct
      *
      * @param string|\Web3\Providers\Provider $provider
+     * @param int $timeout
      * @return void
      */
-    public function __construct($provider)
+    public function __construct($provider, $timeout = 1)
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
             if (preg_match('/^https?:\/\//', $provider) === 1) {
-                $requestManager = new HttpRequestManager($provider);
+                $requestManager = new HttpRequestManager($provider, $timeout);
 
                 $this->provider = new HttpProvider($requestManager);
             }
