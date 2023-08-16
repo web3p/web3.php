@@ -59,7 +59,7 @@ class HttpProvider extends Provider implements IProvider
 
                 return call_user_func($callback, null, $res);
             };
-            $this->requestManager->sendPayload($payload, $proxy);
+            return $this->requestManager->sendPayload($payload, $proxy);
         } else {
             $this->methods[] = $method;
             $this->batch[] = $payload;
@@ -108,8 +108,9 @@ class HttpProvider extends Provider implements IProvider
             }
             return call_user_func($callback, null, $res);
         };
-        $this->requestManager->sendPayload('[' . implode(',', $this->batch) . ']', $proxy);
-        $this->methods[] = [];
+        $r = $this->requestManager->sendPayload('[' . implode(',', $this->batch) . ']', $proxy);
+        $this->methods = [];
         $this->batch = [];
+        return $r;
     }
 }

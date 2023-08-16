@@ -103,7 +103,7 @@ class Shh
             if ($methodObject->validate($arguments)) {
                 $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
                 $methodObject->arguments = $inputs;
-                $this->provider->send($methodObject, $callback);
+                return $this->provider->send($methodObject, $callback);
             }
         }
     }
