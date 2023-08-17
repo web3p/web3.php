@@ -16,7 +16,7 @@
         "phpseclib/phpseclib": "~2.0.30",
         "ext-mbstring": "*",
         "react/http": "^1.6.0",
-        "react/async": "^4.0.0",
+        "react/async": "^4.0.0|^3.1.0",
         "react/promise": "^2.9.0",
         "react/event-loop": "^1.2",
         "react/socket": "^1.13"

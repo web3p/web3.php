@@ -62,8 +62,7 @@ class HttpAsyncRequestManager extends RequestManager implements IRequestManager
         }
 
         $host = $this->host;
-
-        return Async\coroutine(Async\async(function () use ($host, $payload, $callback) {
+        $request = function () use ($host, $payload, $callback) {
             try {
                 $headers = [
                     'content-type' => 'application/json'
@@ -115,6 +114,12 @@ class HttpAsyncRequestManager extends RequestManager implements IRequestManager
             } catch (Exception $err) {
                 call_user_func($callback, $err, null);
             }
-        }));
+        };
+
+        if (function_exists('React\\Async\\async')) {
+            $request = Async\async($request);
+        }
+
+        return Async\coroutine($request);
     }
 }
