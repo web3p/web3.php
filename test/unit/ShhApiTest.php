@@ -465,6 +465,28 @@ class ShhApiTest extends TestCase
     //         $this->assertTrue(true);
     //     });
     // }
+
+    /**
+     * testVersionAsync
+     * 
+     * @return void
+     */    
+    public function testVersionAsync()
+    {
+        $shh = $this->shh;
+        $shh->provider = $this->asyncHttpProvider;
+
+        // should return reactphp promise
+        $promise = $shh->version(function ($err, $version) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue(is_string($version));
+        });
+        $this->assertTrue($promise instanceof \React\Promise\PromiseInterface);
+        \React\Async\await($promise);
+    }
+
     /**
      * testUnallowedMethod
      * 
