@@ -42,7 +42,7 @@ class EthBatchTest extends TestCase
 
         $eth->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->fail('Got error!');
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue($data[0] instanceof BigNumber);
             $this->assertTrue($data[1] !== null);

@@ -708,7 +708,7 @@ class ContractTest extends TestCase
         ], function ($err, $result) use ($contract) {
             if ($err !== null) {
                 // infura api gg
-                return $this->assertTrue($err !== null);
+                return $this->fail($err->getMessage());
             }
             if (isset($result)) {
                 echo "\nEstimate gas: " . $result->toString() . "\n";

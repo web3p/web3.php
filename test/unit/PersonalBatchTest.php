@@ -41,7 +41,7 @@ class PersonalBatchTest extends TestCase
 
         $personal->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->assertTrue($err !== null);
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_array($data[0]));
             $this->assertTrue(is_string($data[1]));

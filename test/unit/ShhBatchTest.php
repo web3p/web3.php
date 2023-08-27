@@ -41,7 +41,7 @@ class ShhBatchTest extends TestCase
 
         $shh->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->fail('Got error!');
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_string($data[0]));
             $this->assertTrue(is_string($data[1]));
@@ -65,7 +65,7 @@ class ShhBatchTest extends TestCase
 
     //     $shh->provider->execute(function ($err, $data) {
     //         if ($err !== null) {
-    //             return $this->fail('Got error!');
+    //             return $this->fail($err->getMessage());
     //         }
     //         $this->assertTrue(is_string($data[0]));
     //         $this->assertFalse($data[1]);

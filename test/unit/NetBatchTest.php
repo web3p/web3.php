@@ -43,7 +43,7 @@ class NetBatchTest extends TestCase
 
         $net->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->fail('Got error!');
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_string($data[0]));
             $this->assertTrue(is_bool($data[1]));
