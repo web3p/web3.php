@@ -15,11 +15,11 @@ class TestCase extends BaseTestCase
     protected $web3;
 
     /**
-     * testRinkebyHost
+     * testHost2
      * 
      * @var string
      */
-    protected $testRinkebyHost = 'https://rinkeby.infura.io/vuethexplore';
+    protected $testHost2 = 'https://eth-mainnet.g.alchemy.com/v2/notavalidkey';
 
     /**
      * testHost
