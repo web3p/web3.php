@@ -791,6 +791,28 @@ class EthApiTest extends TestCase
     }
 
     /**
+     * testGetBlockByNumberAsync
+     * 
+     * @return void
+     */    
+    public function testGetBlockByNumberAsync()
+    {
+        $eth = $this->eth;
+        $eth->provider = $this->asyncHttpProvider;
+
+        // should return reactphp promise
+        $promise = $eth->getBlockByNumber('latest', false, function ($err, $block) {
+            if ($err !== null) {
+                return $this->assertTrue($err !== null);
+            }
+            // weird behavior, see https://github.com/web3p/web3.php/issues/16
+            $this->assertTrue($block !== null);
+        });
+        $this->assertTrue($promise instanceof \React\Promise\PromiseInterface);
+        \React\Async\await($promise);
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void
