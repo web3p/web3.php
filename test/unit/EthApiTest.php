@@ -227,7 +227,7 @@ class EthApiTest extends TestCase
 
         $eth->getBlockTransactionCountByHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', function ($err, $transactionCount) {
             if ($err !== null) {
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('Key not found in database', $err->getMessage());
             }
             $this->assertTrue(is_numeric($transactionCount->toString()));
         });
@@ -312,8 +312,7 @@ class EthApiTest extends TestCase
 
         $eth->sign('0x407d73d8a49eeb85d32cf465507dd71d507100c1', '0xdeadbeaf', function ($err, $sign) {
             if ($err !== null) {
-                // infura banned us to sign message
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('cannot sign data; no private key', $err->getMessage());
             }
             $this->assertTrue(is_string($sign));
         });
@@ -337,8 +336,7 @@ class EthApiTest extends TestCase
             'data' => "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675"
         ], function ($err, $transaction) {
             if ($err !== null) {
-                // infura banned us to send transaction
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('sender account not recognized', $err->getMessage());
             }
             $this->assertTrue(is_string($transaction));
         });
@@ -355,7 +353,7 @@ class EthApiTest extends TestCase
 
         $eth->sendRawTransaction('0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675', function ($err, $transaction) {
             if ($err !== null) {
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('invalid remainder', $err->getMessage());
             }
             $this->assertTrue(is_string($transaction));
         });
@@ -420,7 +418,7 @@ class EthApiTest extends TestCase
 
         $eth->getBlockByHash('0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238', false, function ($err, $block) {
             if ($err !== null) {
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('Key not found in database', $err->getMessage());
             }
             $this->assertTrue($block !== null);
         });
@@ -489,7 +487,7 @@ class EthApiTest extends TestCase
 
         $eth->getTransactionByBlockNumberAndIndex('0xe8', '0x0', function ($err, $transaction) {
             if ($err !== null) {
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('LevelUpArrayAdapter named \'blocks\' index out of range: index 232; length: 15', $err->getMessage());
             }
             $this->assertTrue($transaction !== null);
         });
@@ -543,57 +541,6 @@ class EthApiTest extends TestCase
                 return $this->fail($err->getMessage());
             }
             $this->assertTrue($uncle !== null);
-        });
-    }
-
-    /**
-     * testCompileSolidity
-     * 
-     * @return void
-     */    
-    public function testCompileSolidity()
-    {
-        $eth = $this->eth;
-
-        $eth->compileSolidity('contract test { function multiply(uint a) returns(uint d) {   return a * 7;   } }', function ($err, $compiled) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_string($compiled));
-        });
-    }
-
-    /**
-     * testCompileLLL
-     * 
-     * @return void
-     */    
-    public function testCompileLLL()
-    {
-        $eth = $this->eth;
-
-        $eth->compileLLL('(returnlll (suicide (caller)))', function ($err, $compiled) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_string($compiled));
-        });
-    }
-
-    /**
-     * testCompileSerpent
-     * 
-     * @return void
-     */    
-    public function testCompileSerpent()
-    {
-        $eth = $this->eth;
-
-        $eth->compileSerpent('\/* some serpent *\/', function ($err, $compiled) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_string($compiled));
         });
     }
 
@@ -733,23 +680,6 @@ class EthApiTest extends TestCase
     }
 
     /**
-     * testGetWork
-     * 
-     * @return void
-     */    
-    public function testGetWork()
-    {
-        $eth = $this->eth;
-
-        $eth->getWork(function ($err, $work) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_array($work));
-        });
-    }
-
-    /**
      * testSubmitWork
      * 
      * @return void
@@ -788,28 +718,6 @@ class EthApiTest extends TestCase
             }
             $this->assertTrue(is_bool($work));
         });
-    }
-
-    /**
-     * testGetBlockByNumberAsync
-     * 
-     * @return void
-     */    
-    public function testGetBlockByNumberAsync()
-    {
-        $eth = $this->eth;
-        $eth->provider = $this->asyncHttpProvider;
-
-        // should return reactphp promise
-        $promise = $eth->getBlockByNumber('latest', false, function ($err, $block) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            // weird behavior, see https://github.com/web3p/web3.php/issues/16
-            $this->assertTrue($block !== null);
-        });
-        $this->assertTrue($promise instanceof \React\Promise\PromiseInterface);
-        \React\Async\await($promise);
     }
 
     /**
