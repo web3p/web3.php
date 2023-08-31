@@ -22,6 +22,13 @@ class ContractTest extends TestCase
     protected $contract;
 
     /**
+     * async contract
+     *
+     * @var \Web3\Contract
+     */
+    protected $asyncContract;
+
+    /**
      * testAbi
      * GameToken abi from https://github.com/sc0Vu/GameToken
      *
@@ -425,6 +432,7 @@ class ContractTest extends TestCase
                 }
             }
         });
+        $this->asyncContract = new Contract($this->asyncHttpProvider, $this->testAbi);
     }
 
     /**
@@ -1513,5 +1521,119 @@ class ContractTest extends TestCase
                 $this->assertTrue($result !== null);
             }
         });
+    }
+
+    //   
+    /**
+     * testAsync
+     * 
+     * @return void
+     */
+    public function testAsync()
+    {
+        $contract = $this->contract;
+
+        if (!isset($this->accounts[0])) {
+            $fromAccount = '0x407d73d8a49eeb85d32cf465507dd71d507100c1';
+        } else {
+            $fromAccount = $this->accounts[0];
+        }
+        if (!isset($this->accounts[1])) {
+            $toAccount = '0x407d73d8a49eeb85d32cf465507dd71d507100c2';
+        } else {
+            $toAccount = $this->accounts[1];
+        }
+        $contract->bytecode($this->testBytecode)->new(1000000, 'Game Token', 1, 'GT', [
+            'from' => $fromAccount,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
+            }
+            $transactionId = $result;
+            $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
+
+            $contract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) {
+                if ($err !== null) {
+                    return $this->fail($err);
+                }
+                if ($transaction) {
+                    $this->contractAddress = $transaction->contractAddress;
+                    echo "\nTransaction has mined:) block number: " . $transaction->blockNumber . "\n";
+                }
+            });
+        });
+
+        if (!isset($this->contractAddress)) {
+            $this->contractAddress = '0x407d73d8a49eeb85d32cf465507dd71d507100c2';
+        }
+        $asyncContract = $this->asyncContract;
+        $promise1 = $asyncContract->at($this->contractAddress)->send('transfer', $toAccount, 16, [
+            'from' => $fromAccount,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract, $fromAccount, $toAccount) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if ($result) {
+                echo "\nTransaction has made:) id: " . $result . "\n";
+            }
+            $transactionId = $result;
+            $this->assertTrue((preg_match('/^0x[a-f0-9]{64}$/', $transactionId) === 1));
+
+            $promise = $asyncContract->eth->getTransactionReceipt($transactionId, function ($err, $transaction) use ($fromAccount, $toAccount, $contract) {
+                if ($err !== null) {
+                    return $this->fail($err);
+                }
+                if ($transaction) {
+                    $topics = $transaction->logs[0]->topics;
+                    echo "\nTransaction has mined:) block number: " . $transaction->blockNumber . "\n";
+
+                    // validate topics
+                    $this->assertEquals($contract->ethabi->encodeEventSignature($this->contract->events['Transfer']), $topics[0]);
+                    $this->assertEquals('0x' . IntegerFormatter::format($fromAccount), $topics[1]);
+                    $this->assertEquals('0x' . IntegerFormatter::format($toAccount), $topics[2]);
+                }
+            });
+            $this->assertTrue($promise instanceof \React\Promise\PromiseInterface);
+            \React\Async\await($promise);
+        });
+        $this->assertTrue($promise1 instanceof \React\Promise\PromiseInterface);
+
+        $promise2 = $asyncContract->at($this->contractAddress)->call('balanceOf', $fromAccount, [
+            'from' => $fromAccount
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($result)) {
+                // $bn = Utils::toBn($result);
+                // $this->assertEquals($bn->toString(), '10000', 'Balance should be 10000.');
+                $this->assertTrue($result !== null);
+            }
+        });
+
+        $this->assertTrue($promise2 instanceof \React\Promise\PromiseInterface);
+
+        $promise3 = $contract->bytecode($this->testBytecode)->estimateGas(10000, 'Game Token', 1, 'GT', [
+            'from' => $fromAccount,
+            'gas' => '0x200b20'
+        ], function ($err, $result) use ($contract) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            if (isset($result)) {
+                echo "\nEstimate gas: " . $result->toString() . "\n";
+                $this->assertTrue($result !== null);
+            }
+        });
+        \React\Async\await(\React\Async\parallel([
+            function () { return $promise1; },
+            function () { return $promise2; },
+            function () { return $promise3; },
+        ]));
     }
 }

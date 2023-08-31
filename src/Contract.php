@@ -441,7 +441,7 @@ class Contract
      * Deploy a contruct with params.
      * 
      * @param mixed
-     * @return void
+     * @return void|\React\Promise\PromiseInterface
      */
     public function new()
     {
@@ -469,7 +469,7 @@ class Contract
             }
             $transaction['data'] = '0x' . $this->bytecode . Utils::stripZero($data);
 
-            $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
+            return $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -483,7 +483,7 @@ class Contract
      * Send function method.
      * 
      * @param mixed
-     * @return void
+     * @return void|\React\Promise\PromiseInterface
      */
     public function send()
     {
@@ -564,7 +564,7 @@ class Contract
             $transaction['to'] = $this->toAddress;
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
-            $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
+            return $this->eth->sendTransaction($transaction, function ($err, $transaction) use ($callback){
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -578,7 +578,7 @@ class Contract
      * Call function method.
      *
      * @param mixed
-     * @return void
+     * @return void|\React\Promise\PromiseInterface
      */
     public function call()
     {
@@ -658,7 +658,7 @@ class Contract
             $transaction['to'] = $this->toAddress;
             $transaction['data'] = $functionSignature . Utils::stripZero($data);
 
-            $this->eth->call($transaction, $defaultBlock, function ($err, $transaction) use ($callback, $function){
+            return $this->eth->call($transaction, $defaultBlock, function ($err, $transaction) use ($callback, $function){
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
@@ -674,7 +674,7 @@ class Contract
      * Estimate function gas.
      * 
      * @param mixed
-     * @return void
+     * @return void|\React\Promise\PromiseInterface
      */
     public function estimateGas()
     {
@@ -778,7 +778,7 @@ class Contract
                 $transaction['data'] = $functionSignature . Utils::stripZero($data);
             }
 
-            $this->eth->estimateGas($transaction, function ($err, $gas) use ($callback) {
+            return $this->eth->estimateGas($transaction, function ($err, $gas) use ($callback) {
                 if ($err !== null) {
                     return call_user_func($callback, $err, null);
                 }
