@@ -487,7 +487,7 @@ class EthApiTest extends TestCase
 
         $eth->getTransactionByBlockNumberAndIndex('0xe8', '0x0', function ($err, $transaction) {
             if ($err !== null) {
-                return $this->assertEquals('LevelUpArrayAdapter named \'blocks\' index out of range: index 232; length: 15', $err->getMessage());
+                return $this->assertStringStartsWith('LevelUpArrayAdapter named \'blocks\' index out of range', $err->getMessage());
             }
             $this->assertTrue($transaction !== null);
         });

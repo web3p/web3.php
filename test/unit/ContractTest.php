@@ -1523,7 +1523,6 @@ class ContractTest extends TestCase
         });
     }
 
-    //   
     /**
      * testAsync
      * 
@@ -1574,7 +1573,7 @@ class ContractTest extends TestCase
         $promise1 = $asyncContract->at($this->contractAddress)->send('transfer', $toAccount, 16, [
             'from' => $fromAccount,
             'gas' => '0x200b20'
-        ], function ($err, $result) use ($contract, $fromAccount, $toAccount) {
+        ], function ($err, $result) use ($contract, $fromAccount, $toAccount, $asyncContract) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
@@ -1618,7 +1617,7 @@ class ContractTest extends TestCase
 
         $this->assertTrue($promise2 instanceof \React\Promise\PromiseInterface);
 
-        $promise3 = $contract->bytecode($this->testBytecode)->estimateGas(10000, 'Game Token', 1, 'GT', [
+        $promise3 = $asyncContract->bytecode($this->testBytecode)->estimateGas('balanceOf', $toAccount, [
             'from' => $fromAccount,
             'gas' => '0x200b20'
         ], function ($err, $result) use ($contract) {
@@ -1631,9 +1630,9 @@ class ContractTest extends TestCase
             }
         });
         \React\Async\await(\React\Async\parallel([
-            function () { return $promise1; },
-            function () { return $promise2; },
-            function () { return $promise3; },
+            function () use ($promise1) { return $promise1; },
+            function () use ($promise2) { return $promise2; },
+            function () use ($promise3) { return $promise3; },
         ]));
     }
 }
