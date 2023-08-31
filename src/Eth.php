@@ -66,7 +66,7 @@ class Eth
      * 
      * @param string $name
      * @param array $arguments
-     * @return void
+     * @return void|\React\Promise\PromiseInterface
      */
     public function __call($name, $arguments)
     {
