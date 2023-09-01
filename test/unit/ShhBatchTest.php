@@ -41,34 +41,38 @@ class ShhBatchTest extends TestCase
 
         $shh->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->fail('Got error!');
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_string($data[0]));
             $this->assertTrue(is_string($data[1]));
+            $this->assertEquals($data[0], $data[1]);
         });
     }
 
     /**
-     * testWrongParam
+     * testBatchAsync
      * 
      * @return void
      */
-    // public function testWrongParam()
-    // {
-    //     $this->expectException(RuntimeException::class);
+    public function testBatchAsync()
+    {
+        $shh = $this->shh;
+        $shh->provider = $this->asyncHttpProvider;
 
-    //     $shh = $this->shh;
+        $shh->batch(true);
+        $shh->version();
+        $shh->version();
 
-    //     $shh->batch(true);
-    //     $shh->version();
-    //     $shh->hasIdentity('0');
-
-    //     $shh->provider->execute(function ($err, $data) {
-    //         if ($err !== null) {
-    //             return $this->fail('Got error!');
-    //         }
-    //         $this->assertTrue(is_string($data[0]));
-    //         $this->assertFalse($data[1]);
-    //     });
-    // }
+        // should return reactphp promise
+        $promise = $shh->provider->execute(function ($err, $data) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue(is_string($data[0]));
+            $this->assertTrue(is_string($data[1]));
+            $this->assertEquals($data[0], $data[1]);
+        });
+        $this->assertTrue($promise instanceof \React\Promise\PromiseInterface);
+        \React\Async\await($promise);
+    }
 }

@@ -20,9 +20,10 @@ class ProviderTest extends TestCase
 
         $this->assertEquals($provider->requestManager->host, 'http://localhost:8545');
 
-        $requestManager = new RequestManager($this->testRinkebyHost);
+        $requestManager = new RequestManager($this->testHost2);
         $provider->requestManager = $requestManager;
 
+        // there is no setter for request manager
         $this->assertEquals($provider->requestManager->host, 'http://localhost:8545');
     }
 }

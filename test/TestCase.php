@@ -4,6 +4,8 @@ namespace Test;
 
 use \PHPUnit\Framework\TestCase as BaseTestCase;
 use Web3\Web3;
+use Web3\RequestManagers\HttpAsyncRequestManager;
+use Web3\Providers\HttpProvider;
 
 class TestCase extends BaseTestCase
 {
@@ -15,11 +17,11 @@ class TestCase extends BaseTestCase
     protected $web3;
 
     /**
-     * testRinkebyHost
+     * testHost2
      * 
      * @var string
      */
-    protected $testRinkebyHost = 'https://rinkeby.infura.io/vuethexplore';
+    protected $testHost2 = 'https://eth-mainnet.g.alchemy.com/v2/notavalidkey';
 
     /**
      * testHost
@@ -36,12 +38,23 @@ class TestCase extends BaseTestCase
     protected $coinbase;
 
     /**
+     * asyncHttpProvider
+     * 
+     * @var \Web3\Providers\HttpProvider
+     */
+    protected $asyncHttpProvider;
+
+    /**
      * setUp
      */
     public function setUp(): void
     {
         $web3 = new Web3($this->testHost);
         $this->web3 = $web3;
+
+        $asyncRequestManager = new HttpAsyncRequestManager($this->testHost);
+        $asyncHttpProvider = new HttpProvider($asyncRequestManager);
+        $this->asyncHttpProvider = $asyncHttpProvider;
 
         $web3->eth->coinbase(function ($err, $coinbase) {
             if ($err !== null) {

@@ -7,7 +7,7 @@ jobs:
     name: Build and test web3.php with ${{ matrix.php-version }}
     strategy:
       matrix:
-        php-version: ["7.3", "7.4", "8.0"]
+        php-version: ["7.3", "7.4", "8.0", "8.1", "8.2"]
 
     runs-on: ubuntu-latest
 

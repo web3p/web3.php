@@ -43,11 +43,39 @@ class NetBatchTest extends TestCase
 
         $net->provider->execute(function ($err, $data) {
             if ($err !== null) {
-                return $this->fail('Got error!');
+                return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_string($data[0]));
             $this->assertTrue(is_bool($data[1]));
             $this->assertTrue($data[2] instanceof BigNumber);
         });
+    }
+
+    /**
+     * testBatchAsync
+     * 
+     * @return void
+     */
+    public function testBatchAsync()
+    {
+        $net = $this->net;
+        $net->provider = $this->asyncHttpProvider;
+
+        $net->batch(true);
+        $net->version();
+        $net->listening();
+        $net->peerCount();
+
+        // should return reactphp promise
+        $promise = $net->provider->execute(function ($err, $data) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue(is_string($data[0]));
+            $this->assertTrue(is_bool($data[1]));
+            $this->assertTrue($data[2] instanceof BigNumber);
+        });
+        $this->assertTrue($promise instanceof \React\Promise\PromiseInterface);
+        \React\Async\await($promise);
     }
 }

@@ -80,6 +80,27 @@ class NetApiTest extends TestCase
     }
 
     /**
+     * testPeerCountAsync
+     * 
+     * @return void
+     */    
+    public function testPeerCountAsync()
+    {
+        $net = $this->net;
+        $net->provider = $this->asyncHttpProvider;
+
+        // should return reactphp promise
+        $promise = $net->peerCount(function ($err, $count) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue($count instanceof BigNumber);
+        });
+        $this->assertTrue($promise instanceof \React\Promise\PromiseInterface);
+        \React\Async\await($promise);
+    }
+
+    /**
      * testUnallowedMethod
      * 
      * @return void

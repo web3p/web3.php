@@ -66,7 +66,7 @@ class Net
      * 
      * @param string $name
      * @param array $arguments
-     * @return void
+     * @return void|\React\Promise\PromiseInterface
      */
     public function __call($name, $arguments)
     {
@@ -102,7 +102,7 @@ class Net
             if ($methodObject->validate($arguments)) {
                 $inputs = $methodObject->transform($arguments, $methodObject->inputFormatters);
                 $methodObject->arguments = $inputs;
-                $this->provider->send($methodObject, $callback);
+                return $this->provider->send($methodObject, $callback);
             }
         }
     }
