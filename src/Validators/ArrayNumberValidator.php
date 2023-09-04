@@ -12,23 +12,26 @@
 namespace Web3\Validators;
 
 use Web3\Validators\IValidator;
-use Web3\Utils;
 
-class TagValidator implements IValidator
+class ArrayNumberValidator
 {
     /**
      * validate
+     * TODO: add min & max validation
      *
-     * @param string $value
+     * @param array[int|float] $value
      * @return bool
      */
     public static function validate($value)
     {
-        $value = Utils::toString($value);
-        $tags = [
-            'latest', 'earliest', 'pending', 'safe', 'finalized'
-        ];
-
-        return in_array($value, $tags);
+        if (!is_array($value)) {
+            return false;
+        }
+        foreach ($value as $val) {
+            if (!(is_int($val) || is_float($val))) {
+                return false;
+            }
+        }
+        return true;
     }
 }

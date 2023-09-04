@@ -13,12 +13,14 @@ namespace Web3\Methods\Eth;
 
 use InvalidArgumentException;
 use Web3\Methods\EthMethod;
-use Web3\Validators\BlockHashValidator;
+use Web3\Validators\TagValidator;
 use Web3\Validators\QuantityValidator;
-use Web3\Formatters\HexFormatter;
+use Web3\Validators\ArrayNumberValidator;
 use Web3\Formatters\QuantityFormatter;
+use Web3\Formatters\OptionalQuantityFormatter;
+use Web3\Formatters\FeeHistoryFormatter;
 
-class GetTransactionByBlockHashAndIndex extends EthMethod
+class FeeHistory extends EthMethod
 {
     /**
      * validators
@@ -26,7 +28,9 @@ class GetTransactionByBlockHashAndIndex extends EthMethod
      * @var array
      */
     protected $validators = [
-        BlockHashValidator::class, QuantityValidator::class
+        QuantityValidator::class, [
+            TagValidator::class, QuantityValidator::class
+        ], ArrayNumberValidator::class
     ];
 
     /**
@@ -35,7 +39,7 @@ class GetTransactionByBlockHashAndIndex extends EthMethod
      * @var array
      */
     protected $inputFormatters = [
-        HexFormatter::class, QuantityFormatter::class
+        QuantityFormatter::class, OptionalQuantityFormatter::class
     ];
 
     /**
@@ -43,7 +47,9 @@ class GetTransactionByBlockHashAndIndex extends EthMethod
      * 
      * @var array
      */
-    protected $outputFormatters = [];
+    protected $outputFormatters = [
+        FeeHistoryFormatter::class
+    ];
 
     /**
      * defaultValues
