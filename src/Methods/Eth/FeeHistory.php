@@ -18,6 +18,7 @@ use Web3\Validators\QuantityValidator;
 use Web3\Validators\ArrayNumberValidator;
 use Web3\Formatters\QuantityFormatter;
 use Web3\Formatters\OptionalQuantityFormatter;
+use Web3\Formatters\FeeHistoryFormatter;
 
 class FeeHistory extends EthMethod
 {
@@ -47,6 +48,7 @@ class FeeHistory extends EthMethod
      * @var array
      */
     protected $outputFormatters = [
+        FeeHistoryFormatter::class
     ];
 
     /**

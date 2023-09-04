@@ -727,11 +727,17 @@ class EthApiTest extends TestCase
     {
         $eth = $this->eth;
 
-        $eth->feeHistory(1, 'latest', [ 1 ], function ($err, $feeHistory) {
+        $eth->feeHistory(1, 'latest', [ 1, 40, 50 ], function ($err, $feeHistory) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
             $this->assertTrue($feeHistory->oldestBlock !== null);
+            $this->assertTrue($feeHistory->baseFeePerGas !== null);
+            $this->assertTrue($feeHistory->gasUsedRatio !== null);
+            $this->assertEquals(count($feeHistory->gasUsedRatio), 1);
+            $this->assertTrue($feeHistory->reward !== null);
+            $this->assertEquals(count($feeHistory->reward), 1);
+            $this->assertEquals(count($feeHistory->reward[0]), 3);
         });
     }
 
