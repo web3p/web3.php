@@ -721,6 +721,22 @@ class EthApiTest extends TestCase
     }
 
     /**
+     * testFeeHistory
+     * 
+     * @return void
+     */    
+    public function testFeeHistory()
+    {
+        $eth = $this->eth;
+
+        $eth->feeHistory(1, 'latest', [ 1 ], function ($err, $feeHistory) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+        });
+    }
+
+    /**
      * testGetBlockByNumberAsync
      * 
      * @return void
