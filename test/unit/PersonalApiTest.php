@@ -169,13 +169,14 @@ class PersonalApiTest extends TestCase
                 return $this->fail($err->getMessage());
             }
             $this->newAccount = $account;
+            var_dump($account);
             $this->assertTrue(is_string($account));
         });
 
         $this->web3->eth->sendTransaction([
             'from' => $this->coinbase,
             'to' => $this->newAccount,
-            'value' => '0xfffffffff',
+            'value' => '0xfffffffffffff',
         ], function ($err, $transaction) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
@@ -188,6 +189,8 @@ class PersonalApiTest extends TestCase
             'from' => $this->newAccount,
             'to' => $this->coinbase,
             'value' => '0x01',
+            'gasLimit' => 21000,
+            'gasPrice' => 5000000000,
         ], '123456', function ($err, $transaction) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
