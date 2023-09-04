@@ -59,16 +59,4 @@ class GetTransactionCount extends EthMethod
     protected $defaultValues = [
         1 => 'latest'
     ];
-
-    /**
-     * construct
-     * 
-     * @param string $method
-     * @param array $arguments
-     * @return void
-     */
-    // public function __construct($method='', $arguments=[])
-    // {
-    //     parent::__construct($method, $arguments);
-    // }
 }
