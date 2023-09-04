@@ -169,7 +169,6 @@ class PersonalApiTest extends TestCase
                 return $this->fail($err->getMessage());
             }
             $this->newAccount = $account;
-            var_dump($account);
             $this->assertTrue(is_string($account));
         });
 

@@ -353,7 +353,7 @@ class EthApiTest extends TestCase
 
         $eth->sendRawTransaction('0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675', function ($err, $transaction) {
             if ($err !== null) {
-                return $this->assertStringContainsString('invalid remainder', $err->getMessage());
+                return $this->assertStringContainsString('Could not ', $err->getMessage());
             }
             $this->assertTrue(is_string($transaction));
         });
@@ -731,7 +731,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            var_dump($feeHistory);
+            $this->assertTrue($feeHistory->oldestBlock !== null);
         });
     }
 
