@@ -370,6 +370,20 @@ class Ethabi
             }
             return $result;
         }
+
+        //配列形式の場合、各要素を必要なら加工の上で直結
+        if (is_array($encoded)) {
+            $resultStr = '';
+            foreach ($encoded as $item) {
+                if (is_string($item)) {
+                    $resultStr .= $item;
+                } else {
+                    $resultStr .= dechex($item);
+                }
+            }
+            return $resultStr;
+        }
+
         return $encoded;
     }
 
