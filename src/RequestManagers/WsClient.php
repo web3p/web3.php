@@ -35,10 +35,6 @@ class NoOriginHeaderConnector extends Connector {
 class WsClient {
 
     public $url;
-    public $futures = array();
-    public $subscriptions = array();
-    public $rejections = array();
-    public $options = array();
 
     public $on_message_callback;
     public $on_error_callback;
@@ -46,27 +42,24 @@ class WsClient {
     public $on_connected_callback;
 
     public $error;
-    public $connectionStarted;
     public $connectionEstablished;
     public $timeout = 1;
+    // is server with feature ping/pong and keep alive?
+    // can remove this if not?
     public $pingInterval;
     public $keepAlive = 30;
     public $maxPingPongMisses = 2.0;
     public $lastPong = null;
     public $ping = null;
-    public $verbose = false; // verbose output
-    public $gunzip = false;
-    public $inflate = false;
     public $connection = null;
     public $connected;
     public $isConnected = false;
     public $noOriginHeader = true;
-    public $heartbeat = null;
 
     // ratchet/pawl/reactphp stuff
     public $connector = null;
 
-    protected $deferredMessages;
+    protected $deferredMessages = [];
 
     public function resolve($result) {
         $deferred = array_shift($this->deferredMessages);
