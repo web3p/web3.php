@@ -114,7 +114,7 @@ class Web3
             throw new \RuntimeException('Please set provider first.');
         }
 
-        $class = explode('\\', get_class());
+        $class = explode('\\', get_class($this));
 
         if (preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
             $method = strtolower($class[1]) . '_' . $name;
