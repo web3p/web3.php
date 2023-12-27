@@ -19,7 +19,9 @@
         "react/async": "^4.0.0|^3.1.0",
         "react/promise": "^2.9.0",
         "react/event-loop": "^1.2",
-        "react/socket": "^1.13"
+        "react/socket": "^1.13",
+        "ratchet/pawl": "^0.4.1",
+        "react/promise-timer": "^1.10"
     },
     "require-dev": {
         "phpunit/phpunit": "~8.0|~9.0"
