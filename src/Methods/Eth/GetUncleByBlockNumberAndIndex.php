@@ -53,16 +53,4 @@ class GetUncleByBlockNumberAndIndex extends EthMethod
      * @var array
      */
     protected $defaultValues = [];
-
-    /**
-     * construct
-     * 
-     * @param string $method
-     * @param array $arguments
-     * @return void
-     */
-    // public function __construct($method='', $arguments=[])
-    // {
-    //     parent::__construct($method, $arguments);
-    // }
 }

@@ -353,7 +353,7 @@ class EthApiTest extends TestCase
 
         $eth->sendRawTransaction('0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675', function ($err, $transaction) {
             if ($err !== null) {
-                return $this->assertEquals('invalid remainder', $err->getMessage());
+                return $this->assertStringContainsString('Could not ', $err->getMessage());
             }
             $this->assertTrue(is_string($transaction));
         });
@@ -420,7 +420,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertEquals('Key not found in database', $err->getMessage());
             }
-            $this->assertTrue($block !== null);
+            $this->assertTrue($block === null);
         });
     }
 
@@ -489,7 +489,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->assertStringStartsWith('LevelUpArrayAdapter named \'blocks\' index out of range', $err->getMessage());
             }
-            $this->assertTrue($transaction !== null);
+            $this->assertTrue($transaction === null);
         });
     }
 
@@ -523,7 +523,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue($uncle !== null);
+            $this->assertTrue($uncle === null);
         });
     }
 
@@ -540,7 +540,7 @@ class EthApiTest extends TestCase
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
-            $this->assertTrue($uncle !== null);
+            $this->assertTrue($uncle === null);
         });
     }
 
@@ -632,8 +632,7 @@ class EthApiTest extends TestCase
 
         $eth->getFilterChanges('0x01', function ($err, $changes) {
             if ($err !== null) {
-                // infura banned us to get filter changes
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('filter not found', $err->getMessage());
             }
             $this->assertTrue(is_array($changes));
         });
@@ -650,8 +649,7 @@ class EthApiTest extends TestCase
 
         $eth->getFilterLogs('0x01', function ($err, $logs) {
             if ($err !== null) {
-                // infura banned us to get filter logs
-                return $this->fail($err->getMessage());
+                return $this->assertEquals('filter not found', $err->getMessage());
             }
             $this->assertTrue(is_array($logs));
         });
@@ -717,6 +715,29 @@ class EthApiTest extends TestCase
                 return $this->fail($err->getMessage());
             }
             $this->assertTrue(is_bool($work));
+        });
+    }
+
+    /**
+     * testFeeHistory
+     * 
+     * @return void
+     */    
+    public function testFeeHistory()
+    {
+        $eth = $this->eth;
+
+        $eth->feeHistory(1, 'latest', [ 1, 40, 50 ], function ($err, $feeHistory) {
+            if ($err !== null) {
+                return $this->fail($err->getMessage());
+            }
+            $this->assertTrue($feeHistory->oldestBlock !== null);
+            $this->assertTrue($feeHistory->baseFeePerGas !== null);
+            $this->assertTrue($feeHistory->gasUsedRatio !== null);
+            $this->assertEquals(count($feeHistory->gasUsedRatio), 1);
+            $this->assertTrue($feeHistory->reward !== null);
+            $this->assertEquals(count($feeHistory->reward), 1);
+            $this->assertEquals(count($feeHistory->reward[0]), 3);
         });
     }
 

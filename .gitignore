@@ -8,4 +8,10 @@ composer.phar
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
 composer.lock
 
-.DS_Store
+*.DS_Store
+*.phpunit.result.cache
+
+# nodejs
+node_modules/
+package-lock.json
+package.json

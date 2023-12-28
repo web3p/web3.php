@@ -20,15 +20,11 @@ class NumberFormatter implements IFormatter
     /**
      * format
      * 
-     * @param mixed $value
-     * @return int
+     * @param int|float $value
+     * @return int|float
      */
     public static function format($value)
     {
-        $value = Utils::toString($value);
-        $bn = Utils::toBn($value);
-        $int = (int) $bn->toString();
-
-        return $int;
+        return $value;
     }
 }
