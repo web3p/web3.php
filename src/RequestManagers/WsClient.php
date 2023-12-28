@@ -55,10 +55,12 @@ class WsClient {
     public $connected;
     public $isConnected = false;
     public $noOriginHeader = true;
+    public $headers = [];
 
     // ratchet/pawl/reactphp stuff
     public $connector = null;
 
+    protected $deferredConnected;
     protected $deferredMessages = [];
 
     public function resolve($result) {
@@ -79,19 +81,30 @@ class WsClient {
             callable $on_message_callback,
             callable $on_error_callback,
             callable $on_close_callback,
-            callable $on_connected_callback
+            callable $on_connected_callback,
+            $timeout = 1,
+            $keepAlive = 30,
+            $maxPingPongMisses = 2.0,
+            $noOriginHeader = true,
+            $headers = []
         ) {
 
         $this->url = $url;
-
+        
         $this->on_message_callback = $on_message_callback;
         $this->on_error_callback = $on_error_callback;
         $this->on_close_callback = $on_close_callback;
         $this->on_connected_callback = $on_connected_callback;
 
+        $this->timeout = $timeout;
+        $this->keepAlive = $keepAlive;
+        $this->maxPingPongMisses = $maxPingPongMisses;
+        $this->noOriginHeader = $noOriginHeader;
+        $this->headers = $headers;
+
         $deferred = new Deferred();
         $this->connected = $deferred->promise();
-        $this->deferredMessages[] = $deferred;
+        $this->deferredConnected = $deferred;
     }
 
     public function set_ws_connector() {
@@ -106,7 +119,7 @@ class WsClient {
     public function create_connection() {
         $connect = function () {
             $timeout = $this->timeout;
-            $headers = property_exists($this, 'options') && array_key_exists('headers', $this->options) ? $this->options['headers'] : [];
+            $headers = $this->headers;
             $promise = call_user_func($this->connector, $this->url, [], $headers);
             Timer\timeout($promise, $timeout, Loop::get())->then(
                 function($connection) {
@@ -117,7 +130,7 @@ class WsClient {
                     $this->connection->on('pong', array($this, 'on_pong'));
                     $this->isConnected = true;
                     $this->connectionEstablished = $this->milliseconds();
-                    $this->resolve($this->url);
+                    $this->deferredConnected->resolve($this->url);
                     $this->set_ping_interval();
                     $on_connected_callback = $this->on_connected_callback;
                     $on_connected_callback($this);

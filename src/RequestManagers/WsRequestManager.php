@@ -52,9 +52,7 @@ class WsRequestManager extends RequestManager implements IRequestManager
             },
             function ($obj, $connected) {
             },
-            [
-                'timeout' => $timeout,
-            ]
+            $timeout
         );
         $this->client->set_ws_connector();
     }
