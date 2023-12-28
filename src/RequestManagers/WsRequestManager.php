@@ -60,6 +60,16 @@ class WsRequestManager extends RequestManager implements IRequestManager
     }
 
     /**
+     * close
+     *
+     * @return void
+     */
+    public function close()
+    {
+        $this->client->close();
+    }
+
+    /**
      * sendPayload
      *
      * @param string $payload

@@ -36,6 +36,13 @@ class HttpProvider extends Provider implements IProvider
     }
 
     /**
+     * close
+     * 
+     * @return void
+     */
+    public function close() {}
+
+    /**
      * send
      * 
      * @param \Web3\Methods\Method $method

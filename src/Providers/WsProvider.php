@@ -36,6 +36,16 @@ class WsProvider extends Provider implements IProvider
     }
 
     /**
+     * close
+     *
+     * @return void
+     */
+    public function close()
+    {
+        $this->requestManager->close();
+    }
+
+    /**
      * send
      * 
      * @param \Web3\Methods\Method $method

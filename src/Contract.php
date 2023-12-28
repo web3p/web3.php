@@ -16,6 +16,8 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\RequestManagers\RequestManager;
 use Web3\RequestManagers\HttpRequestManager;
+use Web3\Providers\WsProvider;
+use Web3\RequestManagers\WsRequestManager;
 use Web3\Utils;
 use Web3\Eth;
 use Web3\Contracts\Ethabi;
@@ -121,6 +123,10 @@ class Contract
                 $requestManager = new HttpRequestManager($provider);
 
                 $this->provider = new HttpProvider($requestManager);
+            } else if (preg_match('/^wss?:\/\//', $provider) === 1) {
+                $requestManager = new WsRequestManager($provider);
+
+                $this->provider = new WsProvider($requestManager);
             }
         } else if ($provider instanceof Provider) {
             $this->provider = $provider;
