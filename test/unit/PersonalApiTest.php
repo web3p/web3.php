@@ -172,30 +172,34 @@ class PersonalApiTest extends TestCase
             $this->assertTrue(is_string($account));
         });
 
-        $this->web3->eth->sendTransaction([
-            'from' => $this->coinbase,
-            'to' => $this->newAccount,
-            'value' => '0xfffffffffffff',
-        ], function ($err, $transaction) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_string($transaction));
-            $this->assertTrue(mb_strlen($transaction) === 66);
+        $this->web3->eth->accounts(function ($err, $accounts) use ($personal) {
+            $this->web3->eth->sendTransaction([
+                'from' => $accounts[0],
+                'to' => $this->newAccount,
+                'value' => '0xfffffffffffff',
+            ], function ($err, $transaction) {
+                if ($err !== null) {
+                    return $this->fail($err->getMessage());
+                }
+                $this->assertTrue(is_string($transaction));
+                $this->assertTrue(mb_strlen($transaction) === 66);
+            });
         });
 
-        $personal->sendTransaction([
-            'from' => $this->newAccount,
-            'to' => $this->coinbase,
-            'value' => '0x01',
-            'gasLimit' => 21000,
-            'gasPrice' => 5000000000,
-        ], '123456', function ($err, $transaction) {
-            if ($err !== null) {
-                return $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_string($transaction));
-            $this->assertTrue(mb_strlen($transaction) === 66);
+        $this->web3->eth->accounts(function ($err, $accounts) use ($personal) {
+            $personal->sendTransaction([
+                'from' => $this->newAccount,
+                'to' => $accounts[0],
+                'value' => '0x01',
+                'gasLimit' => 21000,
+                'gasPrice' => 5000000000,
+            ], '123456', function ($err, $transaction) {
+                if ($err !== null) {
+                    return $this->fail($err->getMessage());
+                }
+                $this->assertTrue(is_string($transaction));
+                $this->assertTrue(mb_strlen($transaction) === 66);
+            });
         });
     }
 
