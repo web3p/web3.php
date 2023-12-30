@@ -10,7 +10,7 @@
  * @license MIT
  */
 
- namespace Web3\RequestManagers;
+ namespace Web3\Providers;
 
 use Ratchet\Client\Connector;
 use React;

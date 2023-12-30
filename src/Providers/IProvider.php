@@ -44,4 +44,13 @@ interface IProvider
      * @return void
      */
     public function execute($callback);
+
+    /**
+     * sendPayload
+     * 
+     * @param string $payload
+     * @param callable $callback
+     * @return void
+     */
+    public function sendPayload($payload, $callback);
 }

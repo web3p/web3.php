@@ -11,16 +11,21 @@
 
 namespace Web3\Providers;
 
-use Web3\RequestManagers\RequestManager;
-
 class Provider
 {
     /**
-     * requestManager
+     * host
      * 
-     * @var \Web3\RequestManagers\RequestManager
+     * @var string
      */
-    protected $requestManager;
+    protected $host;
+
+    /**
+     * timeout
+     * 
+     * @var float
+     */
+    protected $timeout;
 
     /**
      * isBatch
@@ -53,12 +58,14 @@ class Provider
     /**
      * construct
      * 
-     * @param \Web3\RequestManagers\RequestManager $requestManager
+     * @param string $host
+     * @param float $timeout
      * @return void
      */
-    public function __construct(RequestManager $requestManager)
+    public function __construct($host, $timeout=1)
     {
-        $this->requestManager = $requestManager;
+        $this->host = $host;
+        $this->timeout = (float) $timeout;
     }
 
     /**
@@ -95,13 +102,23 @@ class Provider
     }
 
     /**
-     * getRequestManager
+     * getHost
      * 
-     * @return \Web3\RequestManagers\RequestManager
+     * @return string
      */
-    public function getRequestManager()
+    public function getHost()
     {
-        return $this->requestManager;
+        return $this->host;
+    }
+
+    /**
+     * getTimeout
+     * 
+     * @return float
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
     }
 
     /**

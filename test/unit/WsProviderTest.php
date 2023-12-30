@@ -4,7 +4,6 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
-use Web3\RequestManagers\WsRequestManager;
 use Web3\Providers\WsProvider;
 use Web3\Methods\Web3\ClientVersion;
 
@@ -17,8 +16,7 @@ class WsProviderTest extends TestCase
      */
     public function testSend()
     {
-        $requestManager = new WsRequestManager($this->testWsHost);
-        $provider = new WsProvider($requestManager);
+        $provider = new WsProvider($this->testWsHost);
         $method = new ClientVersion('web3_clientVersion', []);
 
         // \React\Async\await($provider->send($method, function ($err, $version) {
@@ -61,8 +59,7 @@ class WsProviderTest extends TestCase
      */
     public function testBatchAsync()
     {
-        $requestManager = new WsRequestManager($this->testWsHost);
-        $provider = new WsProvider($requestManager);
+        $provider = new WsProvider($this->testWsHost);
         $method = new ClientVersion('web3_clientVersion', []);
         $callback = function ($err, $data) {
             if ($err !== null) {
