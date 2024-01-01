@@ -44,16 +44,17 @@ class Personal
      * construct
      *
      * @param string|\Web3\Providers\Provider $provider
+     * @param float $timeout
      * @return void
      */
-    public function __construct($provider)
+    public function __construct($provider, $timeout = 1)
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
             if (preg_match('/^https?:\/\//', $provider) === 1) {
-                $this->provider = new HttpProvider($provider);
+                $this->provider = new HttpProvider($provider, $timeout);
             } else if (preg_match('/^wss?:\/\//', $provider) === 1) {
-                $this->provider = new WsProvider($provider);
+                $this->provider = new WsProvider($provider, $timeout);
             }
         } else if ($provider instanceof Provider) {
             $this->provider = $provider;

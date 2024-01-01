@@ -40,7 +40,7 @@ class HttpProvider extends Provider implements IProvider
      * construct
      *
      * @param string $host
-     * @param int $timeout
+     * @param float $timeout
      * @return void
      */
     public function __construct($host, $timeout = 1)
