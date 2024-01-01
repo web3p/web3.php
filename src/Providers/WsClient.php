@@ -36,11 +36,6 @@ class WsClient {
 
     public $url;
 
-    public $on_message_callback;
-    public $on_error_callback;
-    public $on_close_callback;
-    public $on_connected_callback;
-
     public $error;
     public $connectionEstablished;
     public $timeout = 1;
@@ -78,10 +73,6 @@ class WsClient {
 
     public function __construct(
             $url,
-            callable $on_message_callback,
-            callable $on_error_callback,
-            callable $on_close_callback,
-            callable $on_connected_callback,
             $timeout = 1,
             $keepAlive = 30,
             $maxPingPongMisses = 2.0,
@@ -90,11 +81,6 @@ class WsClient {
         ) {
 
         $this->url = $url;
-        
-        $this->on_message_callback = $on_message_callback;
-        $this->on_error_callback = $on_error_callback;
-        $this->on_close_callback = $on_close_callback;
-        $this->on_connected_callback = $on_connected_callback;
 
         $this->timeout = $timeout;
         $this->keepAlive = $keepAlive;
@@ -132,8 +118,6 @@ class WsClient {
                     $this->connectionEstablished = $this->milliseconds();
                     $this->deferredConnected->resolve($this->url);
                     $this->set_ping_interval();
-                    $on_connected_callback = $this->on_connected_callback;
-                    $on_connected_callback($this);
                 },
                 function(\Exception $error) {
                     // the ordering of these exceptions is important
@@ -188,14 +172,10 @@ class WsClient {
 
     public function on_error($error) {
         $this->error = $error;
-        $on_error_callback = $this->on_error_callback;
-        $on_error_callback($this, $error);
         $this->reset($error);
     }
 
     public function on_close($message) {
-        $on_close_callback = $this->on_close_callback;
-        $on_close_callback($this, $message);
         if (!$this->error) {
             // todo: exception types for server-side disconnects
             $this->reset(new RuntimeException($message));
@@ -211,8 +191,6 @@ class WsClient {
         }
 
         try {
-            // $on_message_callback = $this->on_message_callback;
-            // $on_message_callback($this, $message);
             $this->resolve($message);
         } catch (Exception $error) {
             $this->reject($error);

@@ -43,14 +43,6 @@ class WsProvider extends Provider implements IProvider
         parent::__construct($host, $timeout);
         $this->client = new WsClient(
             $host,
-            function ($obj, $message) {
-            },
-            function ($obj, $error) {
-            },
-            function ($obj, $close) {
-            },
-            function ($obj, $connected) {
-            },
             $timeout
         );
         $this->client->set_ws_connector();
