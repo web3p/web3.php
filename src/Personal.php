@@ -13,8 +13,7 @@ namespace Web3;
 
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
-use Web3\RequestManagers\RequestManager;
-use Web3\RequestManagers\HttpRequestManager;
+use Web3\Providers\WsProvider;
 
 class Personal
 {
@@ -45,16 +44,17 @@ class Personal
      * construct
      *
      * @param string|\Web3\Providers\Provider $provider
+     * @param float $timeout
      * @return void
      */
-    public function __construct($provider)
+    public function __construct($provider, $timeout = 1)
     {
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
             if (preg_match('/^https?:\/\//', $provider) === 1) {
-                $requestManager = new HttpRequestManager($provider);
-
-                $this->provider = new HttpProvider($requestManager);
+                $this->provider = new HttpProvider($provider, $timeout);
+            } else if (preg_match('/^wss?:\/\//', $provider) === 1) {
+                $this->provider = new WsProvider($provider, $timeout);
             }
         } else if ($provider instanceof Provider) {
             $this->provider = $provider;
@@ -74,7 +74,7 @@ class Personal
             throw new \RuntimeException('Please set provider first.');
         }
 
-        $class = explode('\\', get_class());
+        $class = explode('\\', get_class($this));
 
         if (preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
             $method = strtolower($class[1]) . '_' . $name;

@@ -41,12 +41,11 @@ $web3 = new Web3('http://localhost:8545');
 ```php
 use Web3\Web3;
 use Web3\Providers\HttpProvider;
-use Web3\RequestManagers\HttpRequestManager;
 
-$web3 = new Web3(new HttpProvider(new HttpRequestManager('http://localhost:8545')));
+$web3 = new Web3(new HttpProvider('http://localhost:8545'));
 
 // timeout
-$web3 = new Web3(new HttpProvider(new HttpRequestManager('http://localhost:8545', 0.1)));
+$web3 = new Web3(new HttpProvider('http://localhost:8545', 0.1));
 ```
 
 ### You can use callback to each rpc call:
@@ -60,6 +59,43 @@ $web3->clientVersion(function ($err, $version) {
         echo 'Client version: ' . $version;
     }
 });
+```
+
+### Async
+```php
+use Web3\Web3;
+use Web3\Providers\HttpAsyncProvider;
+
+$web3 = new Web3(new HttpAsyncProvider('http://localhost:8545'));
+
+// timeout
+$web3 = new Web3(new HttpAsyncProvider('http://localhost:8545', 0.1));
+
+// await
+$promise = $web3->clientVersion(function ($err, $version) {
+    // do somthing
+});
+Async\await($promise);
+```
+
+### Websocket
+```php
+use Web3\Web3;
+use Web3\Providers\WsProvider;
+
+$web3 = new Web3(new WsProvider('ws://localhost:8545'));
+
+// timeout
+$web3 = new Web3(new WsProvider('ws://localhost:8545', 0.1));
+
+// await
+$promise = $web3->clientVersion(function ($err, $version) {
+    // do somthing
+});
+Async\await($promise);
+
+// close connection
+$web3->provider->close();
 ```
 
 ### Eth

@@ -11,16 +11,11 @@
 
 namespace Web3\Providers;
 
-use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
-use RuntimeException as RPCException;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Client;
+use React\Async;
 use Web3\Providers\Provider;
 use Web3\Providers\IProvider;
 
-class HttpProvider extends Provider implements IProvider
+class WsProvider extends Provider implements IProvider
 {
     /**
      * methods
@@ -32,7 +27,7 @@ class HttpProvider extends Provider implements IProvider
     /**
      * client
      *
-     * @var \GuzzleHttp
+     * @var \Web3\Providers\WsClient
      */
     protected $client;
 
@@ -46,15 +41,22 @@ class HttpProvider extends Provider implements IProvider
     public function __construct($host, $timeout = 1)
     {
         parent::__construct($host, $timeout);
-        $this->client = new Client;
+        $this->client = new WsClient(
+            $host,
+            $timeout
+        );
+        $this->client->set_ws_connector();
     }
 
     /**
      * close
-     * 
+     *
      * @return void
      */
-    public function close() {}
+    public function close()
+    {
+        $this->client->close();
+    }
 
     /**
      * send
@@ -145,63 +147,64 @@ class HttpProvider extends Provider implements IProvider
     public function sendPayload($payload, $callback)
     {
         if (!is_string($payload)) {
-            throw new InvalidArgumentException('Payload must be string.');
+            throw new \InvalidArgumentException('Payload must be string.');
         }
 
-        try {
-            $res = $this->client->post($this->host, [
-                'headers' => [
-                    'content-type' => 'application/json'
-                ],
-                'body' => $payload,
-                'timeout' => $this->timeout,
-                'connect_timeout' => $this->timeout
-            ]);
-            /**
-             * @var StreamInterface $stream ;
-             */
-            $stream = $res->getBody();
-            $json = json_decode($stream);
-            $stream->close();
+        if (!$this->client->isConnected) {
+            Async\await($this->client->connect(0));
+        }
 
-            if (JSON_ERROR_NONE !== json_last_error()) {
-                call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
-            }
-            if (is_array($json)) {
-                // batch results
-                $results = [];
-                $errors = [];
+        $host = $this->host;
+        $request = function () use ($host, $payload, $callback) {
+            try {
+                $res = Async\await($this->client->send($payload));
+                $json = json_decode($res);
 
-                foreach ($json as $result) {
-                    if (property_exists($result,'result')) {
-                        $results[] = $result->result;
-                    } else {
-                        if (isset($json->error)) {
-                            $error = $json->error;
-                            $errors[] = new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code);
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    call_user_func($callback, new InvalidArgumentException('json_decode error: ' . json_last_error_msg()), null);
+                }
+                if (is_array($json)) {
+                    // batch results
+                    $results = [];
+                    $errors = [];
+
+                    foreach ($json as $result) {
+                        if (property_exists($result,'result')) {
+                            $results[] = $result->result;
                         } else {
-                            $results[] = null;
+                            if (isset($json->error)) {
+                                $error = $json->error;
+                                $errors[] = new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code);
+                            } else {
+                                $results[] = null;
+                            }
                         }
                     }
-                }
-                if (count($errors) > 0) {
-                    call_user_func($callback, $errors, $results);
+                    if (count($errors) > 0) {
+                        call_user_func($callback, $errors, $results);
+                    } else {
+                        call_user_func($callback, null, $results);
+                    }
+                } elseif (property_exists($json,'result')) {
+                    call_user_func($callback, null, $json->result);
                 } else {
-                    call_user_func($callback, null, $results);
-                }
-            } elseif (property_exists($json,'result')) {
-                call_user_func($callback, null, $json->result);
-            } else {
-                if (isset($json->error)) {
-                    $error = $json->error;
+                    if (isset($json->error)) {
+                        $error = $json->error;
 
-                    call_user_func($callback, new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code), null);
-                } else {
-                    call_user_func($callback, new RPCException('Something wrong happened.'), null);
+                        call_user_func($callback, new RPCException(mb_ereg_replace('Error: ', '', $error->message), $error->code), null);
+                    } else {
+                        call_user_func($callback, new RPCException('Something wrong happened.'), null);
+                    }
                 }
+            } catch (Exception $err) {
+                call_user_func($callback, $err, null);
             }
-        } catch (RequestException $err) {
-            call_user_func($callback, $err, null);
+        };
+
+        if (function_exists('React\\Async\\async')) {
+            $request = Async\async($request);
         }
+
+        return Async\coroutine($request);
     }
 }

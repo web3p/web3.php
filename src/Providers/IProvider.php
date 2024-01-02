@@ -14,6 +14,13 @@ namespace Web3\Providers;
 interface IProvider
 {
     /**
+     * close
+     * 
+     * @return void
+     */
+    public function close();
+
+    /**
      * send
      * 
      * @param \Web3\Methods\Method $method
@@ -37,4 +44,13 @@ interface IProvider
      * @return void
      */
     public function execute($callback);
+
+    /**
+     * sendPayload
+     * 
+     * @param string $payload
+     * @param callable $callback
+     * @return void
+     */
+    public function sendPayload($payload, $callback);
 }

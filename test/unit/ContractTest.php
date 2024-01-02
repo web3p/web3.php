@@ -4,8 +4,6 @@ namespace Test\Unit;
 
 use Test\TestCase;
 use Web3\Providers\HttpProvider;
-use Web3\RequestManagers\RequestManager;
-use Web3\RequestManagers\HttpRequestManager;
 use Web3\Contract;
 use Web3\Utils;
 use Web3\Contracts\Ethabi;
@@ -445,7 +443,6 @@ class ContractTest extends TestCase
         $contract = new Contract($this->testHost, $this->testAbi);
 
         $this->assertTrue($contract->provider instanceof HttpProvider);
-        $this->assertTrue($contract->provider->requestManager instanceof RequestManager);
     }
 
     /**
@@ -456,14 +453,13 @@ class ContractTest extends TestCase
     public function testSetProvider()
     {
         $contract = $this->contract;
-        $requestManager = new HttpRequestManager('http://localhost:8545');
-        $contract->provider = new HttpProvider($requestManager);
+        $contract->provider = new HttpProvider('http://localhost:8545');
 
-        $this->assertEquals($contract->provider->requestManager->host, 'http://localhost:8545');
+        $this->assertEquals($contract->provider->host, 'http://localhost:8545');
 
         $contract->provider = null;
 
-        $this->assertEquals($contract->provider->requestManager->host, 'http://localhost:8545');
+        $this->assertEquals($contract->provider->host, 'http://localhost:8545');
     }
 
     /**

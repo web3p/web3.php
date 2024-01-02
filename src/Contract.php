@@ -14,8 +14,7 @@ namespace Web3;
 use InvalidArgumentException;
 use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
-use Web3\RequestManagers\RequestManager;
-use Web3\RequestManagers\HttpRequestManager;
+use Web3\Providers\WsProvider;
 use Web3\Utils;
 use Web3\Eth;
 use Web3\Contracts\Ethabi;
@@ -118,9 +117,9 @@ class Contract
         if (is_string($provider) && (filter_var($provider, FILTER_VALIDATE_URL) !== false)) {
             // check the uri schema
             if (preg_match('/^https?:\/\//', $provider) === 1) {
-                $requestManager = new HttpRequestManager($provider);
-
-                $this->provider = new HttpProvider($requestManager);
+                $this->provider = new HttpProvider($provider);
+            } else if (preg_match('/^wss?:\/\//', $provider) === 1) {
+                $this->provider = new WsProvider($provider);
             }
         } else if ($provider instanceof Provider) {
             $this->provider = $provider;
@@ -177,7 +176,7 @@ class Contract
     //     if (empty($this->provider)) {
     //         throw new \RuntimeException('Please set provider first.');
     //     }
-    //     $class = explode('\\', get_class());
+    //     $class = explode('\\', get_class($this));
     //     if (preg_match('/^[a-zA-Z0-9]+$/', $name) === 1) {
     //     }
     // }

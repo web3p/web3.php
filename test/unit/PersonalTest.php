@@ -5,8 +5,6 @@ namespace Test\Unit;
 use RuntimeException;
 use Test\TestCase;
 use Web3\Providers\HttpProvider;
-use Web3\RequestManagers\RequestManager;
-use Web3\RequestManagers\HttpRequestManager;
 use Web3\Personal;
 
 class PersonalTest extends TestCase
@@ -40,7 +38,6 @@ class PersonalTest extends TestCase
         $personal = new Personal($this->testHost);
 
         $this->assertTrue($personal->provider instanceof HttpProvider);
-        $this->assertTrue($personal->provider->requestManager instanceof RequestManager);
     }
 
     /**
@@ -51,14 +48,13 @@ class PersonalTest extends TestCase
     public function testSetProvider()
     {
         $personal = $this->personal;
-        $requestManager = new HttpRequestManager('http://localhost:8545');
-        $personal->provider = new HttpProvider($requestManager);
+        $personal->provider = new HttpProvider('http://localhost:8545');
 
-        $this->assertEquals($personal->provider->requestManager->host, 'http://localhost:8545');
+        $this->assertEquals($personal->provider->host, 'http://localhost:8545');
 
         $personal->provider = null;
 
-        $this->assertEquals($personal->provider->requestManager->host, 'http://localhost:8545');
+        $this->assertEquals($personal->provider->host, 'http://localhost:8545');
     }
 
     /**

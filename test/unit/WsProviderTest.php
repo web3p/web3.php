@@ -4,11 +4,10 @@ namespace Test\Unit;
 
 use RuntimeException;
 use Test\TestCase;
-use Web3\Providers\HttpAsyncProvider;
-use Web3\Providers\HttpProvider;
+use Web3\Providers\WsProvider;
 use Web3\Methods\Web3\ClientVersion;
 
-class HttpProviderTest extends TestCase
+class WsProviderTest extends TestCase
 {
     /**
      * testSend
@@ -17,53 +16,7 @@ class HttpProviderTest extends TestCase
      */
     public function testSend()
     {
-        $provider = new HttpProvider($this->testHost);
-        $method = new ClientVersion('web3_clientVersion', []);
-
-        $provider->send($method, function ($err, $version) {
-            if ($err !== null) {
-                $this->fail($err->getMessage());
-            }
-            $this->assertTrue(is_string($version));
-        });
-    }
-
-    /**
-     * testBatch
-     * 
-     * @return void
-     */
-    public function testBatch()
-    {
-        $provider = new HttpProvider($this->testHost);
-        $method = new ClientVersion('web3_clientVersion', []);
-        $callback = function ($err, $data) {
-            if ($err !== null) {
-                $this->fail($err->getMessage());
-            }
-            $this->assertEquals($data[0], $data[1]);
-        };
-
-        try {
-            $provider->execute($callback);
-        } catch (RuntimeException $err) {
-            $this->assertTrue($err->getMessage() !== true);
-        }
-
-        $provider->batch(true);
-        $provider->send($method, null);
-        $provider->send($method, null);
-        $provider->execute($callback);
-    }
-
-    /**
-     * testSendAsync
-     * 
-     * @return void
-     */
-    public function testSendAsync()
-    {
-        $provider = new HttpAsyncProvider($this->testHost);
+        $provider = new WsProvider($this->testWsHost);
         $method = new ClientVersion('web3_clientVersion', []);
 
         // \React\Async\await($provider->send($method, function ($err, $version) {
@@ -95,6 +48,8 @@ class HttpProviderTest extends TestCase
             function () use ($b) { return $b; },
             function () use ($c) { return $c; }
         ]));
+        // close connection
+        $provider->close();
     }
 
     /**
@@ -104,7 +59,7 @@ class HttpProviderTest extends TestCase
      */
     public function testBatchAsync()
     {
-        $provider = new HttpAsyncProvider($this->testHost);
+        $provider = new WsProvider($this->testWsHost);
         $method = new ClientVersion('web3_clientVersion', []);
         $callback = function ($err, $data) {
             if ($err !== null) {
@@ -123,5 +78,7 @@ class HttpProviderTest extends TestCase
         $provider->send($method, null);
         $provider->send($method, null);
         \React\Async\await($provider->execute($callback));
+        // close connection
+        $provider->close();
     }
 }

@@ -4,7 +4,7 @@ namespace Test;
 
 use \PHPUnit\Framework\TestCase as BaseTestCase;
 use Web3\Web3;
-use Web3\RequestManagers\HttpAsyncRequestManager;
+use Web3\Providers\HttpAsyncProvider;
 use Web3\Providers\HttpProvider;
 
 class TestCase extends BaseTestCase
@@ -31,6 +31,13 @@ class TestCase extends BaseTestCase
     protected $testHost = 'http://localhost:8545';
 
     /**
+     * testWsHost
+     * 
+     * @var string
+     */
+    protected $testWsHost = 'ws://localhost:8545';
+
+    /**
      * coinbase
      * 
      * @var string
@@ -40,9 +47,16 @@ class TestCase extends BaseTestCase
     /**
      * asyncHttpProvider
      * 
-     * @var \Web3\Providers\HttpProvider
+     * @var \Web3\Providers\HttpAsyncProvider
      */
     protected $asyncHttpProvider;
+
+    /**
+     * EMPTY_ADDRESS
+     * 
+     * @var string
+     */
+    protected $EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
     /**
      * setUp
@@ -52,15 +66,23 @@ class TestCase extends BaseTestCase
         $web3 = new Web3($this->testHost);
         $this->web3 = $web3;
 
-        $asyncRequestManager = new HttpAsyncRequestManager($this->testHost);
-        $asyncHttpProvider = new HttpProvider($asyncRequestManager);
+        $asyncHttpProvider = new HttpAsyncProvider($this->testHost);
         $this->asyncHttpProvider = $asyncHttpProvider;
 
-        $web3->eth->coinbase(function ($err, $coinbase) {
+        $web3->eth->coinbase(function ($err, $coinbase) use ($web3) {
             if ($err !== null) {
                 return $this->fail($err->getMessage());
             }
+            // if ($coinbase === $this->EMPTY_ADDRESS) {
+            //     $web3->eth->accounts(function ($err, $accounts) {
+            //         if ($err !== null) {
+            //             return $this->fail($err->getMessage());
+            //         }
+            //         $this->coinbase = $accounts[rand(0, count($accounts) - 1)];
+            //     });
+            // } else {
             $this->coinbase = $coinbase;
+            // }
         });
     }
 

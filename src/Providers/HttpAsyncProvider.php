@@ -2,29 +2,37 @@
 
 /**
  * This file is part of web3.php package.
- *
+ * 
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- *
+ * 
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
 
-namespace Web3\RequestManagers;
+namespace Web3\Providers;
 
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException as RPCException;
 use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\RequestException;
 use React;
 use React\Async;
 use React\EventLoop\Loop;
 use React\Http\Browser;
 use React\Socket\Connector;
-use Web3\RequestManagers\RequestManager;
-use Web3\RequestManagers\IRequestManager;
+use Web3\Providers\Provider;
+use Web3\Providers\IProvider;
 
-class HttpAsyncRequestManager extends RequestManager implements IRequestManager
+class HttpAsyncProvider extends Provider implements IProvider
 {
+    /**
+     * methods
+     * 
+     * @var array
+     */
+    protected $methods = [];
+
     /**
      * client
      *
@@ -36,7 +44,7 @@ class HttpAsyncRequestManager extends RequestManager implements IRequestManager
      * construct
      *
      * @param string $host
-     * @param int $timeout
+     * @param float $timeout
      * @return void
      */
     public function __construct($host, $timeout = 1)
@@ -46,6 +54,92 @@ class HttpAsyncRequestManager extends RequestManager implements IRequestManager
             'timeout' => $timeout,
         ], Loop::get());
         $this->client = (new Browser($connector, Loop::get()))->withRejectErrorResponse(false);
+    }
+
+    /**
+     * close
+     * 
+     * @return void
+     */
+    public function close() {}
+
+    /**
+     * send
+     * 
+     * @param \Web3\Methods\Method $method
+     * @param callable $callback
+     * @return void
+     */
+    public function send($method, $callback)
+    {
+        $payload = $method->toPayloadString();
+
+        if (!$this->isBatch) {
+            $proxy = function ($err, $res) use ($method, $callback) {
+                if ($err !== null) {
+                    return call_user_func($callback, $err, null);
+                }
+                if (!is_array($res)) {
+                    $res = $method->transform([$res], $method->outputFormatters);
+                    return call_user_func($callback, null, $res[0]);
+                }
+                $res = $method->transform($res, $method->outputFormatters);
+
+                return call_user_func($callback, null, $res);
+            };
+            return $this->sendPayload($payload, $proxy);
+        } else {
+            $this->methods[] = $method;
+            $this->batch[] = $payload;
+        }
+    }
+
+    /**
+     * batch
+     * 
+     * @param bool $status
+     * @return void
+     */
+    public function batch($status)
+    {
+        $status = is_bool($status);
+
+        $this->isBatch = $status;
+    }
+
+    /**
+     * execute
+     * 
+     * @param callable $callback
+     * @return void
+     */
+    public function execute($callback)
+    {
+        if (!$this->isBatch) {
+            throw new \RuntimeException('Please batch json rpc first.');
+        }
+        $methods = $this->methods;
+        $proxy = function ($err, $res) use ($methods, $callback) {
+            if ($err !== null) {
+                return call_user_func($callback, $err, null);
+            }
+            foreach ($methods as $key => $method) {
+                if (isset($res[$key])) {
+                    if (!is_array($res[$key])) {
+                        $transformed = $method->transform([$res[$key]], $method->outputFormatters);
+                        $res[$key] = $transformed[0];
+                    } else {
+                        $transformed = $method->transform($res[$key], $method->outputFormatters);
+                        $res[$key] = $transformed;
+                    }
+                }
+            }
+            return call_user_func($callback, null, $res);
+        };
+        $r = $this->sendPayload('[' . implode(',', $this->batch) . ']', $proxy);
+        $this->methods = [];
+        $this->batch = [];
+        return $r;
     }
 
     /**
