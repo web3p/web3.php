@@ -87,7 +87,7 @@ class Utils
      */
     public static function toHex($value, $isPrefix=false)
     {
-        if (is_numeric($value)) {
+        if (is_numeric($value) && gettype($value) != 'string') {
             // turn to hex number
             $bn = self::toBn($value);
             $hex = $bn->toHex(true);
