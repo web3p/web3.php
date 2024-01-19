@@ -101,8 +101,7 @@ class TypedDataEncoder
      * @param array $arguments
      * @return void
      */
-    public static function __callStatic($name, $arguments)
-    {}
+    // public static function __callStatic($name, $arguments) {}
 
     /**
      * encodeField
@@ -117,7 +116,7 @@ class TypedDataEncoder
     {
         if (array_key_exists($type, $types)) {
             if (is_null($value)) {
-                return ['bytes32', str_repeat('0', 64)];
+                return ['bytes32', '0x' . str_repeat('0', 64)];
             } else {
                 return ['bytes32', Utils::sha3($this->encodeData($type, $types, $value))];
             }
@@ -135,7 +134,26 @@ class TypedDataEncoder
                     'Invalid value for field ' . $name . ' of type ' . $type . ': expected array'
                 );
             }
-            // TODO: array stuff
+            $pos = strpos($type, '[');
+            if ($pos === false) {
+                // should not happen
+                throw new InvalidArgumentException(
+                    'Invalid value for field ' . $name . ' of type ' . $type . ': expected array'
+                );
+            }
+            $parsedType = substr($type, 0, $pos);
+            $dataTypes = [];
+            $dataValues = [];
+            foreach ($value as $item) {
+                list($dataType, $dataValue) = $this->encodeField($types, $name, $parsedType, $item);
+                $dataTypes[] = $dataType;
+                $dataValues[] = $dataValue;
+            }
+            if (count($dataTypes) == 0) {
+                # the keccak hash of `encode((), ())`
+                return ['bytes32', '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470'];
+            }
+            return ["bytes32", Utils::sha3($this->ethabi->encode($dataTypes, $dataValues))];
         } else if ($type === 'bool') {
             return [$type, bool($value)];
         } else if (substr($type, 0, 5) === 'bytes') {
@@ -144,9 +162,11 @@ class TypedDataEncoder
             }
             return [$type, $value];
         } else if ($type === 'string') {
-            return ['bytes32', Utils::sha3($value)];
+            return ['bytes32', Utils::sha3('0x' . Utils::toHex($value))];
+        } else if (is_string($value) && preg_match('/^u?int/', $type) === 1) {
+            $bn = Utils::toBn($value);
+            return [$type, $bn->toString()];
         }
-        // TODO: allow string uint and int?
         return [$type, $value];
     }
 
@@ -252,7 +272,7 @@ class TypedDataEncoder
             $encodedTypes[] = $type;
             $encodedValues[] = $value;
         }
-        
+
         return $this->ethabi->encodeParameters($encodedTypes, $encodedValues);
     }
 
@@ -310,13 +330,16 @@ class TypedDataEncoder
                 'type' => 'bytes32'
             ]
         ];
+        foreach ($domainData as $key => $data) {
+            if (!array_key_exists($key, $eip721Domain)) {
+                throw new InvalidArgumentException('Invalid domain key: ' . $key);
+            }
+        }
         $domainTypes = [
             'EIP712Domain' => []
         ];
-        foreach ($domainData as $key => $data) {
-            if (!array_key_exists($key, $eip721Domain)) {
-                throw new InvalidArgumentException('Invalid domain key: ' + $key);
-            } else {
+        foreach ($eip721Domain as $key => $data) {
+            if (array_key_exists($key, $domainData)) {
                 $domainTypes['EIP712Domain'][] = $eip721Domain[$key];
             }
         }
