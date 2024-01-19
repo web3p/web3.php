@@ -329,7 +329,7 @@ class TypedDataEncoder
     public function hashEIP712Message(array $messageTypes, array $messageData)
     {
         $primaryType = $this->getPrimaryType($messageTypes);
-        return $this->hash_struct($primaryType, $messageTypes, $messageData);
+        return $this->hashStruct($primaryType, $messageTypes, $messageData);
     }
 
     /**
