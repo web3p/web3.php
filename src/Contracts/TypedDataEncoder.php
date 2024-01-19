@@ -105,27 +105,49 @@ class TypedDataEncoder
     {}
 
     /**
-     * encode
-     * 
-     * @return bool
-     */
-    function encode()
-    {
-        return '';
-    }
-
-    /**
      * encodeField
      * 
      * @param array $types
      * @param string $name
      * @param string $type
      * @param mixed $value
-     * @return bool
+     * @return array
      */
     function encodeField(array $types, string $name, string $type, mixed $value)
     {
-        return '';
+        if (array_key_exists($type, $types)) {
+            if (is_null($value)) {
+                return ['bytes32', str_repeat('0', 64)];
+            } else {
+                return ['bytes32', Utils::sha3($this->encodeData($type, $types, $value))];
+            }
+        } else if (is_null($value)) {
+            if ($type === 'string' || $type === 'bytes') {
+                return ['bytes32', ''];
+            } else {
+                throw new InvalidArgumentException(
+                    'Missing value for field ' . $name . ' of type ' . $type
+                );
+            }
+        } else if ($this->strEndsWith($type, ']')) {
+            if (!is_array($value)) {
+                throw new InvalidArgumentException(
+                    'Invalid value for field ' . $name . ' of type ' . $type . ': expected array'
+                );
+            }
+            // TODO: array stuff
+        } else if ($type === 'bool') {
+            return [$type, bool($value)];
+        } else if (substr($type, 0, 5) === 'bytes') {
+            if ($type === 'bytes') {
+                return ['bytes32', Utils::sha3($value)];
+            }
+            return [$type, $value];
+        } else if ($type === 'string') {
+            return ['bytes32', Utils::sha3($value)];
+        }
+        // TODO: allow string uint and int?
+        return [$type, $value];
     }
 
     /**
@@ -224,8 +246,14 @@ class TypedDataEncoder
     {
         $encodedTypes = ['bytes32'];
         $encodedValues = [$this->hashType($type, $types)];
-        var_dump($this->hashType($type, $types));
-        return 'zz';
+
+        foreach ($types[$type] as $field) {
+            list($type, $value) = $this->encodeField($types, $field['name'], $field['type'], $data[$field['name']]);
+            $encodedTypes[] = $type;
+            $encodedValues[] = $value;
+        }
+        
+        return $this->ethabi->encodeParameters($encodedTypes, $encodedValues);
     }
 
     /**
