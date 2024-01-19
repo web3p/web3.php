@@ -195,7 +195,7 @@ class TypedDataEncoder
         $result = [];
         if ($this->strEndsWith($type, ']')) {
             $pos = strpos($type, '[');
-            $type = ($pos !== false) ? substr($type, 0, $pos) : $typs;
+            $type = ($pos !== false) ? substr($type, 0, $pos) : $type;
         }
         if (in_array($type, $this->eip712SolidityTypes) || in_array($type, $result)) {
             return $result;
@@ -291,14 +291,46 @@ class TypedDataEncoder
     }
 
     /**
+     * getPrimaryType
+     * 
+     * @param array types
+     * @return string
+     */
+    protected function getPrimaryType(array $types)
+    {
+        $customTypes = array_keys($types);
+        $customDepsTypes = [];
+        foreach ($types as $key => $typeFields) {
+            foreach ($typeFields as $field) {
+                $type = $field['type'];
+                if ($this->strEndsWith($type, ']')) {
+                    $pos = strpos($type, '[');
+                    $type = ($pos !== false) ? substr($type, 0, $pos) : $type;
+                }
+                if (!in_array($type, $customTypes) && $type !== $key) {
+                    $customDepsTypes[] = $type;
+                }
+            }
+        }
+        $primaryType = array_diff($customTypes, $customDepsTypes);
+        if (count($primaryType) === 0) {
+            throw new InvalidArgumentException('Unable to determine primary type');
+        }
+        return $primaryType[0];
+    }
+
+    /**
      * hashEIP712Message
      * 
-     * @param array $types
-     * @param array $message
-     * @return 
+     * @param array $messageTypes
+     * @param array $messageData
+     * @return string
      */
-    public function hashEIP712Message(array $types, array $message)
-    {}
+    public function hashEIP712Message(array $messageTypes, array $messageData)
+    {
+        $primaryType = $this->getPrimaryType($messageTypes);
+        return $this->hash_struct($primaryType, $messageTypes, $messageData);
+    }
 
     /**
      * hashDomain
@@ -344,5 +376,19 @@ class TypedDataEncoder
             }
         }
         return $this->hashStruct('EIP712Domain', $domainTypes, $domainData);
+    }
+
+    /**
+     * encodeTypedData
+     * 
+     * @param array $domainData
+     * @param array $messageTypes
+     * @param array $messageData
+     */
+    public function encodeTypedData(array $domainData, array $messageTypes, array $messageData)
+    {
+        $hashedDomain = $this->hashDomain($domainData);
+        $hashedMessage = $this->hashEIP712Message($messageTypes, $messageData);
+        return sprintf('\x01%s%s', Utils::stripZero($hashedDomain), Utils::stripZero($hashedMessage));
     }
 }
