@@ -41,7 +41,7 @@ class HexFormatterTest extends TestCase
         $this->assertEquals($hex, '0xabce');
 
         $hex = $formatter->format('123');
-        $this->assertEquals($hex, '0x7b');
+        $this->assertEquals($hex, '0x313233');
 
         $hex = $formatter->format(12);
         $this->assertEquals($hex, '0xc');

@@ -25,10 +25,8 @@ class HexFormatter implements IFormatter
      */
     public static function format($value)
     {
-        $value = Utils::toString($value);
-        $value = mb_strtolower($value);
-
-        if (Utils::isZeroPrefixed($value)) {
+        if (is_string($value) && Utils::isZeroPrefixed($value)) {
+            $value = mb_strtolower($value);
             return $value;
         } else {
             $value = Utils::toHex($value, true);
