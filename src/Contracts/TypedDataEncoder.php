@@ -108,7 +108,7 @@ class TypedDataEncoder
     {
         if (array_key_exists($type, $types)) {
             if (is_null($value)) {
-                return ['bytes32', '0x' . str_repeat('0', 64)];
+                return ['bytes32', '0x0000000000000000000000000000000000000000000000000000000000000000'];
             } else {
                 return ['bytes32', Utils::sha3($this->encodeData($type, $types, $value))];
             }
@@ -126,14 +126,7 @@ class TypedDataEncoder
                     'Invalid value for field ' . $name . ' of type ' . $type . ': expected array'
                 );
             }
-            $pos = strpos($type, '[');
-            if ($pos === false) {
-                // should not happen
-                throw new InvalidArgumentException(
-                    'Invalid value for field ' . $name . ' of type ' . $type . ': expected array'
-                );
-            }
-            $parsedType = substr($type, 0, $pos);
+            $parsedType = $this->parseParentArrayType($type);
             $dataTypes = [];
             $dataValues = [];
             foreach ($value as $item) {
@@ -145,7 +138,7 @@ class TypedDataEncoder
                 # the keccak hash of `encode((), ())`
                 return ['bytes32', '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470'];
             }
-            return ["bytes32", Utils::sha3($this->ethabi->encode($dataTypes, $dataValues))];
+            return ["bytes32", Utils::sha3($this->ethabi->encodeParameters($dataTypes, $dataValues))];
         } else if ($type === 'bool') {
             return [$type, bool($value)];
         } else if (substr($type, 0, 5) === 'bytes') {
@@ -173,6 +166,21 @@ class TypedDataEncoder
     {
         $needle_len = strlen($needle);
         return ($needle_len === 0 || 0 === substr_compare($haystack, $needle, - $needle_len));
+    }
+
+    /**
+     * parseParentArrayType
+     * 
+     * @param string $type
+     * @return string
+     */
+    protected function parseParentArrayType(string $type)
+    {
+        if ($this->strEndsWith($type, ']')) {
+            $pos = strrpos($type, '[');
+            $type = ($pos !== false) ? substr($type, 0, $pos) : $type;
+        }
+        return $type;
     }
 
     /**
@@ -229,12 +237,10 @@ class TypedDataEncoder
         $result = '';
         $unsortedDeps = $this->findType($type, $types);
         if (in_array($type, $unsortedDeps)) {
-            $unsortedDeps = array_splice($unsortedDeps, array_search($type, $unsortedDeps), 1);
-        } else {
-            sort($unsortedDeps);
+            array_splice($unsortedDeps, array_search($type, $unsortedDeps), 1);
         }
-        $deps = [ $type ];
-        $deps = array_merge($unsortedDeps);
+        sort($unsortedDeps);
+        $deps = array_merge([ $type ], $unsortedDeps);
         foreach ($deps as $type) {
             $params = [];
             foreach ($types[$type] as $param) {
@@ -307,12 +313,12 @@ class TypedDataEncoder
         foreach ($types as $key => $typeFields) {
             foreach ($typeFields as $field) {
                 $type = $this->parseArrayType($field['type']);
-                if (!in_array($type, $customTypes) && $type !== $key) {
+                if (in_array($type, $customTypes) && $type !== $key) {
                     $customDepsTypes[] = $type;
                 }
             }
         }
-        $primaryType = array_diff($customTypes, $customDepsTypes);
+        $primaryType = array_values(array_diff($customTypes, $customDepsTypes));
         if (count($primaryType) === 0) {
             throw new InvalidArgumentException('Unable to determine primary type');
         }
