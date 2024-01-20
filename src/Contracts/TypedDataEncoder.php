@@ -12,7 +12,6 @@
 namespace Web3\Contracts;
 
 use InvalidArgumentException;
-use stdClass;
 use Web3\Utils;
 use Web3\Formatters\IntegerFormatter;
 use Web3\Contracts\Ethabi;
@@ -34,7 +33,9 @@ class TypedDataEncoder
     protected $ethabi;
 
     /**
+     * eip712SolidityTypes
      * 
+     * @var array
      */
     protected $eip712SolidityTypes = [
         'bool', 'address', 'string', 'bytes', 'uint', 'int',
@@ -95,15 +96,6 @@ class TypedDataEncoder
     }
 
     /**
-     * callStatic
-     * 
-     * @param string $name
-     * @param array $arguments
-     * @return void
-     */
-    // public static function __callStatic($name, $arguments) {}
-
-    /**
      * encodeField
      * 
      * @param array $types
@@ -112,7 +104,7 @@ class TypedDataEncoder
      * @param mixed $value
      * @return array
      */
-    function encodeField(array $types, string $name, string $type, mixed $value)
+    protected function encodeField(array $types, string $name, string $type, mixed $value)
     {
         if (array_key_exists($type, $types)) {
             if (is_null($value)) {
@@ -177,10 +169,25 @@ class TypedDataEncoder
      * @param string $needle
      * @return bool
      */
-    function strEndsWith(string $haystack, string $needle)
+    protected function strEndsWith(string $haystack, string $needle)
     {
         $needle_len = strlen($needle);
         return ($needle_len === 0 || 0 === substr_compare($haystack, $needle, - $needle_len));
+    }
+
+    /**
+     * parseArrayType
+     * 
+     * @param string $type
+     * @return string
+     */
+    protected function parseArrayType(string $type)
+    {
+        if ($this->strEndsWith($type, ']')) {
+            $pos = strpos($type, '[');
+            $type = ($pos !== false) ? substr($type, 0, $pos) : $type;
+        }
+        return $type;
     }
 
     /**
@@ -193,10 +200,7 @@ class TypedDataEncoder
     protected function findType(string $type, array $types)
     {
         $result = [];
-        if ($this->strEndsWith($type, ']')) {
-            $pos = strpos($type, '[');
-            $type = ($pos !== false) ? substr($type, 0, $pos) : $type;
-        }
+        $type = $this->parseArrayType($type);
         if (in_array($type, $this->eip712SolidityTypes) || in_array($type, $result)) {
             return $result;
         } else if (!array_key_exists($type, $types)) {
@@ -302,11 +306,7 @@ class TypedDataEncoder
         $customDepsTypes = [];
         foreach ($types as $key => $typeFields) {
             foreach ($typeFields as $field) {
-                $type = $field['type'];
-                if ($this->strEndsWith($type, ']')) {
-                    $pos = strpos($type, '[');
-                    $type = ($pos !== false) ? substr($type, 0, $pos) : $type;
-                }
+                $type = $this->parseArrayType($field['type']);
                 if (!in_array($type, $customTypes) && $type !== $key) {
                     $customDepsTypes[] = $type;
                 }
