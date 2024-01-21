@@ -59,6 +59,14 @@ class TestCase extends BaseTestCase
     protected $EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
     /**
+     * test fixtures
+     * 
+     * TODO: add more fixtures
+     * @var array
+     */
+    protected array $testFixtures = [];
+
+    /**
      * setUp
      */
     public function setUp(): void
@@ -84,6 +92,18 @@ class TestCase extends BaseTestCase
             $this->coinbase = $coinbase;
             // }
         });
+
+        // load test fixtures
+        $fixtureFileName = __DIR__ . '/fixtures/typed-data.json';
+        $json = \file_get_contents($fixtureFileName);
+        if (false === $json) {
+            throw new \RuntimeException("Unable to load file {$fixtureFileName}");
+        }
+
+        $data = \json_decode($json, true);
+        $this->testFixtures = [
+            'typed-data' => $data
+        ];
     }
 
     /**

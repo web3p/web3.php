@@ -303,4 +303,18 @@ class TypedDataEncoderTest extends TestCase
             $this->assertEquals($test[2], $result);
         }
     }
+
+    /**
+     * testEncodeTypedDataFixtures
+     * 
+     * @return void
+     */
+    public function testEncodeTypedDataFixtures()
+    {
+        $typedDataEncoder = $this->typedDataEncoder;
+        foreach ($this->testFixtures['typed-data'] as $test) {
+            $result = $typedDataEncoder->encodeTypedData($test['domain'], $test['types'], $test['data']);
+            $this->assertEquals($test['digest'], Utils::sha3($result));
+        }
+    }
 }

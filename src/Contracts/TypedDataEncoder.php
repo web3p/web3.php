@@ -104,7 +104,7 @@ class TypedDataEncoder
      * @param mixed $value
      * @return array
      */
-    protected function encodeField(array $types, string $name, string $type, mixed $value)
+    protected function encodeField(array $types, string $name, string $type, $value)
     {
         if (array_key_exists($type, $types)) {
             if (is_null($value)) {
@@ -140,7 +140,7 @@ class TypedDataEncoder
             }
             return ["bytes32", Utils::sha3($this->ethabi->encodeParameters($dataTypes, $dataValues))];
         } else if ($type === 'bool') {
-            return [$type, bool($value)];
+            return [$type, (bool)$value];
         } else if (substr($type, 0, 5) === 'bytes') {
             if ($type === 'bytes') {
                 return ['bytes32', Utils::sha3($value)];
@@ -395,6 +395,6 @@ class TypedDataEncoder
     {
         $hashedDomain = $this->hashDomain($domainData);
         $hashedMessage = $this->hashEIP712Message($messageTypes, $messageData);
-        return sprintf('\x01%s%s', Utils::stripZero($hashedDomain), Utils::stripZero($hashedMessage));
+        return sprintf('0x1901%s%s', Utils::stripZero($hashedDomain), Utils::stripZero($hashedMessage));
     }
 }
