@@ -87,7 +87,7 @@ class Utils
      */
     public static function toHex($value, $isPrefix=false)
     {
-        if (is_numeric($value)) {
+        if (is_int($value) || is_float($value)) {
             // turn to hex number
             $bn = self::toBn($value);
             $hex = $bn->toHex(true);
@@ -121,6 +121,10 @@ class Utils
         if (self::isZeroPrefixed($value)) {
             $count = 1;
             $value = str_replace('0x', '', $value, $count);
+            // avoid suffix 0
+            if (strlen($value) % 2 > 0) {
+                $value = '0' . $value;
+            }
         }
         return pack('H*', $value);
     }

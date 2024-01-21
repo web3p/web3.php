@@ -65,7 +65,6 @@ class Bytes extends SolidityType implements IType
 
         if (mb_strlen($value) % 2 !== 0) {
             $value = "0" . $value;
-            // throw new InvalidArgumentException('The value to inputFormat has invalid length. Value: ' . $value);
         }
 
         if (mb_strlen($value) > 64) {

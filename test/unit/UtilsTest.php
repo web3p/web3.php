@@ -153,24 +153,24 @@ class UtilsTest extends TestCase
         $this->assertEquals('0x' . $this->testHex, Utils::toHex('hello world', true));
 
         $this->assertEquals('0x927c0', Utils::toHex(0x0927c0, true));
-        $this->assertEquals('0x927c0', Utils::toHex('600000', true));
+        $this->assertEquals('0x363030303030', Utils::toHex('600000', true));
         $this->assertEquals('0x927c0', Utils::toHex(600000, true));
         $this->assertEquals('0x927c0', Utils::toHex(new BigNumber(600000), true));
         
         $this->assertEquals('0xea60', Utils::toHex(0x0ea60, true));
-        $this->assertEquals('0xea60', Utils::toHex('60000', true));
+        $this->assertEquals('0x3630303030', Utils::toHex('60000', true));
         $this->assertEquals('0xea60', Utils::toHex(60000, true));
         $this->assertEquals('0xea60', Utils::toHex(new BigNumber(60000), true));
 
         $this->assertEquals('0x', Utils::toHex(0x00, true));
-        $this->assertEquals('0x', Utils::toHex('0', true));
+        $this->assertEquals('0x30', Utils::toHex('0', true));
         $this->assertEquals('0x', Utils::toHex(0, true));
         $this->assertEquals('0x', Utils::toHex(new BigNumber(0), true));
 
         $this->assertEquals('0x30', Utils::toHex(48, true));
-        $this->assertEquals('0x30', Utils::toHex('48', true));
+        $this->assertEquals('0x3438', Utils::toHex('48', true));
         $this->assertEquals('30', Utils::toHex(48));
-        $this->assertEquals('30', Utils::toHex('48'));
+        $this->assertEquals('3438', Utils::toHex('48'));
 
         $this->assertEquals('0x30', Utils::toHex(new BigNumber(48), true));
         $this->assertEquals('0x30', Utils::toHex(new BigNumber('48'), true));
