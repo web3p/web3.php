@@ -64,7 +64,7 @@ class TestCase extends BaseTestCase
      * TODO: add more fixtures
      * @var array
      */
-    protected array $testFixtures = [];
+    protected $testFixtures = [];
 
     /**
      * setUp
