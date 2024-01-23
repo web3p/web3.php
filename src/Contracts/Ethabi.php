@@ -238,7 +238,11 @@ class Ethabi
             if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
                 $result[$outputTypes['outputs'][$i]['name']] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
             } else {
-                $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
+                if($types[$i] == "tuple"){
+                    $result[$i] = $solidityTypes[$i]->decodeTuple($outputTypes['outputs'][$i],$param);
+                }else{
+                    $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
+                }
             }
         }
 
