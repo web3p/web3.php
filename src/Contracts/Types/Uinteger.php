@@ -73,7 +73,7 @@ class Uinteger extends SolidityType implements IType
     {
         $match = [];
 
-        if (preg_match('/^[0]+([a-f0-9]+)$/', $value, $match) === 1) {
+        if (preg_match('/^([a-f0-9]+)$/', $value, $match) === 1) {
             // due to value without 0x prefix, we will parse as decimal
             $value = '0x' . $match[1];
         }

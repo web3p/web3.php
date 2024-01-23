@@ -496,7 +496,7 @@ class Utils
             $bn = $number;
         } elseif (is_int($number)) {
             $bn = new BigNumber($number);
-        } elseif (is_numeric($number)) {
+        } elseif (preg_match('/^(-{0,1})[0-9]*$/', $number)) {
             $number = (string) $number;
 
             if (self::isNegative($number)) {
