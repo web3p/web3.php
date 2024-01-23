@@ -262,7 +262,7 @@ class SolidityType
             $dynamicOffset = (int) Utils::toBn('0x' . mb_substr($value, $offset * 2, 64))->toString();
             $length = (int) Utils::toBn('0x' . mb_substr($value, $dynamicOffset * 2, 64))->toString();
             $roundedLength = floor(($length + 31) / 32);
-            $param = mb_substr($value, $dynamicOffset * 2, ( 1 + $roundedLength) * 64);
+            $param = mb_substr($value, $dynamicOffset * 2, (int)(( 1 + $roundedLength) * 64));
             return $this->outputFormat($param, $name);
         }
         $length = $this->staticPartLength($name);
