@@ -53,40 +53,49 @@ class SizedArray extends BaseArray
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
         if (!is_array($value)) {
             throw new InvalidArgumentException('Encode value must be array');
         }
-        $length = is_array($name) ? $this->staticArrayLength($name['type']) : 0;
+        $length = is_array($abiType) ? $this->staticArrayLength($abiType['type']) : 0;
         if ($length === 0 || count($value) > $length) {
             throw new InvalidArgumentException('Invalid value to encode sized array, expected: ' . $length . ', but got ' . count($value));
         }
-        return parent::inputFormat($value, $name);
+        return parent::inputFormat($value, $abiType);
     }
 
     /**
      * outputFormat
      * 
-     * @param mixed $value
-     * @param string $name
-     * @return string
+     * @param string $value
+     * @param array $abiType
+     * @return array
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
-        $checkZero = str_replace('0', '', $value);
-
-        if (empty($checkZero)) {
-            return '0';
+        if (!is_array($abiType)) {
+            throw new InvalidArgumentException('Invalid abiType to decode sized array, expected: array');
         }
-        if (preg_match('/^bytes([0-9]*)/', $name, $match) === 1) {
-            $size = intval($match[1]);
-            $length = 2 * $size;
-            $value = mb_substr($value, 0, $length);
+        $length = is_array($abiType) ? $this->staticArrayLength($abiType['type']) : 0;
+        $offset = 0;
+        if ($abiType['dynamic']) {
+            $valueLengthHex = mb_substr($value, 0, 64);
+            $valueLength = (int) Utils::hexToNumber($valueLengthHex) / 32;
+            if ($length !== $valueLength) {
+                throw new InvalidArgumentException('Invalid sized array length decode, expected: ' . $lenght . ', but got ' . $valueLength);
+            }
+            $offset += 64;
         }
-        return '0x' . $value;
+        var_dump('Length: ' . $length . ' Decode length: ' . $valueLength, $abiType['coders']);
+        $results = [];
+        $decoder = $abiType['coders'];
+        for ($i = 0; $i < $length; $i++) {
+            $results[] = $decoder['solidityType']->decode($value, $offset, $decoder);
+        }
+        return $results;
     }
 }

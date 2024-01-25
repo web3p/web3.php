@@ -84,10 +84,10 @@ class DynamicBytes extends SolidityType implements IType
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
         $checkZero = str_replace('0', '', $value);
 

@@ -80,17 +80,17 @@ class Bytes extends SolidityType implements IType
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
         $checkZero = str_replace('0', '', $value);
 
         if (empty($checkZero)) {
             return '0';
         }
-        if (preg_match('/^bytes([0-9]*)/', $name, $match) === 1) {
+        if (preg_match('/^bytes([0-9]*)/', $abiType['type'], $match) === 1) {
             $size = intval($match[1]);
             $length = 2 * $size;
             $value = mb_substr($value, 0, $length);

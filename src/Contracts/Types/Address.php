@@ -78,10 +78,10 @@ class Address extends SolidityType implements IType
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
         return '0x' . mb_substr($value, 24, 40);
     }

@@ -66,17 +66,11 @@ class Uinteger extends SolidityType implements IType
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
-     * @return string
+     * @param array $abiType
+     * @return BigNumber
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
-        $match = [];
-
-        if (preg_match('/^[0]+([a-f0-9]+)$/', $value, $match) === 1) {
-            // due to value without 0x prefix, we will parse as decimal
-            $value = '0x' . $match[1];
-        }
-        return BigNumberFormatter::format($value);
+        return BigNumberFormatter::format('0x' . mb_substr($value, 0, 64));
     }
 }

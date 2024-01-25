@@ -66,22 +66,24 @@ class DynamicArray extends BaseArray
     /**
      * outputFormat
      * 
-     * @param mixed $value
-     * @param string $name
-     * @return string
+     * @param string $value
+     * @param array $abiType
+     * @return array
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
-        $checkZero = str_replace('0', '', $value);
-
-        if (empty($checkZero)) {
-            return '0';
+        if (!is_array($abiType)) {
+            throw new InvalidArgumentException('Invalid abiType to decode sized array, expected: array');
         }
-        if (preg_match('/^bytes([0-9]*)/', $name, $match) === 1) {
-            $size = intval($match[1]);
-            $length = 2 * $size;
-            $value = mb_substr($value, 0, $length);
+        $lengthHex = mb_substr($value, 0, 64);
+        $length = (int) Utils::hexToNumber($lengthHex);
+        $offset = 64;
+        $results = [];
+        $decoder = $abiType['coders'];
+        for ($i = 0; $i < $length; $i++) {
+            $results[] = $decoder['solidityType']->decode($value, $offset, $decoder);
+            $offset += 64;
         }
-        return '0x' . $value;
+        return $results;
     }
 }

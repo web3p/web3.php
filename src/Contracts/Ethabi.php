@@ -308,41 +308,6 @@ class Ethabi
     }
 
     /**
-     * getSolidityTypes
-     * 
-     * @param array $types
-     * @return array
-     */
-    protected function getSolidityTypes($types)
-    {
-        if (!is_array($types)) {
-            throw new InvalidArgumentException('Types must be array');
-        }
-        $solidityTypes = array_fill(0, count($types), 0);
-
-        foreach ($types as $key => $type) {
-            $match = [];
-
-            if (preg_match('/^([a-zA-Z]+)/', $type, $match) === 1) {
-                if (isset($this->types[$match[0]])) {
-                    $className = $this->types[$match[0]];
-
-                    if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
-                        // check dynamic bytes
-                        if ($match[0] === 'bytes') {
-                            $className = $this->types['dynamicBytes'];
-                        } else {
-                            throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
-                        }
-                    }
-                    $solidityTypes[$key] = $className;
-                }
-            }
-        }
-        return $solidityTypes;
-    }
-
-    /**
      * encodeFunctionSignature
      * 
      * @param string|stdClass|array $functionName
@@ -449,6 +414,7 @@ class Ethabi
         }
 
         // change json to array
+        $outputTypes = [];
         if ($types instanceof stdClass && isset($types->outputs)) {
             $types = Utils::jsonToArray($types, 2);
         }
@@ -463,29 +429,18 @@ class Ethabi
             }
         }
         $typesLength = count($types);
-        $solidityTypes = $this->getSolidityTypes($types);
-        $offsets = array_fill(0, $typesLength, 0);
+        $abiTypes = $this->parseAbiTypes($types);
 
-        for ($i=0; $i<$typesLength; $i++) {
-            $offsets[$i] = $solidityTypes[$i]->staticPartLength($types[$i]);
-        }
-        for ($i=1; $i<$typesLength; $i++) {
-            $offsets[$i] += $offsets[$i - 1];
-        }
-        for ($i=0; $i<$typesLength; $i++) {
-            $offsets[$i] -= $solidityTypes[$i]->staticPartLength($types[$i]);
-        }
-        $result = [];
-        $param = mb_strtolower(Utils::stripZero($param));
-
-        for ($i=0; $i<$typesLength; $i++) {
+        // decode with tuple type
+        $results = [];
+        $decodeResults = $this->types['tuple']->decode(Utils::stripZero($param), 0, $abiTypes);
+        for ($i = 0; $i < $typesLength; $i++) {
             if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
-                $result[$outputTypes['outputs'][$i]['name']] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
+                $results[$outputTypes['outputs'][$i]['name']] = $decodeResults[$i];
             } else {
-                $result[$i] = $solidityTypes[$i]->decode($param, $offsets[$i], $types[$i]);
+                $results[$i] = $decodeResults[$i];
             }
         }
-
-        return $result;
+        return $results;
     }
 }
