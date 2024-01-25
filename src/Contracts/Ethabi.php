@@ -15,6 +15,16 @@ use InvalidArgumentException;
 use stdClass;
 use Web3\Utils;
 use Web3\Formatters\IntegerFormatter;
+use Web3\Contracts\Types\Address;
+use Web3\Contracts\Types\Boolean;
+use Web3\Contracts\Types\Bytes;
+use Web3\Contracts\Types\DynamicBytes;
+use Web3\Contracts\Types\Integer;
+use Web3\Contracts\Types\Str;
+use Web3\Contracts\Types\Uinteger;
+use Web3\Contracts\Types\SizedArray;
+use Web3\Contracts\Types\DynamicArray;
+use Web3\Contracts\Types\Tuple;
 
 class Ethabi
 {
@@ -36,7 +46,18 @@ class Ethabi
         if (!is_array($types)) {
             $types = [];
         }
-        $this->types = $types;
+        $this->types = array_merge($types, [
+            'address' => new Address,
+            'bool' => new Boolean,
+            'bytes' => new Bytes,
+            'dynamicBytes' => new DynamicBytes,
+            'int' => new Integer,
+            'string' => new Str,
+            'uint' => new Uinteger,
+            'sizedArray' => new SizedArray,
+            'dynamicArray' => new DynamicArray,
+            'tuple' => new Tuple,
+        ]);
     }
 
     /**
@@ -79,9 +100,246 @@ class Ethabi
      * @param array $arguments
      * @return void
      */
-    public static function __callStatic($name, $arguments)
+    // public static function __callStatic($name, $arguments) {}
+
+    /**
+     * nestedTypes
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function nestedTypes($name)
     {
-        // 
+        if (!is_string($name)) {
+            throw new InvalidArgumentException('nestedTypes name must string.');
+        }
+        $matches = [];
+
+        if (preg_match_all('/(\[[0-9]*\])/', $name, $matches, PREG_PATTERN_ORDER) >= 1) {
+            return $matches[0];
+        }
+        return false;
+    }
+
+    /**
+     * nestedName
+     * 
+     * @param string $name
+     * @return string
+     */
+    public function nestedName($name)
+    {
+        if (!is_string($name)) {
+            throw new InvalidArgumentException('nestedName name must string.');
+        }
+        $nestedTypes = $this->nestedTypes($name);
+
+        if ($nestedTypes === false) {
+            return $name;
+        }
+        return mb_substr($name, 0, mb_strlen($name) - mb_strlen($nestedTypes[count($nestedTypes) - 1]));
+    }
+
+    /**
+     * isDynamicArray
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function isDynamicArray($name)
+    {
+        $nestedTypes = $this->nestedTypes($name);
+
+        return $nestedTypes && preg_match('/[0-9]{1,}/', $nestedTypes[count($nestedTypes) - 1]) !== 1;
+    }
+
+    /**
+     * isStaticArray
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function isStaticArray($name)
+    {
+        $nestedTypes = $this->nestedTypes($name);
+
+        return $nestedTypes && preg_match('/[0-9]{1,}/', $nestedTypes[count($nestedTypes) - 1]) === 1;
+    }
+
+    /**
+     * isTuple
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function isTuple($name)
+    {
+        if (preg_match_all('/(tuple)?\((.*)\)/', $name, $matches, PREG_PATTERN_ORDER) >= 1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * parseTupleType
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function parseTupleType($name)
+    {
+        $matches = [];
+
+        if (preg_match_all('/(tuple)?\((.*)\)/', $name, $matches, PREG_PATTERN_ORDER) >= 1) {
+            return $matches[2][0];
+        }
+        return false;
+    }
+
+    /**
+     * findAbiType
+     * 
+     * @param string $type
+     * @return array
+     */
+    protected function findAbiType($type)
+    {
+        $result = [];
+        if (!is_string($type)) {
+            throw new InvalidArgumentException('type should be string');
+        }
+        $solidityType = $this->getSolidityType($type);
+        if ($this->isDynamicArray($type)) {
+            $nestedType = $this->nestedName($type);
+
+            $result = [
+                'type' => $type,
+                'dynamic' => true,
+                'solidityType' => $solidityType,
+                'coders' => $this->findAbiType($nestedType)
+            ];
+            return $result;
+        } elseif ($this->isStaticArray($type)) {
+            $nestedType = $this->nestedName($type);
+
+            $result = [
+                'type' => $type,
+                'dynamic' => false,
+                'solidityType' => $solidityType,
+                'coders' => $this->findAbiType($nestedType)
+            ];
+            if ($result['coders']['dynamic']) {
+                $result['dynamic'] = true;
+            }
+            return $result;
+        } elseif ($this->isTuple($type)) {
+            $nestedType = $this->parseTupleType($type);
+            $parsedNestedTypes = preg_split('/,/', $nestedType);
+            $tupleAbi = [
+                'type' => $type,
+                'dynamic' => false,
+                'solidityType' => $solidityType,
+                'coders' => []
+            ];
+
+            foreach ($parsedNestedTypes as $type_) {
+                $parsedType = $this->findAbiType($type_);
+                if ($parsedType['dynamic']) {
+                    $tupleAbi['dynamic'] = true;
+                }
+                $tupleAbi['coders'][] = $parsedType;
+            }
+            $result = $tupleAbi;
+            return $result;
+        }
+        $result = [
+            'type' => $type,
+            'solidityType' => $solidityType,
+            'dynamic' => $solidityType->isDynamicType()
+        ];
+        return $result;
+    }
+
+    /**
+     * getSolidityType
+     * 
+     * @param string $type
+     * @return SolidityType
+     */
+    protected function getSolidityType($type)
+    {
+        $match = [];
+        if ($this->isDynamicArray($type)) {
+            return $this->types['dynamicArray'];
+        } elseif ($this->isStaticArray($type)) {
+            return $this->types['sizedArray'];
+        } elseif ($this->isTuple($type)) {
+            return $this->types['tuple'];
+        }
+
+        if (preg_match('/^([a-zA-Z]+)/', $type, $match) === 1) {
+            $className = (array_key_exists($match[0], $this->types)) ? $this->types[$match[0]] : null;
+            if (isset($className)) {
+                if (call_user_func([$className, 'isType'], $type) === false) {
+                    // check dynamic bytes
+                    if ($match[0] === 'bytes') {
+                        $className = $this->types['dynamicBytes'];
+                    }
+                }
+                return $className;
+            }
+        }
+        throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+    }
+
+    /**
+     * parseAbiTypes
+     * 
+     * @param array $types
+     * @return array
+     */
+    protected function parseAbiTypes($types)
+    {
+        $result = [];
+        foreach ($types as $type) {
+            $result[] = $this->findAbiType($type);
+        }
+        return $result;
+    }
+
+    /**
+     * getSolidityTypes
+     * 
+     * @param array $types
+     * @return array
+     */
+    protected function getSolidityTypes($types)
+    {
+        if (!is_array($types)) {
+            throw new InvalidArgumentException('Types must be array');
+        }
+        $solidityTypes = array_fill(0, count($types), 0);
+
+        foreach ($types as $key => $type) {
+            $match = [];
+
+            if (preg_match('/^([a-zA-Z]+)/', $type, $match) === 1) {
+                if (isset($this->types[$match[0]])) {
+                    $className = $this->types[$match[0]];
+
+                    if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
+                        // check dynamic bytes
+                        if ($match[0] === 'bytes') {
+                            $className = $this->types['dynamicBytes'];
+                        } else {
+                            throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
+                        }
+                    }
+                    $solidityTypes[$key] = $className;
+                }
+            }
+        }
+        return $solidityTypes;
     }
 
     /**
@@ -155,25 +413,11 @@ class Ethabi
             throw new InvalidArgumentException('encodeParameters number of types must equal to number of params.');
         }
         $typesLength = count($types);
-        $solidityTypes = $this->getSolidityTypes($types);
         $encodes = array_fill(0, $typesLength, '');
+        $abiTypes = $this->parseAbiTypes($types);
 
-        foreach ($solidityTypes as $key => $type) {
-            $encodes[$key] = call_user_func([$type, 'encode'], $params[$key], $types[$key]);
-        }
-        $dynamicOffset = 0;
-
-        foreach ($solidityTypes as $key => $type) {
-            $staticPartLength = $type->staticPartLength($types[$key]);
-            $roundedStaticPartLength = floor(($staticPartLength + 31) / 32) * 32;
-
-            if ($type->isDynamicType($types[$key]) || $type->isDynamicArray($types[$key])) {
-                $dynamicOffset += 32;
-            } else {
-                $dynamicOffset += $roundedStaticPartLength;
-            }
-        }
-        return '0x' . $this->encodeMultiWithOffset($types, $solidityTypes, $encodes, $dynamicOffset);
+        // encode with tuple type
+        return '0x' . $this->types['tuple']->encode($params, $abiTypes);
     }
 
     /**
@@ -242,144 +486,6 @@ class Ethabi
             }
         }
 
-        return $result;
-    }
-
-    /**
-     * getSolidityTypes
-     * 
-     * @param array $types
-     * @return array
-     */
-    protected function getSolidityTypes($types)
-    {
-        if (!is_array($types)) {
-            throw new InvalidArgumentException('Types must be array');
-        }
-        $solidityTypes = array_fill(0, count($types), 0);
-
-        foreach ($types as $key => $type) {
-            $match = [];
-
-            if (preg_match('/^([a-zA-Z]+)/', $type, $match) === 1) {
-                if (isset($this->types[$match[0]])) {
-                    $className = $this->types[$match[0]];
-
-                    if (call_user_func([$this->types[$match[0]], 'isType'], $type) === false) {
-                        // check dynamic bytes
-                        if ($match[0] === 'bytes') {
-                            $className = $this->types['dynamicBytes'];
-                        } else {
-                            throw new InvalidArgumentException('Unsupport solidity parameter type: ' . $type);
-                        }
-                    }
-                    $solidityTypes[$key] = $className;
-                }
-            }
-        }
-        return $solidityTypes;
-    }
-
-    /**
-     * encodeWithOffset
-     * 
-     * @param string $type
-     * @param \Web3\Contracts\SolidityType $solidityType
-     * @param mixed $encode
-     * @param int $offset
-     * @return string
-     */
-    protected function encodeWithOffset($type, $solidityType, $encoded, $offset)
-    {
-        if ($solidityType->isDynamicArray($type)) {
-            $nestedName = $solidityType->nestedName($type);
-            $nestedStaticPartLength = $solidityType->staticPartLength($type);
-            $result = $encoded[0];
-
-            if ($solidityType->isDynamicArray($nestedName)) {
-                $previousLength = 2;
-
-                for ($i=0; $i<count($encoded); $i++) {
-                    if (isset($encoded[$i - 1])) {
-                        $previousLength += abs($encoded[$i - 1][0]);
-                    }
-                    $result .= IntegerFormatter::format($offset + $i * $nestedStaticPartLength + $previousLength * 32);
-                }
-            }
-            for ($i=0; $i<count($encoded); $i++) {
-                // $bn = Utils::toBn($result);
-                // $divided = $bn->divide(Utils::toBn(2));
-
-                // if (is_array($divided)) {
-                //     $additionalOffset = (int) $divided[0]->toString();
-                // } else {
-                //     $additionalOffset = 0;
-                // }
-                $additionalOffset = floor(mb_strlen($result) / 2);
-                $result .= $this->encodeWithOffset($nestedName, $solidityType, $encoded[$i], $offset + $additionalOffset);
-            }
-            return mb_substr($result, 64);
-        } elseif ($solidityType->isStaticArray($type)) {
-            $nestedName = $solidityType->nestedName($type);
-            $nestedStaticPartLength = $solidityType->staticPartLength($type);
-            $result = '';
-
-            if ($solidityType->isDynamicArray($nestedName)) {
-                $previousLength = 0;
-
-                for ($i=0; $i<count($encoded); $i++) {
-                    if (isset($encoded[$i - 1])) {
-                        $previousLength += abs($encoded[$i - 1])[0];
-                    }
-                    $result .= IntegerFormatter::format($offset + $i * $nestedStaticPartLength + $previousLength * 32);
-                }
-            }
-            for ($i=0; $i<count($encoded); $i++) {
-                // $bn = Utils::toBn($result);
-                // $divided = $bn->divide(Utils::toBn(2));
-
-                // if (is_array($divided)) {
-                //     $additionalOffset = (int) $divided[0]->toString();
-                // } else {
-                //     $additionalOffset = 0;
-                // }
-                $additionalOffset = floor(mb_strlen($result) / 2);
-                $result .= $this->encodeWithOffset($nestedName, $solidityType, $encoded[$i], $offset + $additionalOffset);
-            }
-            return $result;
-        }
-        return $encoded;
-    }
-
-    /**
-     * encodeMultiWithOffset
-     * 
-     * @param array $types
-     * @param array $solidityTypes
-     * @param array $encodes
-     * @param int $dynamicOffset
-     * @return string
-     */
-    protected function encodeMultiWithOffset($types, $solidityTypes, $encodes, $dynamicOffset)
-    {
-        $result = '';
-
-        foreach ($solidityTypes as $key => $type) {
-            if ($type->isDynamicType($types[$key]) || $type->isDynamicArray($types[$key])) {
-                $result .= IntegerFormatter::format($dynamicOffset);
-                $e = $this->encodeWithOffset($types[$key], $type, $encodes[$key], $dynamicOffset);
-                $dynamicOffset += floor(mb_strlen($e) / 2);
-            } else {
-                $result .= $this->encodeWithOffset($types[$key], $type, $encodes[$key], $dynamicOffset);
-            }
-        }
-        foreach ($solidityTypes as $key => $type) {
-            if ($type->isDynamicType($types[$key]) || $type->isDynamicArray($types[$key])) {
-                $e = $this->encodeWithOffset($types[$key], $type, $encodes[$key], $dynamicOffset);
-                // $dynamicOffset += floor(mb_strlen($e) / 2);
-                $result .= $e;
-            }
-        }
         return $result;
     }
 }

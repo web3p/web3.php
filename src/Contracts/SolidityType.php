@@ -193,31 +193,31 @@ class SolidityType
      * encode
      * 
      * @param mixed $value
-     * @param string $name
+     * @param mixed $name
      * @return string
      */
     public function encode($value, $name)
     {
-        if ($this->isDynamicArray($name)) {
-            $length = count($value);
-            $nestedName = $this->nestedName($name);
-            $result = [];
-            $result[] = IntegerFormatter::format($length);
+        // if ($this->isDynamicArray($name)) {
+        //     $length = count($value);
+        //     $nestedName = $this->nestedName($name);
+        //     $result = [];
+        //     $result[] = IntegerFormatter::format($length);
 
-            foreach ($value as $val) {
-                $result[] = $this->encode($val, $nestedName);
-            }
-            return $result;
-        } elseif ($this->isStaticArray($name)) {
-            $length = $this->staticArrayLength($name);
-            $nestedName = $this->nestedName($name);
-            $result = [];
+        //     foreach ($value as $val) {
+        //         $result[] = $this->encode($val, $nestedName);
+        //     }
+        //     return $result;
+        // } elseif ($this->isStaticArray($name)) {
+        //     $length = $this->staticArrayLength($name);
+        //     $nestedName = $this->nestedName($name);
+        //     $result = [];
 
-            foreach ($value as $val) {
-                $result[] = $this->encode($val, $nestedName);
-            }
-            return $result;
-        }
+        //     foreach ($value as $val) {
+        //         $result[] = $this->encode($val, $nestedName);
+        //     }
+        //     return $result;
+        // }
         return $this->inputFormat($value, $name);
     }
 

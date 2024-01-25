@@ -12,12 +12,11 @@
 namespace Web3\Contracts\Types;
 
 use InvalidArgumentException;
-use Web3\Contracts\SolidityType;
-use Web3\Contracts\Types\IType;
 use Web3\Utils;
+use Web3\Contracts\Types\BaseArray;
 use Web3\Formatters\IntegerFormatter;
 
-class Address extends SolidityType implements IType
+class SizedArray extends BaseArray
 {
     /**
      * construct
@@ -37,7 +36,7 @@ class Address extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/^address/', $name) === 1);
+        return (preg_match('/(\[([0-9]*)\])/', $name) === 1);
     }
 
     /**
@@ -52,7 +51,6 @@ class Address extends SolidityType implements IType
 
     /**
      * inputFormat
-     * to do: iban
      * 
      * @param mixed $value
      * @param string $name
@@ -60,18 +58,14 @@ class Address extends SolidityType implements IType
      */
     public function inputFormat($value, $name)
     {
-        $value = (string) $value;
-
-        if (Utils::isAddress($value)) {
-            $value = mb_strtolower($value);
-
-            if (Utils::isZeroPrefixed($value)) {
-                $value = Utils::stripZero($value);
-            }
+        if (!is_array($value)) {
+            throw new InvalidArgumentException('Encode value must be array');
         }
-        $value = IntegerFormatter::format($value);
-
-        return $value;
+        $length = is_array($name) ? $this->staticArrayLength($name['type']) : 0;
+        if ($length === 0 || count($value) > $length) {
+            throw new InvalidArgumentException('Invalid value to encode sized array, expected: ' . $length . ', but got ' . count($value));
+        }
+        return parent::inputFormat($value, $name);
     }
 
     /**
@@ -83,6 +77,16 @@ class Address extends SolidityType implements IType
      */
     public function outputFormat($value, $name)
     {
-        return '0x' . mb_substr($value, 24, 40);
+        $checkZero = str_replace('0', '', $value);
+
+        if (empty($checkZero)) {
+            return '0';
+        }
+        if (preg_match('/^bytes([0-9]*)/', $name, $match) === 1) {
+            $size = intval($match[1]);
+            $length = 2 * $size;
+            $value = mb_substr($value, 0, $length);
+        }
+        return '0x' . $value;
     }
 }

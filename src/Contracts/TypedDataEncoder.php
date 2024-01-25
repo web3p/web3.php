@@ -15,13 +15,6 @@ use InvalidArgumentException;
 use Web3\Utils;
 use Web3\Formatters\IntegerFormatter;
 use Web3\Contracts\Ethabi;
-use Web3\Contracts\Types\Address;
-use Web3\Contracts\Types\Boolean;
-use Web3\Contracts\Types\Bytes;
-use Web3\Contracts\Types\DynamicBytes;
-use Web3\Contracts\Types\Integer;
-use Web3\Contracts\Types\Str;
-use Web3\Contracts\Types\Uinteger;
 
 class TypedDataEncoder
 {
@@ -51,15 +44,7 @@ class TypedDataEncoder
      */
     public function __construct()
     {
-        $this->ethabi = new Ethabi([
-            'address' => new Address,
-            'bool' => new Boolean,
-            'bytes' => new Bytes,
-            'dynamicBytes' => new DynamicBytes,
-            'int' => new Integer,
-            'string' => new Str,
-            'uint' => new Uinteger,
-        ]);
+        $this->ethabi = new Ethabi();
     }
 
     /**
@@ -93,6 +78,16 @@ class TypedDataEncoder
             return call_user_func_array([$this, $method], [$value]);
         }
         return false;
+    }
+
+    /**
+     * getEthabi
+     * 
+     * @return \Web3\Contracts\Ethabi
+     */
+    public function getEthabi()
+    {
+        return $this->ethabi;
     }
 
     /**
