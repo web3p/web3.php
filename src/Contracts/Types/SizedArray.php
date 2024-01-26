@@ -90,7 +90,6 @@ class SizedArray extends BaseArray
             }
             $offset += 64;
         }
-        var_dump('Length: ' . $length . ' Decode length: ' . $valueLength, $abiType['coders']);
         $results = [];
         $decoder = $abiType['coders'];
         for ($i = 0; $i < $length; $i++) {

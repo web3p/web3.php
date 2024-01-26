@@ -199,6 +199,48 @@ class Ethabi
     }
 
     /**
+     * parseTupleTypes
+     * TODO: replace with lexical analysis
+     * 
+     * @param string $type
+     * @param bool $parseInner
+     * @return array
+     */
+    protected function parseTupleTypes($type, $parseInner = false) {
+        $leftBrackets = [];
+        $results = [];
+        $offset = 0;
+        for ($key = 0; $key < mb_strlen($type); $key++) {
+            $char = $type[$key];
+            if ($char === '(') {
+                $leftBrackets[] = $key;
+            } else if ($char === ')') {
+                $leftKey = array_pop($leftBrackets);
+                if (is_null($leftKey)) {
+                    throw new InvalidArgumentException('Wrong tuple type: ' . $type);
+                }
+            } else if ($char === ',') {
+                if (empty($leftBrackets)) {
+                    $length = $key - $offset;
+                    $results[] = mb_substr($type, $offset, $length);
+                    $offset += $length + 1;
+                }
+            }
+        }
+        if ($offset < mb_strlen($type)) {
+            $results[] = mb_substr($type, $offset);
+        }
+        if ($parseInner) {
+            if (count($results) === 1) {
+                if ($results[0] === $type && $type[0] === '(' && $type[mb_strlen($type) - 1] === ')') {
+                    $results[0] = mb_substr($type, 1, mb_strlen($type) - 2);
+                }
+            }
+        }
+        return $results;
+    }
+
+    /**
      * findAbiType
      * 
      * @param string $type
@@ -235,8 +277,8 @@ class Ethabi
             }
             return $result;
         } elseif ($this->isTuple($type)) {
-            $nestedType = $this->parseTupleType($type);
-            $parsedNestedTypes = (!$this->isTuple($nestedType)) ? preg_split('/,/', $nestedType) : [ $nestedType ];
+            $nestedType = $this->parseTupleTypes($type, true)[0];
+            $parsedNestedTypes = $this->parseTupleTypes($nestedType);
             $tupleAbi = [
                 'type' => $type,
                 'dynamic' => false,

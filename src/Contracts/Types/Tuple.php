@@ -77,23 +77,23 @@ class Tuple extends SolidityType implements IType
                 $headLength += 32;
                 continue;
             }
-            $headLength += (int) mb_strlen($head) / 2;
+            $headLength += (int) (mb_strlen($head) / 2);
         }
         $tailOffsets = [0];
+        $totalOffset = 0;
         foreach ($tail as $key => $val) {
             if ($key === count($tail) - 1) {
                 break;
             }
-            $tailOffsets[] = (int) (mb_strlen($val) / 2);
+            $totalOffset += (int) (mb_strlen($val) / 2);
+            $tailOffsets[] = $totalOffset;
         }
         $headChunks = [];
-        $totalOffset = 0;
         foreach ($rawHead as $key => $head) {
-            if (!array_key_exists($key, $tail)) continue;
+            if (!array_key_exists($key, $tailOffsets)) continue;
             $offset = $tailOffsets[$key];
             if (is_null($head)) {
-                $totalOffset += $offset;
-                $headChunks[] = IntegerFormatter::format($headLength + $totalOffset);
+                $headChunks[] = IntegerFormatter::format($headLength + $offset);
                 continue;
             }
             $headChunks[] = $head;
