@@ -311,8 +311,10 @@ class TypedDataEncoderTest extends TestCase
      */
     public function testEncodeTypedDataFixtures()
     {
+        // load test fixtures
+        $testFixtures = $this->loadFixtureJsonFile(dirname(__DIR__) . '/fixtures/typed-data.json');
         $typedDataEncoder = $this->typedDataEncoder;
-        foreach ($this->testFixtures['typed-data'] as $test) {
+        foreach ($testFixtures as $test) {
             $result = $typedDataEncoder->encodeTypedData($test['domain'], $test['types'], $test['data']);
             $this->assertEquals($test['digest'], Utils::sha3($result));
         }

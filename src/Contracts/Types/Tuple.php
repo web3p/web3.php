@@ -62,7 +62,7 @@ class Tuple extends SolidityType implements IType
         $result = [];
         $rawHead = [];
         $tail = [];
-        foreach ($abiTypes as $key => $abiType) {
+        foreach ($abiTypes['coders'] as $key => $abiType) {
             if ($abiType['dynamic']) {
                 $rawHead[] = null;
                 $tail[] = $abiType['solidityType']->encode($params[$key], $abiType);
@@ -87,11 +87,13 @@ class Tuple extends SolidityType implements IType
             $tailOffsets[] = (int) (mb_strlen($val) / 2);
         }
         $headChunks = [];
+        $totalOffset = 0;
         foreach ($rawHead as $key => $head) {
             if (!array_key_exists($key, $tail)) continue;
             $offset = $tailOffsets[$key];
             if (is_null($head)) {
-                $headChunks[] = IntegerFormatter::format($headLength + $offset);
+                $totalOffset += $offset;
+                $headChunks[] = IntegerFormatter::format($headLength + $totalOffset);
                 continue;
             }
             $headChunks[] = $head;
@@ -110,7 +112,7 @@ class Tuple extends SolidityType implements IType
     {
         $results = [];
         $staticOffset = 0;
-        foreach ($abiTypes as $key => $abiType) {
+        foreach ($abiTypes['coders'] as $key => $abiType) {
             if ($abiType['dynamic']) {
                 $startPosHex = mb_substr($value, $staticOffset, 64);
                 $startPos = Utils::hexToNumber($startPosHex);

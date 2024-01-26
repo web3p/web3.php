@@ -148,9 +148,10 @@ class Ethabi
      */
     public function isDynamicArray($name)
     {
-        $nestedTypes = $this->nestedTypes($name);
-
-        return $nestedTypes && preg_match('/[0-9]{1,}/', $nestedTypes[count($nestedTypes) - 1]) !== 1;
+        if (preg_match('/\[\]$/', $name) >= 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -161,9 +162,10 @@ class Ethabi
      */
     public function isStaticArray($name)
     {
-        $nestedTypes = $this->nestedTypes($name);
-
-        return $nestedTypes && preg_match('/[0-9]{1,}/', $nestedTypes[count($nestedTypes) - 1]) === 1;
+        if (preg_match('/\[[\d]+\]$/', $name) >= 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -174,7 +176,7 @@ class Ethabi
      */
     public function isTuple($name)
     {
-        if (preg_match_all('/(tuple)?\((.*)\)/', $name, $matches, PREG_PATTERN_ORDER) >= 1) {
+        if (preg_match('/^(tuple)?\((.*)\)$/', $name) >= 1) {
             return true;
         }
         return false;
@@ -234,7 +236,7 @@ class Ethabi
             return $result;
         } elseif ($this->isTuple($type)) {
             $nestedType = $this->parseTupleType($type);
-            $parsedNestedTypes = preg_split('/,/', $nestedType);
+            $parsedNestedTypes = (!$this->isTuple($nestedType)) ? preg_split('/,/', $nestedType) : [ $nestedType ];
             $tupleAbi = [
                 'type' => $type,
                 'dynamic' => false,
@@ -382,7 +384,7 @@ class Ethabi
         $abiTypes = $this->parseAbiTypes($types);
 
         // encode with tuple type
-        return '0x' . $this->types['tuple']->encode($params, $abiTypes);
+        return '0x' . $this->types['tuple']->encode($params, [ 'coders' => $abiTypes ]);
     }
 
     /**
@@ -433,7 +435,7 @@ class Ethabi
 
         // decode with tuple type
         $results = [];
-        $decodeResults = $this->types['tuple']->decode(Utils::stripZero($param), 0, $abiTypes);
+        $decodeResults = $this->types['tuple']->decode(Utils::stripZero($param), 0, [ 'coders' => $abiTypes ]);
         for ($i = 0; $i < $typesLength; $i++) {
             if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
                 $results[$outputTypes['outputs'][$i]['name']] = $decodeResults[$i];

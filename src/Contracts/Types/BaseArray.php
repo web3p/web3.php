@@ -82,8 +82,10 @@ class BaseArray extends SolidityType implements IType
             $tailOffsets[] = (int) mb_strlen($val) / 2;
         }
         $headChunks = [];
+        $totalOffset = 0;
         foreach ($tailOffsets as $offset) {
-            $headChunks[] = IntegerFormatter::format($headLength + $offset);
+            $totalOffset += $offset;
+            $headChunks[] = IntegerFormatter::format($headLength + $totalOffset);
         }
         return array_merge($headChunks, $results);
     }

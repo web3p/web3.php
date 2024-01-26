@@ -25,6 +25,7 @@ class IntegerFormatter implements IFormatter
      */
     public static function format($value)
     {
+        $isNegative = (int) $value < 0;
         $value = (string) $value;
         $arguments = func_get_args();
         $digit = 64;
@@ -35,10 +36,16 @@ class IntegerFormatter implements IFormatter
         $bn = Utils::toBn($value);
         $bnHex = $bn->toHex(true);
         $bnHexLen = mb_strlen($bnHex);
-        $padded = mb_substr($bnHex, 0, 1);
+        $padded = ($isNegative) ? 'f' : mb_substr($bnHex, 0, 1);
 
-        if ($bnHexLen >= $digit) {
-            $zeroPos = mb_strrpos($bnHex, '0');
+        if ($bnHexLen > $digit) {
+            $zeroPos = 0;
+            for ($i = 0; $i < $bnHexLen; $i++) {
+                if ($bnHex[$i] !== '0') {
+                    break;
+                }
+                $zeroPos += 1;
+            }
             if ($zeroPos !== false) {
                 $bnHex = mb_substr($bnHex, $zeroPos, $digit);
                 $bnHexLen = mb_strlen($bnHex);
