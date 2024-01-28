@@ -314,4 +314,22 @@ class EthabiTest extends TestCase
         $encodedString = $abi->encodeParameter('string', $specialString);
         $this->assertEquals($specialString, $abi->decodeParameter('string', $encodedString));
     }
+
+    /**
+     * testAbiFixtures
+     * 
+     * @return void
+     */
+    public function testAbiFixtures()
+    {
+        // load test fixtures
+        $testFixtures = $this->loadFixtureJsonFile(dirname(__DIR__) . '/fixtures/abi.json');
+        $abi = $this->abi;
+        foreach ($testFixtures as $test) {
+            $result = $abi->encodeParameters([$test['type']], [$test['value']]);
+            $this->assertEquals($test['encoded'], $result);
+            $decodeResult = $abi->decodeParameters([$test['type']], $result);
+            $this->assertTrue(!is_null($decodeResult));
+        }
+    }
 }

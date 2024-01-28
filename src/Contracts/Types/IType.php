@@ -32,8 +32,8 @@ interface IType
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name);
+    public function inputFormat($value, $abiType);
 }

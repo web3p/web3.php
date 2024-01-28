@@ -37,7 +37,7 @@ class Integer extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/^int([0-9]{1,})?(\[([0-9]*)\])*$/', $name) === 1);
+        return (preg_match('/^int([0-9]{1,})?/', $name) === 1);
     }
 
     /**
@@ -54,10 +54,10 @@ class Integer extends SolidityType implements IType
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
         return IntegerFormatter::format($value);
     }
@@ -66,17 +66,11 @@ class Integer extends SolidityType implements IType
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
-     * @return string
+     * @param array $abiType
+     * @return BigNumber
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
-        $match = [];
-
-        if (preg_match('/^[0]+([a-f0-9]+)$/', $value, $match) === 1) {
-            // due to value without 0x prefix, we will parse as decimal
-            $value = '0x' . $match[1];
-        }
-        return BigNumberFormatter::format($value);
+        return BigNumberFormatter::format('0x' . mb_substr($value, 0, 64));
     }
 }

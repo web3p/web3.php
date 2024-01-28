@@ -37,7 +37,7 @@ class Str extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/^string(\[([0-9]*)\])*$/', $name) === 1);
+        return (preg_match('/^string/', $name) === 1);
     }
 
     /**
@@ -54,10 +54,10 @@ class Str extends SolidityType implements IType
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
         $value = Utils::toHex($value);
         $prefix = IntegerFormatter::format(mb_strlen($value) / 2);
@@ -71,10 +71,10 @@ class Str extends SolidityType implements IType
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
         $strLen = mb_substr($value, 0, 64);
         $strValue = mb_substr($value, 64);
@@ -82,6 +82,9 @@ class Str extends SolidityType implements IType
 
         if (preg_match('/^[0]+([a-f0-9]+)$/', $strLen, $match) === 1) {
             $strLen = BigNumberFormatter::format('0x' . $match[1])->toString();
+        }
+        if (is_float((int) $strLen * 2)) {
+            var_dump($strValue, $strLen, mb_substr($value, 0, 64), BigNumberFormatter::format('0x' . mb_substr($value, 0, 64))->toString());
         }
         $strValue = mb_substr($strValue, 0, (int) $strLen * 2);
 

@@ -37,7 +37,7 @@ class Address extends SolidityType implements IType
      */
     public function isType($name)
     {
-        return (preg_match('/^address(\[([0-9]*)\])*$/', $name) === 1);
+        return (preg_match('/^address/', $name) === 1);
     }
 
     /**
@@ -55,10 +55,10 @@ class Address extends SolidityType implements IType
      * to do: iban
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
         $value = (string) $value;
 
@@ -78,10 +78,10 @@ class Address extends SolidityType implements IType
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function outputFormat($value, $name)
+    public function outputFormat($value, $abiType)
     {
         return '0x' . mb_substr($value, 24, 40);
     }

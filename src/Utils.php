@@ -549,4 +549,18 @@ class Utils
         }
         return $bn;
     }
+
+    /**
+     * hexToNumber
+     * 
+     * @param string $hexNumber
+     * @return int
+     */
+    public static function hexToNumber($hexNumber)
+    {
+        if (!self::isZeroPrefixed($hexNumber)) {
+            $hexNumber = '0x' . $hexNumber;
+        }
+        return intval(self::toBn($hexNumber)->toString());
+    }
 }
