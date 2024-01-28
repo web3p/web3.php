@@ -55,10 +55,10 @@ class Address extends SolidityType implements IType
      * to do: iban
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
         $value = (string) $value;
 

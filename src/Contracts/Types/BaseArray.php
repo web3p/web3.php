@@ -94,23 +94,23 @@ class BaseArray extends SolidityType implements IType
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
-        return implode('', $this->encodeElements($value, $name));
+        return implode('', $this->encodeElements($value, $abiType));
     }
 
     /**
      * outputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function outputFormat($value, $name)
-    {
-        throw new InvalidArgumentException('Should not call outputFormat in BaseArray directly');
-    }
+    // public function outputFormat($value, $abiType)
+    // {
+    //     throw new InvalidArgumentException('Should not call outputFormat in BaseArray directly');
+    // }
 }

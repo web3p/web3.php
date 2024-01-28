@@ -54,15 +54,15 @@ class Tuple extends SolidityType implements IType
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $abiTypes
+     * @param string $abiType
      * @return string
      */
-    public function inputFormat($params, $abiTypes)
+    public function inputFormat($params, $abiType)
     {
         $result = [];
         $rawHead = [];
         $tail = [];
-        foreach ($abiTypes['coders'] as $key => $abiType) {
+        foreach ($abiType['coders'] as $key => $abiType) {
             if ($abiType['dynamic']) {
                 $rawHead[] = null;
                 $tail[] = $abiType['solidityType']->encode($params[$key], $abiType);
@@ -105,14 +105,14 @@ class Tuple extends SolidityType implements IType
      * outputFormat
      * 
      * @param string $value
-     * @param array $abiTypes
+     * @param array $abiType
      * @return string
      */
-    public function outputFormat($value, $abiTypes)
+    public function outputFormat($value, $abiType)
     {
         $results = [];
         $staticOffset = 0;
-        foreach ($abiTypes['coders'] as $key => $abiType) {
+        foreach ($abiType['coders'] as $key => $abiType) {
             if ($abiType['dynamic']) {
                 $startPosHex = mb_substr($value, $staticOffset, 64);
                 $startPos = Utils::hexToNumber($startPosHex);

@@ -54,10 +54,10 @@ class Str extends SolidityType implements IType
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
         $value = Utils::toHex($value);
         $prefix = IntegerFormatter::format(mb_strlen($value) / 2);

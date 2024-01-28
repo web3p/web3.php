@@ -53,12 +53,12 @@ class DynamicArray extends BaseArray
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
-        $results = $this->encodeElements($value, $name);
+        $results = $this->encodeElements($value, $abiType);
         $encodeSize = IntegerFormatter::format(count($value));
         return $encodeSize . implode('', $results);
     }

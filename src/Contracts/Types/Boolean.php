@@ -52,10 +52,10 @@ class Boolean extends SolidityType implements IType
      * inputFormat
      * 
      * @param mixed $value
-     * @param string $name
+     * @param array $abiType
      * @return string
      */
-    public function inputFormat($value, $name)
+    public function inputFormat($value, $abiType)
     {
         if (!is_bool($value)) {
             throw new InvalidArgumentException('The value to inputFormat function must be boolean.');
