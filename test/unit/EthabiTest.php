@@ -326,11 +326,10 @@ class EthabiTest extends TestCase
         $testFixtures = $this->loadFixtureJsonFile(dirname(__DIR__) . '/fixtures/abi.json');
         $abi = $this->abi;
         foreach ($testFixtures as $test) {
-            // if (is_string($test['value']) || is_string($test['type'])) {
-            //     var_dump($test);
-            // }
             $result = $abi->encodeParameters([$test['type']], [$test['value']]);
             $this->assertEquals($test['encoded'], $result);
+            $decodeResult = $abi->decodeParameters([$test['type']], $result);
+            $this->assertTrue(!is_null($decodeResult));
         }
     }
 }

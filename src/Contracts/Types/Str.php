@@ -83,6 +83,9 @@ class Str extends SolidityType implements IType
         if (preg_match('/^[0]+([a-f0-9]+)$/', $strLen, $match) === 1) {
             $strLen = BigNumberFormatter::format('0x' . $match[1])->toString();
         }
+        if (is_float((int) $strLen * 2)) {
+            var_dump($strValue, $strLen, mb_substr($value, 0, 64), BigNumberFormatter::format('0x' . mb_substr($value, 0, 64))->toString());
+        }
         $strValue = mb_substr($strValue, 0, (int) $strLen * 2);
 
         return Utils::hexToBin($strValue);

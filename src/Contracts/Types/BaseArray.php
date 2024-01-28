@@ -111,16 +111,6 @@ class BaseArray extends SolidityType implements IType
      */
     public function outputFormat($value, $name)
     {
-        $checkZero = str_replace('0', '', $value);
-
-        if (empty($checkZero)) {
-            return '0';
-        }
-        if (preg_match('/^bytes([0-9]*)/', $name, $match) === 1) {
-            $size = intval($match[1]);
-            $length = 2 * $size;
-            $value = mb_substr($value, 0, $length);
-        }
-        return '0x' . $value;
+        throw new InvalidArgumentException('Should not call outputFormat in BaseArray directly');
     }
 }

@@ -190,6 +190,28 @@ class SolidityType
     }
 
     /**
+     * deepCalculateDataLength
+     * Calculate static data size recursively.
+     * TODO: Improve this function, or calculate data length when parse abi.
+     * 
+     * @param array $data
+     * @return integer
+     */
+    public function deepCalculateDataLength($data)
+    {
+        if (!is_array($data)) return 1;
+        $dataCount = 0;
+        foreach ($data as $d) {
+            if (is_array($d)) {
+                $dataCount += $this->deepCalculateDataLength($d);
+            } else {
+                $dataCount += 1;
+            }
+        }
+        return $dataCount;
+    }
+
+    /**
      * encode
      * 
      * @param mixed $value

@@ -77,11 +77,17 @@ class DynamicArray extends BaseArray
         }
         $lengthHex = mb_substr($value, 0, 64);
         $length = (int) Utils::hexToNumber($lengthHex);
-        $offset = 64;
+        $offset = 0;
+        $value = mb_substr($value, 64);
         $results = [];
         $decoder = $abiType['coders'];
         for ($i = 0; $i < $length; $i++) {
-            $results[] = $decoder['solidityType']->decode($value, $offset, $decoder);
+            $decodeValueOffset = $offset;
+            if ($decoder['dynamic']) {
+                $decodeValueOffsetHex = mb_substr($value, $offset, 64);
+                $decodeValueOffset = (int) Utils::hexToNumber($decodeValueOffsetHex) * 2;
+            }
+            $results[] = $decoder['solidityType']->decode($value, $decodeValueOffset, $decoder);
             $offset += 64;
         }
         return $results;

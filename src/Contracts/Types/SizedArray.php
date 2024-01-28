@@ -82,18 +82,21 @@ class SizedArray extends BaseArray
         }
         $length = is_array($abiType) ? $this->staticArrayLength($abiType['type']) : 0;
         $offset = 0;
-        if ($abiType['dynamic']) {
-            $valueLengthHex = mb_substr($value, 0, 64);
-            $valueLength = (int) Utils::hexToNumber($valueLengthHex) / 32;
-            if ($length !== $valueLength) {
-                throw new InvalidArgumentException('Invalid sized array length decode, expected: ' . $lenght . ', but got ' . $valueLength);
-            }
-            $offset += 64;
-        }
         $results = [];
         $decoder = $abiType['coders'];
         for ($i = 0; $i < $length; $i++) {
-            $results[] = $decoder['solidityType']->decode($value, $offset, $decoder);
+            $decodeValueOffset = $offset;
+            if ($decoder['dynamic']) {
+                $decodeValueOffsetHex = mb_substr($value, $offset, 64);
+                $decodeValueOffset = (int) Utils::hexToNumber($decodeValueOffsetHex) * 2;
+            }
+            $decoded = $decoder['solidityType']->decode($value, $decodeValueOffset, $decoder);
+            $results[] = $decoded;
+            $dataCount = 1;
+            if (!$decoder['dynamic']) {
+                $dataCount = $this->deepCalculateDataLength($decoded);
+            }
+            $offset += (64 * $dataCount);
         }
         return $results;
     }

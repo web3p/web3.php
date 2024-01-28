@@ -119,8 +119,10 @@ class Tuple extends SolidityType implements IType
                 $staticOffset += 64;
                 $results[] = $abiType['solidityType']->decode($value, $startPos * 2, $abiType);
             } else {
-                $results[] = $abiType['solidityType']->decode($value, $staticOffset, $abiType);
-                $staticOffset += 64;
+                $decoded = $abiType['solidityType']->decode($value, $staticOffset, $abiType);
+                $dataCount = $this->deepCalculateDataLength($decoded);
+                $staticOffset += 64 * $dataCount;
+                $results[] = $decoded;
             }
         }
         return $results;

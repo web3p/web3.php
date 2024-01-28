@@ -454,7 +454,7 @@ class Ethabi
     public function decodeParameters($types, $param)
     {
         if (!is_string($param)) {
-            throw new InvalidArgumentException('The type or param to decodeParameters must be string.');
+            throw new InvalidArgumentException('The param must be string.');
         }
 
         // change json to array
