@@ -247,48 +247,16 @@ To run examples, you need to run ethereum blockchain local (testrpc).
 
 If you are using docker as development machain, you can try [ethdock](https://github.com/sc0vu/ethdock) to run local ethereum blockchain, just simply run `docker-compose up -d testrpc` and expose the `8545` port.
 
-# Develop
+# Development
 
-### Local php cli installed
+### Testing
 
-1. Clone the repo and install packages.
+1. Start the container(from web3.php/docker).
 ```
-git clone https://github.com/web3p/web3.php.git && cd web3.php && composer install
+docker-compose up -d php ganache
 ```
 
 2. Run test script.
-```
-vendor/bin/phpunit
-```
-
-### Docker container
-
-1. Clone the repo and run docker container.
-```
-git clone https://github.com/web3p/web3.php.git
-```
-
-2. Copy web3.php to web3.php/docker/app directory and start container.
-```
-cp files docker/app && docker-compose up -d php ganache
-```
-
-3. Enter php container and install packages.
-```
-docker-compose exec php ash
-```
-
-4. Change testHost in `TestCase.php`
-```
-/**
- * testHost
- * 
- * @var string
- */
-protected $testHost = 'http://ganache:8545';
-```
-
-5. Run test script
 ```
 vendor/bin/phpunit
 ```

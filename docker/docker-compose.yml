@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
 
@@ -7,7 +7,7 @@ services:
             context: ./php
             dockerfile: Dockerfile-72
         volumes:
-            - ./app:/app
+            - ../:/app
         tty: true
 
     ganache:
@@ -15,4 +15,4 @@ services:
             context: ./ganache
             dockerfile: Dockerfile
         ports:
-            - "8545"
+          - "8545:8545"
