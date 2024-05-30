@@ -59,7 +59,7 @@ class Str extends SolidityType implements IType
      */
     public function inputFormat($value, $abiType)
     {
-        $value = Utils::toHex($value);
+        $value = implode('', unpack('H*', $value));
         $prefix = IntegerFormatter::format(mb_strlen($value) / 2);
         $l = floor((mb_strlen($value) + 63) / 64);
         $padding = (($l * 64 - mb_strlen($value) + 1) >= 0) ? $l * 64 - mb_strlen($value) : 0;
