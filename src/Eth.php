@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -15,6 +15,51 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\Providers\WsProvider;
 
+/**
+ * @method protocolVersion()
+ * @method syncing()
+ * @method coinbase()
+ * @method mining()
+ * @method hashrate()
+ * @method gasPrice()
+ * @method accounts()
+ * @method blockNumber()
+ * @method getBalance()
+ * @method getStorageAt()
+ * @method getTransactionCount()
+ * @method getBlockTransactionCountByHash()
+ * @method getBlockTransactionCountByNumber()
+ * @method getUncleCountByBlockHash()
+ * @method getUncleCountByBlockNumber()
+ * @method getUncleByBlockHashAndIndex()
+ * @method getUncleByBlockNumberAndIndex()
+ * @method getCode()
+ * @method sign()
+ * @method sendTransaction()
+ * @method sendRawTransaction()
+ * @method call()
+ * @method estimateGas()
+ * @method getBlockByHash()
+ * @method getBlockByNumber()
+ * @method getTransactionByHash()
+ * @method getTransactionByBlockHashAndIndex()
+ * @method getTransactionByBlockNumberAndIndex()
+ * @method getTransactionReceipt()
+ * @method compileSolidity()
+ * @method compileLLL()
+ * @method compileSerpent()
+ * @method getWork()
+ * @method newFilter()
+ * @method newBlockFilter()
+ * @method newPendingTransactionFilter()
+ * @method uninstallFilter()
+ * @method getFilterChanges()
+ * @method getFilterLogs()
+ * @method getLogs()
+ * @method submitWork()
+ * @method submitHashrate()
+ * @method feeHistory()
+ */
 class Eth
 {
     /**
@@ -26,14 +71,14 @@ class Eth
 
     /**
      * methods
-     * 
+     *
      * @var array
      */
     private $methods = [];
 
     /**
      * allowedMethods
-     * 
+     *
      * @var array
      */
     private $allowedMethods = [
@@ -63,7 +108,7 @@ class Eth
 
     /**
      * call
-     * 
+     *
      * @param string $name
      * @param array $arguments
      * @return void|\React\Promise\PromiseInterface
@@ -109,7 +154,7 @@ class Eth
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @return mixed
      */
@@ -125,7 +170,7 @@ class Eth
 
     /**
      * set
-     * 
+     *
      * @param string $name
      * @param mixed $value
      * @return mixed
@@ -142,7 +187,7 @@ class Eth
 
     /**
      * getProvider
-     * 
+     *
      * @return \Web3\Providers\Provider
      */
     public function getProvider()
@@ -152,7 +197,7 @@ class Eth
 
     /**
      * setProvider
-     * 
+     *
      * @param \Web3\Providers\Provider $provider
      * @return bool
      */
@@ -167,7 +212,7 @@ class Eth
 
     /**
      * batch
-     * 
+     *
      * @param bool $status
      * @return void
      */

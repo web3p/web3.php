@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -15,6 +15,16 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\Providers\WsProvider;
 
+/**
+ * @method version()
+ * @method newIdentity()
+ * @method hasIdentity()
+ * @method post()
+ * @method newFilter()
+ * @method uninstallFilter()
+ * @method getFilterChanges()
+ * @method getMessages()
+ */
 class Shh
 {
     /**
@@ -26,14 +36,14 @@ class Shh
 
     /**
      * methods
-     * 
+     *
      * @var array
      */
     private $methods = [];
 
     /**
      * allowedMethods
-     * 
+     *
      * @var array
      */
     private $allowedMethods = [
@@ -64,7 +74,7 @@ class Shh
 
     /**
      * call
-     * 
+     *
      * @param string $name
      * @param array $arguments
      * @return void|\React\Promise\PromiseInterface
@@ -110,7 +120,7 @@ class Shh
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @return mixed
      */
@@ -126,7 +136,7 @@ class Shh
 
     /**
      * set
-     * 
+     *
      * @param string $name
      * @param mixed $value
      * @return mixed
@@ -143,7 +153,7 @@ class Shh
 
     /**
      * getProvider
-     * 
+     *
      * @return \Web3\Providers\Provider
      */
     public function getProvider()
@@ -153,7 +163,7 @@ class Shh
 
     /**
      * setProvider
-     * 
+     *
      * @param \Web3\Providers\Provider $provider
      * @return bool
      */
@@ -168,7 +178,7 @@ class Shh
 
     /**
      * batch
-     * 
+     *
      * @param bool $status
      * @return void
      */

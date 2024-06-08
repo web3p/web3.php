@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -15,6 +15,11 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\Providers\WsProvider;
 
+/**
+ * @method version()
+ * @method peerCount()
+ * @method listening()
+ */
 class Net
 {
     /**
@@ -26,14 +31,14 @@ class Net
 
     /**
      * methods
-     * 
+     *
      * @var array
      */
     private $methods = [];
 
     /**
      * allowedMethods
-     * 
+     *
      * @var array
      */
     private $allowedMethods = [
@@ -63,7 +68,7 @@ class Net
 
     /**
      * call
-     * 
+     *
      * @param string $name
      * @param array $arguments
      * @return void|\React\Promise\PromiseInterface
@@ -109,7 +114,7 @@ class Net
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @return mixed
      */
@@ -125,7 +130,7 @@ class Net
 
     /**
      * set
-     * 
+     *
      * @param string $name
      * @param mixed $value
      * @return mixed
@@ -142,7 +147,7 @@ class Net
 
     /**
      * getProvider
-     * 
+     *
      * @return \Web3\Providers\Provider
      */
     public function getProvider()
@@ -152,7 +157,7 @@ class Net
 
     /**
      * setProvider
-     * 
+     *
      * @param \Web3\Providers\Provider $provider
      * @return bool
      */
@@ -167,7 +172,7 @@ class Net
 
     /**
      * batch
-     * 
+     *
      * @param bool $status
      * @return void
      */
