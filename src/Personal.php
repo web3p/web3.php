@@ -2,9 +2,9 @@
 
 /**
  * This file is part of web3.php package.
- * 
+ *
  * (c) Kuan-Cheng,Lai <alk03073135@gmail.com>
- * 
+ *
  * @author Peter Lai <alk03073135@gmail.com>
  * @license MIT
  */
@@ -15,6 +15,13 @@ use Web3\Providers\Provider;
 use Web3\Providers\HttpProvider;
 use Web3\Providers\WsProvider;
 
+/**
+ * @method listAccounts()
+ * @method newAccount()
+ * @method unlockAccount()
+ * @method lockAccount()
+ * @method sendTransaction()
+ */
 class Personal
 {
     /**
@@ -26,14 +33,14 @@ class Personal
 
     /**
      * methods
-     * 
+     *
      * @var array
      */
     private $methods = [];
 
     /**
      * allowedMethods
-     * 
+     *
      * @var array
      */
     private $allowedMethods = [
@@ -63,7 +70,7 @@ class Personal
 
     /**
      * call
-     * 
+     *
      * @param string $name
      * @param array $arguments
      * @return void|\React\Promise\PromiseInterface
@@ -109,7 +116,7 @@ class Personal
 
     /**
      * get
-     * 
+     *
      * @param string $name
      * @return mixed
      */
@@ -125,7 +132,7 @@ class Personal
 
     /**
      * set
-     * 
+     *
      * @param string $name
      * @param mixed $value
      * @return mixed
@@ -142,7 +149,7 @@ class Personal
 
     /**
      * getProvider
-     * 
+     *
      * @return \Web3\Providers\Provider
      */
     public function getProvider()
@@ -152,7 +159,7 @@ class Personal
 
     /**
      * setProvider
-     * 
+     *
      * @param \Web3\Providers\Provider $provider
      * @return bool
      */
@@ -167,7 +174,7 @@ class Personal
 
     /**
      * batch
-     * 
+     *
      * @param bool $status
      * @return void
      */
