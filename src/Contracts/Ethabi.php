@@ -465,10 +465,17 @@ class Ethabi
         if (is_array($types) && isset($types['outputs'])) {
             $outputTypes = $types;
             $types = [];
-
-            foreach ($outputTypes['outputs'] as $output) {
-                if (isset($output['type'])) {
-                    $types[] = $output['type'];
+            if(!empty($outputTypes['outputs'][0]['components']))//this code will handle tuple output
+            {
+                foreach ($outputTypes['outputs'][0]['components'] as $component) {
+                    $types[] = $component['type'];
+                }
+            }
+            else{
+                foreach ($outputTypes['outputs'] as $output) {
+                    if (isset($output['type'])) {
+                        $types[] = $output['type'];
+                    }
                 }
             }
         }
@@ -479,11 +486,24 @@ class Ethabi
         $results = [];
         $decodeResults = $this->types['tuple']->decode(Utils::stripZero($param), 0, [ 'coders' => $abiTypes ]);
         for ($i = 0; $i < $typesLength; $i++) {
-            if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
-                $results[$outputTypes['outputs'][$i]['name']] = $decodeResults[$i];
-            } else {
-                $results[$i] = $decodeResults[$i];
+
+            if(!empty($outputTypes['outputs'][0]['components'])) //this code will handle tuple output
+            {
+                if (isset($outputTypes['outputs'][0]['components'][$i]['name']) && empty($outputTypes['outputs'][0]['components'][$i]['name']) === false) {
+                    $results[$outputTypes['outputs'][0]['components'][$i]['name']] = $decodeResults[$i];
+                } else {
+                    $results[$i] = $decodeResults[$i];
+                }
             }
+            else{
+                if (isset($outputTypes['outputs'][$i]['name']) && empty($outputTypes['outputs'][$i]['name']) === false) {
+                    $results[$outputTypes['outputs'][$i]['name']] = $decodeResults[$i];
+                } else {
+                    $results[$i] = $decodeResults[$i];
+                }
+            }
+
+
         }
         return $results;
     }
