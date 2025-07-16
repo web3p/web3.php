@@ -5,7 +5,7 @@ namespace Test\Unit;
 use RuntimeException;
 use InvalidArgumentException;
 use Test\TestCase;
-use phpseclib\Math\BigInteger as BigNumber;
+use phpseclib3\Math\BigInteger as BigNumber;
 
 class NetApiTest extends TestCase
 {

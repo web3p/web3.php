@@ -5,7 +5,7 @@ namespace Test\Unit;
 use InvalidArgumentException;
 use stdClass;
 use Test\TestCase;
-use phpseclib\Math\BigInteger as BigNumber;
+use phpseclib3\Math\BigInteger as BigNumber;
 use Web3\Utils;
 use Web3\Contract;
 

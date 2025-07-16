@@ -3,21 +3,21 @@
 namespace Test\Unit;
 
 use Test\TestCase;
-use phpseclib\Math\BigInteger as BigNumber;
+use phpseclib3\Math\BigInteger as BigNumber;
 use Web3\Formatters\BigNumberFormatter;
 
-class BigNumberFormatterTest extends TestCase
+class BigNumberFormatterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * formatter
-     * 
+     *
      * @var \Web3\Formatters\BigNumberFormatter
      */
     protected $formatter;
 
     /**
      * setUp
-     * 
+     *
      * @return void
      */
     public function setUp(): void
@@ -28,7 +28,7 @@ class BigNumberFormatterTest extends TestCase
 
     /**
      * testFormat
-     * 
+     *
      * @return void
      */
     public function testFormat()
