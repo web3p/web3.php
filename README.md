@@ -124,6 +124,8 @@ $net = $web3->net;
 
 Or
 
+
+Could we talk? Discord: 9.dogukan.1
 ```php
 use Web3\Net;
 
